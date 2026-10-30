@@ -1,0 +1,8 @@
+import pandas as pd
+
+url = ("https://www.datos.gov.co/resource/kgxf-xxbe.csv?"
+       "$where=periodo=%2720224%27%20AND%20cole_depto_ubicacion=%27ANTIOQUIA%27"
+       "&$order=estu_consecutivo&$limit=200000")
+
+df = pd.read_csv(url, low_memory=False)
+print(df.shape)  # (144766, 51)
