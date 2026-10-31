@@ -19,6 +19,8 @@ implementan con pruebas en `src/proyecto/data/` en la etapa 3 (preprocesamiento)
 ## Calidad de los datos
 
 - **Duplicados:** 72.383 filas exactamente duplicadas (50 % del archivo).
+  **Hallazgo que no esperábamos** (puesta en común del hito H1, 31 oct 2026): la mitad del archivo original
+  (72.383 filas) eran duplicados exactos.
 - **Números guardados como texto:** estrato ("Estrato 1"…"Estrato 6"), personas en el hogar ("1 a 2"…"9 o más") y
   cuartos ("Uno"…"Seis o mas") son categorías con orden natural guardadas como texto.
 - **Centinelas:** "No sabe" (1.695 en educación de la madre, 5.966 del padre), "No Aplica" (156 / 1.255) y
