@@ -21,8 +21,10 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 
 ## 3. Datos
 
-- **Fuente** (enlace de Kaggle, empresa, etc.):
-- **Filas / columnas:**
+- **Fuente** (enlace de Kaggle, empresa, etc.): datos.gov.co — Resultados Saber 11 (recurso `kgxf-xxbe`),
+  filtrado a periodo 20224 y departamento ANTIOQUIA. Se descarga a `data/raw/saber11_antioquia_2022.csv` con:
+  `https://www.datos.gov.co/resource/kgxf-xxbe.csv?$where=periodo=%2720224%27%20AND%20cole_depto_ubicacion=%27ANTIOQUIA%27&$order=estu_consecutivo&$limit=200000`
+- **Filas / columnas:** 144.766 / 51
 - **Variable objetivo** (columna que queremos predecir o describir):
 - **Tipo de problema:** ☐ clasificación  ☐ regresión  ☐ clusterización
 - **¿Una misma entidad (cliente, paciente, empresa) aparece en varias filas?** ☐ no  ☐ sí → la partición
