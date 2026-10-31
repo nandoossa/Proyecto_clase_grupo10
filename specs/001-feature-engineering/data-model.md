@@ -12,8 +12,8 @@ Una fila = un estudiante de calendario A, Antioquia, periodo 20224. Columnas que
 | `fami_personashogar` | número | 1–5 («1 a 2» … «9 o más»); vacío si sin dato |
 | `fami_cuartoshogar` | número | 1–6 («Uno» … «Seis o mas»); vacío si sin dato |
 | `cole_area_ubicacion`, `cole_bilingue`, `cole_caracter`, `cole_genero`, `cole_jornada`, `cole_naturaleza`, `cole_sede_principal` | texto | categorías del colegio; `cole_bilingue` y `cole_caracter` con vacíos |
-| `estu_genero`, `estu_nacionalidad`, `estu_privado_libertad` | texto | categorías del estudiante |
-| `estu_tipodocumento` | texto | puede venir en la tabla, pero **nunca es predictor** (decisión del grupo, equidad) |
+| `estu_genero` | texto | categoría del estudiante |
+| `estu_tipodocumento`, `estu_nacionalidad`, `estu_privado_libertad` | texto | pueden venir en la tabla, pero **nunca son predictores** (decisiones del grupo, equidad) |
 | `fami_educacionmadre`, `fami_educacionpadre` | texto | 10 niveles + «No sabe», «No Aplica»; vacíos |
 | `fami_tieneautomovil`, `fami_tienecomputador`, `fami_tieneinternet`, `fami_tienelavadora` | texto | «Si», «No»; vacíos |
 | `cole_cod_mcpio_ubicacion`, `estu_cod_reside_mcpio` | código (entero en el CSV) | 125 y 173 municipios |
@@ -40,4 +40,4 @@ Matriz numérica sin vacíos ni infinitos:
 `punt_global`, `punt_matematicas`, `punt_lectura_critica`, `punt_sociales_ciudadanas`, `punt_c_naturales`, `punt_ingles`,
 `desemp_ingles`, `estu_estadoinvestigacion`, `estu_consecutivo`, `estu_fechanacimiento`, `cole_cod_dane_sede`,
 `cole_cod_dane_establecimiento`, `cole_codigo_icfes`, `cole_nombre_establecimiento`, `cole_nombre_sede`,
-`estu_tipodocumento` (16 columnas).
+`estu_tipodocumento`, `estu_nacionalidad`, `estu_privado_libertad` (18 columnas).

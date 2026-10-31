@@ -5,10 +5,10 @@
 > **exactamente** esto (`material-del-curso/kit/checklist-revision-ia.md`).
 > Guía: `material-del-curso/kit/guia-eda-y-preprocesamiento.md`, sección 4 · Ejemplo: `material-del-curso/ejemplo-creditsight/src/creditsight/data/`.
 
-**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 31 oct 2026   **Estado:** ☒ borrador  ☐ cerrada
+**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 31 oct 2026   **Estado:** ☐ borrador  ☒ cerrada
 
-> Borrador preparado por Claude a partir de `reports/01_eda.md` (decisiones aprobadas por el grupo el 31 oct 2026) y de
-> los datos de `data/raw/`. Lo que está entre **[POR DECIDIR]** no está en ningún documento: lo decide el grupo.
+> Preparada por Claude a partir de `reports/01_eda.md` (decisiones aprobadas por el grupo el 31 oct 2026) y de los datos
+> de `data/raw/`. Los puntos abiertos los decidió el grupo el 31 oct 2026.
 
 ## 1. Unidad de análisis y partición
 
@@ -18,7 +18,7 @@
   sede; explica el 36 % de la variación del puntaje). El estudiante no se repite tras quitar duplicados.
 - **Se parte por:** ☒ grupo (`GroupShuffleSplit` para entrenamiento/prueba; `GroupKFold` para validación cruzada, porque es
   regresión y no hay clases que estratificar) ☐ fila
-- **Proporción de prueba:** **[POR DECIDIR]** %   **Semilla:** 42
+- **Proporción de prueba:** 20 %, partida por sede (`cole_cod_dane_sede`) con `GroupShuffleSplit` (grupo, 31 oct 2026)   **Semilla:** 42
 - **¿Hay orden temporal que respetar?** ☒ no ☐ sí → un solo periodo (20224).
 - **Dónde se guarda la prueba:** `data/processed/` (cerrada: **no se mira** hasta la etapa 7)
 
@@ -67,7 +67,7 @@ Los nombres de función son una **propuesta** (en inglés, como pide `CLAUDE.md`
 | Columnas `fami_` (10,1 % de los estudiantes tiene algún vacío; 1.790 no respondieron ninguna) | ☐ no aplica ☒ no se anotó ☐ perdido ☐ imposible | ☒ dejar vacío ☐ categoría explícita ☐ reparar con valor de la entidad | Categoría propia «sin respuesta» (decisión 5): sacan ~18 puntos menos, el vacío es información |
 | `fami_estratovivienda` numérico (vacío real o «Sin Estrato», regla 7b) | ☐ no aplica ☒ no se anotó ☐ perdido ☐ imposible | ☒ dejar vacío ☐ categoría explícita ☐ reparar con valor de la entidad | Mediana + indicador de vacío; `sin_estrato` distingue «Sin Estrato» del vacío real |
 | `cole_bilingue` (16,4 % vacío) | ☐ no aplica ☒ no se anotó ☐ perdido ☐ imposible | ☒ dejar vacío ☐ categoría explícita ☐ reparar con valor de la entidad | Categoría propia «sin respuesta» (decisión 5): 16 puntos menos de promedio |
-| `edad` (30 casos menores de 13, tras la decisión 4) | ☐ no aplica ☐ no se anotó ☐ perdido ☒ imposible | ☒ dejar vacío ☐ categoría explícita ☐ reparar con valor de la entidad | **[POR DECIDIR]**: es numérica; la decisión 5 habla de categoría «sin respuesta» para `fami_` y `cole_bilingue` |
+| `edad` (30 casos menores de 13, tras la decisión 4) | ☐ no aplica ☐ no se anotó ☐ perdido ☒ imposible | ☒ dejar vacío ☐ categoría explícita ☐ reparar con valor de la entidad | Mediana + indicador de vacío dentro del `Pipeline` (grupo, 31 oct 2026). En la etapa 3 solo se marcan como vacías las edades menores de 13 |
 
 > Imputar con medias o medianas **no se hace aquí**: depende del entrenamiento y va dentro del `Pipeline`.
 

@@ -41,6 +41,12 @@
 - **`estu_tipodocumento` se excluye como predictor (grupo, 31 oct 2026, antes de medir).** Motivo: su información ya está
   en la edad (TI frente a CC), y los documentos de extranjeros (PEP, PPT, CE…) funcionarían como indicador de condición
   migratoria, lo que va contra la condición de equidad.
+- **`estu_nacionalidad` y `estu_privado_libertad` se excluyen como predictores (grupo, 31 oct 2026, antes de medir).**
+  Motivo: la nacionalidad es indicador de condición migratoria y estar privado de la libertad es un dato sensible
+  (además, el 99,8 % responde «N»); mismo criterio de equidad con el que se excluyó `estu_tipodocumento`.
+- **Municipios (grupo, 31 oct 2026):** el notebook 04 prueba otros umbrales de agrupación de poco frecuentes. Si se
+  prueba `TargetEncoder`, va dentro del `Pipeline` y se compara solo con validación agrupada por sede, porque su
+  validación cruzada interna no respeta la agrupación.
 -
 
 ## Supuestos y riesgos

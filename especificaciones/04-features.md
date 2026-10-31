@@ -8,7 +8,7 @@
 **Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 31 oct 2026   **Estado:** ☒ borrador  ☐ cerrada
 
 > Borrador preparado por Claude. Las cifras salen de `reports/01_eda.md` y de `data/raw/` (72.148 estudiantes de
-> calendario A, sin duplicados). Lo que está entre **[POR DECIDIR]** lo decide el grupo.
+> calendario A, sin duplicados). Las decisiones del grupo del 31 oct 2026 ya están incorporadas.
 
 ## 1. Entrada y dependencia
 
@@ -28,7 +28,7 @@ Solo variables `cole_`, `estu_` y `fami_` que se conocen **antes** del examen.
 | Tipo | Columnas | Nota |
 |---|---|---|
 | Numéricas | `edad`, `fami_estratovivienda`, `sin_estrato`, `fami_personashogar`, `fami_cuartoshogar` | Las crea la etapa 3 (ordinales como números) |
-| Categóricas | `cole_area_ubicacion`, `cole_bilingue`, `cole_caracter`, `cole_genero`, `cole_jornada`, `cole_naturaleza`, `cole_sede_principal`, `estu_genero`, `estu_nacionalidad`, `estu_privado_libertad`, `fami_educacionmadre`, `fami_educacionpadre`, `fami_tieneautomovil`, `fami_tienecomputador`, `fami_tieneinternet`, `fami_tienelavadora` | La educación de los padres queda como categoría para conservar «No sabe» y «No Aplica» (decisión 6) |
+| Categóricas | `cole_area_ubicacion`, `cole_bilingue`, `cole_caracter`, `cole_genero`, `cole_jornada`, `cole_naturaleza`, `cole_sede_principal`, `estu_genero`, `fami_educacionmadre`, `fami_educacionpadre`, `fami_tieneautomovil`, `fami_tienecomputador`, `fami_tieneinternet`, `fami_tienelavadora` | La educación de los padres queda como categoría para conservar «No sabe» y «No Aplica» (decisión 6) |
 | Categóricas de alta cardinalidad | `cole_cod_mcpio_ubicacion` (125 municipios), `estu_cod_reside_mcpio` (173) | Se usan los **códigos**, no los nombres: ver sección 4 |
 
 **Columnas que quedan fuera, y por qué:**
@@ -39,9 +39,10 @@ Solo variables `cole_`, `estu_` y `fami_` que se conocen **antes** del examen.
 | `cole_calendario` | Tras la decisión 11 solo queda «A»: no aporta información |
 | `cole_mcpio_ubicacion`, `estu_mcpio_reside` | Repiten el código del municipio. En residencia hay 172 nombres para 173 códigos («ARMENIA» corresponde a dos municipios distintos) |
 | `estu_depto_reside`, `estu_cod_reside_depto` | Ya están contenidos en el código del municipio de residencia |
-| `estu_pais_reside` | Es idéntica a `estu_nacionalidad` en el 100 % de los estudiantes |
+| `estu_pais_reside` | Es idéntica a `estu_nacionalidad` en el 100 % de los estudiantes (y la nacionalidad también se excluye) |
 | `estu_mcpio_presentacion`, `estu_cod_mcpio_presentacion`, `estu_depto_presentacion`, `estu_cod_depto_presentacion` | Lugar donde se presenta el examen: es logística, repite casi siempre el municipio del colegio o de residencia y el usuario de la app no siempre lo sabe |
 | `estu_tipodocumento` | Excluida por el grupo (31 oct 2026): su información ya está en la edad, y los documentos de extranjeros funcionarían como indicador de condición migratoria, lo que va contra la condición de equidad |
+| `estu_nacionalidad`, `estu_privado_libertad` | Excluidas por el grupo (31 oct 2026): la nacionalidad es indicador de condición migratoria y estar privado de la libertad es un dato sensible (además, el 99,8 % responde «N»); mismo criterio de equidad con el que se excluyó `estu_tipodocumento` |
 | `punt_global` | Es el objetivo |
 | Las 7 con fuga, `estu_consecutivo`, `estu_fechanacimiento` y los identificadores del colegio | Ya los quita la etapa 3 (decisiones 2, 3 y 9). Una prueba verifica que no reaparezcan |
 
@@ -71,7 +72,7 @@ notebook 04 mide si mejoran el MAE con validación agrupada por sede. Si no lo m
 | Categóricas: vacíos | Categoría constante «sin respuesta» | Decisión 5: imputar con la moda borraría la información del vacío |
 | Categóricas: centinelas | «No sabe» y «No Aplica» no se tocan: cada uno queda como su propia categoría. «Sin Estrato» llega como la marca `sin_estrato` (regla 7b de la etapa 3) | Decisión 6: tienen puntajes distintos al resto |
 | Categóricas: codificación | One-hot. Las categorías con menos del 1 % de los estudiantes (`min_frequency=0.01`) se agrupan en una sola «poco frecuente»; una categoría nunca vista en entrenamiento va a ese mismo grupo (`handle_unknown="infrequent_if_exist"`) | Evita cientos de columnas casi vacías y que el modelo falle con una categoría nueva en la app |
-| Municipios (alta cardinalidad) | Mismo one-hot con agrupación de poco frecuentes: con 1 % quedan 16 municipios de colegio y 15 de residencia con columna propia; el resto va a «poco frecuente». El umbral es un parámetro (`min_frequency`) | Con la partición por sede, muchos municipios pequeños tienen pocas sedes y su promedio no se puede aprender con confianza. **[POR DECIDIR]:** si el notebook 04 prueba un umbral menor o una codificación por objetivo (`TargetEncoder`, que debe ir dentro del `Pipeline` para no filtrar el objetivo) |
+| Municipios (alta cardinalidad) | Mismo one-hot con agrupación de poco frecuentes: con 1 % quedan 16 municipios de colegio y 15 de residencia con columna propia; el resto va a «poco frecuente». El umbral es un parámetro (`min_frequency`) | Con la partición por sede, muchos municipios pequeños tienen pocas sedes y su promedio no se puede aprender con confianza. **Decidido por el grupo (31 oct 2026):** el notebook 04 prueba otros umbrales. Si prueba `TargetEncoder`, va dentro del `Pipeline` y se compara **solo** con la validación agrupada por sede, porque su validación cruzada interna no respeta la agrupación |
 
 > Nada de esto se ajusta con el conjunto de prueba (constitución, principio III).
 
@@ -89,22 +90,23 @@ notebook 04 mide si mejoran el MAE con validación agrupada por sede. Si no lo m
 
 ## 6. Pruebas que deben existir
 
-- ☐ **`add_features` no modifica la tabla original.**
-- ☐ **Divisiones por cero o con datos faltantes dan vacío, no infinito** (`personas_por_cuarto` con 0 cuartos o sin dato).
-- ☐ **Cada variable nueva** con un caso normal y un caso con vacíos hecho a mano (`n_bienes_hogar`,
+- ☒ **`add_features` no modifica la tabla original.**
+- ☒ **Divisiones por cero o con datos faltantes dan vacío, no infinito** (`personas_por_cuarto` con 0 cuartos o sin dato).
+- ☒ **Cada variable nueva** con un caso normal y un caso con vacíos hecho a mano (`n_bienes_hogar`,
   `educacion_max_padres`, `personas_por_cuarto`, `vive_en_mcpio_colegio`).
-- ☐ **`feature_columns` respeta los interruptores:** con `use_engineered=False` no aparece ninguna variable nueva.
-- ☐ **El preprocesador no usa columnas con fuga ni identificadores:** ninguna de las 7 columnas con fuga,
+- ☒ **`feature_columns` respeta los interruptores:** con `use_engineered=False` no aparece ninguna variable nueva.
+- ☒ **El preprocesador no usa columnas con fuga ni identificadores:** ninguna de las 7 columnas con fuga,
   `estu_consecutivo`, `estu_fechanacimiento`, `cole_cod_dane_sede`, los otros identificadores del colegio,
-  `estu_tipodocumento` ni `punt_global` está en las columnas que usa.
-- ☐ **El preprocesador soporta vacíos y categorías nuevas:** transformar una fila con una categoría nunca vista y con
+  `estu_tipodocumento`, `estu_nacionalidad`, `estu_privado_libertad` ni `punt_global` está en las columnas que usa.
+- ☒ **El preprocesador soporta vacíos y categorías nuevas:** transformar una fila con una categoría nunca vista y con
   vacíos no produce vacíos en la salida.
-- ☐ **Los centinelas sobreviven:** «No sabe» en `fami_educacionmadre` termina en su propia columna, distinta de «sin respuesta».
-- ☐ `pytest` en verde desde la raíz del repo.
+- ☒ **Los centinelas sobreviven:** «No sabe» en `fami_educacionmadre` termina en su propia columna, distinta de «sin respuesta».
+- ☐ `pytest` en verde desde la raíz del repo. (`pytest tests` sí pasa: 32 de 32. `pytest` a secas choca con las pruebas
+  de `material-del-curso/ejemplo-creditsight/tests/`, que tienen los mismos nombres de archivo.)
 
 ## 7. Criterios de cierre
 
-- ☐ El notebook 04 compara el MAE **con y sin** variables nuevas, con validación cruzada agrupada por sede (`GroupKFold`)
+- ☐ El notebook 04 compara el MAE **con y sin** variables nuevas, y con otros umbrales de municipios (`min_frequency`), con validación cruzada agrupada por sede (`GroupKFold`)
   solo sobre entrenamiento, y deja escrita la decisión (encendidas o apagadas) con su cifra en `reports/`.
 - ☐ La decisión se anota en la sección 7 de `especificacion-proyecto.md`.
 - ☐ `pytest` en verde.

@@ -7,11 +7,11 @@
 ## Summary
 
 Crear `src/proyecto/features/engineering.py` con la estructura del ejemplo de CreditSight (`add_features`,
-`feature_columns`, `build_preprocessor`) pero con las columnas de Saber 11: 5 numéricas, 16 categóricas y 2 códigos de
+`feature_columns`, `build_preprocessor`) pero con las columnas de Saber 11: 5 numéricas, 14 categóricas y 2 códigos de
 municipio como predictores base; 4 variables nuevas apagadas por defecto; vacíos categóricos → «sin respuesta», numéricos
 → mediana + indicador; centinelas como categorías propias; municipios con one-hot y agrupación de poco frecuentes (1 %).
-Una lista de columnas prohibidas garantiza que nada con fuga, ningún identificador ni `estu_tipodocumento` (excluida
-por el grupo por equidad) entre como predictor. Las pruebas van
+Una lista de columnas prohibidas garantiza que nada con fuga, ningún identificador ni `estu_tipodocumento`, `estu_nacionalidad`
+o `estu_privado_libertad` (excluidas por el grupo por equidad) entre como predictor. Las pruebas van
 en `tests/test_features.py` y usan tablas hechas a mano, así que no dependen de que la etapa 3 esté terminada.
 
 ## Technical Context
@@ -90,7 +90,10 @@ toca `src/proyecto/data/` (etapa 3) ni `src/proyecto/models/` (`build_pipeline`,
   ya está decidido (regla 7b, 31 oct 2026). Si la etapa 3 cambia la codificación de personas o cuartos, se ajusta el
   mapeo de `personas_por_cuarto`; una prueba lo detecta.
 - **Decisiones del grupo del 31 oct 2026 incorporadas:** opción A de «Sin Estrato», escala de educación confirmada y
-  `estu_tipodocumento` fuera de los predictores.
+  `estu_tipodocumento` fuera de los predictores. Ajustes de la aprobación: `estu_nacionalidad` y `estu_privado_libertad`
+  también fuera (equidad); `fami_estratovivienda` conserva su nombre.
+- **Notebook 04 (fuera de esta pieza):** prueba otros umbrales de municipios; `TargetEncoder`, si se prueba, dentro del
+  `Pipeline` y comparado solo con validación agrupada por sede.
 - **Equidad:** `estu_genero`, estrato y naturaleza entran como predictores. La condición de equidad por segmento se
   verifica en la validación (etapa 7), no aquí.
 

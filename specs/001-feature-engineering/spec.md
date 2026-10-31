@@ -70,10 +70,10 @@ cambia y que una división por cero da vacío y no infinito.
 ### Functional Requirements
 
 - **FR-001**: El sistema MUST usar como predictores solo las columnas base listadas en `especificaciones/04-features.md`
-  (sección 2): 5 numéricas, 16 categóricas y 2 códigos de municipio.
+  (sección 2): 5 numéricas, 14 categóricas y 2 códigos de municipio.
 - **FR-002**: El sistema MUST excluir siempre `punt_global`, las 7 columnas con fuga, `estu_consecutivo`,
-  `estu_fechanacimiento`, `cole_cod_dane_sede`, los demás identificadores del colegio y `estu_tipodocumento` (excluida
-  por el grupo por equidad), aunque estén en la tabla de entrada.
+  `estu_fechanacimiento`, `cole_cod_dane_sede`, los demás identificadores del colegio, `estu_tipodocumento`, `estu_nacionalidad`
+  y `estu_privado_libertad` (excluidas por el grupo por equidad), aunque estén en la tabla de entrada.
 - **FR-003**: El sistema MUST calcular las 4 variables nuevas con las reglas exactas de la sección 3 de
   `especificaciones/04-features.md`, sin modificar la tabla original.
 - **FR-004**: Toda división por cero o con datos faltantes MUST dar vacío, nunca infinito.
@@ -112,5 +112,7 @@ cambia y que una división por cero da vacío y no infinito.
 - Escala de `educacion_max_padres` (técnica completa = 6, profesional incompleta = 7); «No sabe» y «No Aplica» fuera de
   la escala. **Confirmada por el grupo el 31 oct 2026.**
 - `estu_tipodocumento` no es predictor (grupo, 31 oct 2026): repite la edad y señalaría la condición migratoria.
+- `estu_nacionalidad` y `estu_privado_libertad` no son predictores (grupo, 31 oct 2026): condición migratoria y dato
+  sensible (99,8 % «N»).
 - Umbral de poco frecuentes: 1 %. El notebook 04 puede probar otro umbral o codificación por objetivo.
 - Fuera de alcance: `build_pipeline` (unión con el modelo) y la ejecución del notebook 04.
