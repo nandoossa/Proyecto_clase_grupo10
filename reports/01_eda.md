@@ -48,8 +48,8 @@ implementan con pruebas en `src/proyecto/data/` en la etapa 3 (preprocesamiento)
 
 ## Decisiones
 
-Todas son propuestas pendientes del acuerdo del grupo (10 y 11 propuestas por el grupo el 30 oct 2026; 1 a 9 propuestas en
-el EDA). Si el grupo está de acuerdo, se aplican en `notebooks/03_preprocesamiento.ipynb`.
+Todas fueron aprobadas por el grupo el 31 oct 2026, sin cambios (10 y 11 propuestas por el grupo el 30 oct 2026; 1 a 9
+propuestas en el EDA). Se aplican en `notebooks/03_preprocesamiento.ipynb`.
 
 | # | Hallazgo (con cifra) | Decisión | Motivo |
 |---|---|---|---|
@@ -67,7 +67,6 @@ el EDA). Si el grupo está de acuerdo, se aplican en `notebooks/03_preprocesamie
 
 ## Qué queda abierto
 
-- **Revisión del grupo** de las decisiones 1 a 9.
 - **Identificadores fuera del modelo:** ninguna columna que identifique al colegio (`cole_cod_dane_sede`, `cole_cod_dane_establecimiento`, `cole_codigo_icfes`, `cole_nombre_establecimiento`, `cole_nombre_sede`) ni al
   estudiante (`estu_consecutivo`) entra como predictor. `cole_cod_dane_sede` se usa solo para agrupar en la partición.
   Hay que comprobar en la etapa 3 que ninguna se cuele en el `Pipeline`.

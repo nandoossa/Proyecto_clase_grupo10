@@ -53,7 +53,7 @@ Marquen lo que aplica a su dataset. Lo que no aplique se tacha **con una razón*
 > Cada una con **cifra**, acción **concreta** y **motivo**. Se copian tal cual a `reports/01_eda.md`.
 > Cada decisión se convierte en una función de `src/proyecto/data/` y en una prueba (ver `03-preprocesamiento.md`).
 >
-> Todas son propuestas pendientes del acuerdo del grupo; si el grupo está de acuerdo, se aplican en
+> Todas fueron aprobadas por el grupo el 31 oct 2026, sin cambios; se aplican en
 > `notebooks/03_preprocesamiento.ipynb`. Las funciones se definen en la etapa 3 (plan y tareas antes del código).
 
 | # | Hallazgo (con cifra) | Decisión | Motivo | Función que la implementa |
