@@ -33,7 +33,37 @@
   y el costo crece en proporción a los puntos de error, que es justo lo que mide el MAE. Además se explica sin formación
   técnica: "el modelo se equivoca en promedio ±N puntos". Como controles se reportan **RMSE** (revela errores muy grandes)
   y **R²**. Línea base sin modelo: predecir siempre la mediana da un **MAE de 42,8 puntos** (siempre el promedio: 42,9;
-  al azar: 58,9). Meta para decir que el modelo «sirve»: por definir con el grupo.
+  al azar: 58,9). Meta para decir que el modelo «sirve» (acordada por el grupo):
+  - **Meta mínima: MAE ≤ 38 puntos** en validación cruzada agrupada por sede (`cole_cod_dane_sede`, `GroupKFold`), al
+    menos un 11 % mejor que la línea base de 42,8. Se agrupa por sede para medir el error con colegios nunca vistos, como
+    en la app (decisión 10 del EDA).
+  - **Meta deseable: MAE ≤ 35 puntos** (18 % mejor que la línea base), medida de la misma forma.
+  - **Condición de equidad:** el MAE del modelo debe ser **menor que el de la línea base en cada segmento** de estrato
+    (`fami_estratovivienda`, con «Sin Estrato» y los vacíos como segmentos propios), zona (`cole_area_ubicacion`) y
+    naturaleza del colegio (`cole_naturaleza`). Motivo: un MAE promedio bueno puede esconder un grupo en el que el modelo
+    se equivoca más que no usar modelo, y esas variables marcan a grupos en desventaja.
+
+  Línea base por segmento (predecir siempre la mediana global, 242 puntos; 72.383 estudiantes sin duplicados; calculada
+  en `notebooks/01_caso_negocio.ipynb`, sección 3):
+
+  | Variable | Segmento | Estudiantes | MAE línea base (puntos) |
+  |---|---|---:|---:|
+  | Estrato | Estrato 1 | 14.173 | 38,4 |
+  | Estrato | Estrato 2 | 26.652 | 39,5 |
+  | Estrato | Estrato 3 | 18.596 | 44,4 |
+  | Estrato | Estrato 4 | 4.317 | 54,5 |
+  | Estrato | Estrato 5 | 1.694 | 65,8 |
+  | Estrato | Estrato 6 | 668 | 68,2 |
+  | Estrato | Sin Estrato | 1.561 | 46,6 |
+  | Estrato | Sin dato (vacío) | 4.722 | 44,6 |
+  | Zona | Rural | 12.539 | 42,7 |
+  | Zona | Urbano | 59.844 | 42,8 |
+  | Naturaleza | No oficial | 14.753 | 53,4 |
+  | Naturaleza | Oficial | 57.630 | 40,1 |
+
+  La línea base se equivoca más en los estratos 5 y 6 y en los colegios no oficiales (puntajes lejos de 242) y menos en
+  los estratos 1 y 2. En el estrato 1 (38,4) ya está casi en la meta mínima global, así que cumplir la meta global no
+  garantiza la condición de equidad.
 
 - **business_cost_note:** Equivocarse cuesta lo mismo en las dos direcciones (proporción 1 a 1).
   - **Sobreestimar** (decir que le irá mejor de lo real): un estudiante o colegio puede quedarse sin el apoyo que
