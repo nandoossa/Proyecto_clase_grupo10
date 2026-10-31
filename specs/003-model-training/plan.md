@@ -62,7 +62,7 @@ tests/
 
 ## Dependencias y orden
 
-1. **Instalar el Visual C++ Redistributable x64** (o decidir quitar LightGBM del torneo).
+1. **Instalar el Visual C++ Redistributable x64** (decisión del grupo: LightGBM se queda en el torneo).
 2. **Etapa 3 implementada** (`split.py` define `GROUP_COL`). Su plan está pendiente de aprobación.
 3. Luego esta pieza. Después, los notebooks 04 y 05 pueden correr.
 
