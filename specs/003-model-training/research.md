@@ -29,7 +29,7 @@
 
 **Decisión del grupo (31 oct 2026):** el MAE y el RMSE se reportan en positivo, con una prueba que lo verifique.
 
-**Riesgo detectado y diseño propuesto (pendiente de confirmar por el grupo):** si `scoring()` entregara scorers con el MAE
+**Riesgo detectado y diseño (confirmado por el grupo el 31 oct 2026):** si `scoring()` entregara scorers con el MAE
 positivo, `cross_validate` lo mostraría bien, pero `GridSearchCV`, Optuna y el `refit` del notebook 06 **maximizan** el
 puntaje y elegirían el modelo que más se equivoca. Por eso:
 

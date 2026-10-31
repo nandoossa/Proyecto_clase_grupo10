@@ -71,7 +71,7 @@ tests/
 - Aprobados los 5 candidatos con los parámetros de partida del ejemplo.
 - LightGBM y XGBoost con su pérdida por defecto en el torneo; error absoluto en la etapa 6.
 - LightGBM se queda; el grupo instala el Visual C++ Redistributable x64.
-- MAE y RMSE se reportan en positivo, con prueba. **Pendiente de confirmar** el diseño (`research.md` §3): `scoring()`
+- MAE y RMSE se reportan en positivo, con prueba. **Diseño confirmado por el grupo** (`research.md` §3): `scoring()`
   sigue negativo para no invertir la búsqueda de la etapa 6, y `cv_report` / `regression_metrics` muestran positivos.
 - Orden: primero la etapa 3; después esta pieza.
 

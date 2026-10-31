@@ -32,3 +32,7 @@ models/final_pipeline.joblib
 saber11_antioquia_2022.csv
 
 *.csv.part
+
+# Datos procesados: se regeneran con notebooks/03_preprocesamiento.ipynb (no se suben)
+data/processed/*
+!data/processed/.gitkeep

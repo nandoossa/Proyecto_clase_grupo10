@@ -20,7 +20,9 @@
   regresión y no hay clases que estratificar) ☐ fila
 - **Proporción de prueba:** 20 %, partida por sede (`cole_cod_dane_sede`) con `GroupShuffleSplit` (grupo, 31 oct 2026)   **Semilla:** 42
 - **¿Hay orden temporal que respetar?** ☒ no ☐ sí → un solo periodo (20224).
-- **Dónde se guarda la prueba:** `data/processed/` (cerrada: **no se mira** hasta la etapa 7)
+- **Función de partición:** `split_by_group(df, group_col, test_size, seed)` en `src/proyecto/data/split.py` (grupo,
+  31 oct 2026). Motivo: es el nombre que usa la plantilla de `notebooks/03_preprocesamiento.ipynb`.
+- **Dónde se guarda la prueba:** `data/processed/test.joblib` (cerrada: **no se mira** hasta la etapa 7)
 
 ## 2. Datos personales
 
@@ -76,27 +78,38 @@ Los nombres de función son una **propuesta** (en inglés, como pide `CLAUDE.md`
 | | Ruta |
 |---|---|
 | Entrada | `data/raw/saber11_antioquia_2022.csv` (nunca se modifica) |
-| Salida: entrenamiento | `data/processed/train.csv` (o `.parquet`) |
-| Salida: prueba (cerrada) | `data/processed/test.csv` (o `.parquet`) |
+| Salida: entrenamiento | `data/processed/train.joblib` |
+| Salida: prueba (cerrada) | `data/processed/test.joblib` |
 | Código de limpieza | `src/proyecto/data/cleaning.py` |
 | Código de partición | `src/proyecto/data/split.py` |
 | Notebook que orquesta | `notebooks/03_preprocesamiento.ipynb` (solo llama a las funciones) |
 
+> **Cambios aprobados por el grupo el 31 oct 2026:**
+> - **Formato `.joblib`** en vez de `.csv`/`.parquet`: conserva los tipos de datos (vacíos numéricos, enteros) y es lo
+>   que escribe el notebook 03 y lee el notebook 04.
+> - **`data/processed/` fuera de GitHub:** `.gitignore` ignora su contenido (`data/processed/*`) y conserva
+>   `data/processed/.gitkeep`. Motivo: se regenera con el notebook 03, y la licencia CC BY-SA obliga a publicar con la
+>   misma licencia cualquier versión modificada de los datos que se suba.
+> - **`split_by_group`** como nombre de la función de partición (ver sección 1).
+
 ## 6. Pruebas que deben existir
 
-- ☐ **Partición:** ninguna entidad aparece en dos particiones y no se pierde ninguna fila (`tests/test_split.py`).
+- ☒ **Partición:** ninguna entidad aparece en dos particiones y no se pierde ninguna fila (`tests/test_split.py`).
 - ☐ **La prueba de partición falla** si se cambia temporalmente a partición por fila (compruébenlo y vuelvan a dejarla bien).
-- ☐ **Una prueba por regla de limpieza** de la sección 3, con un caso normal y un caso sucio hechos a mano.
-- ☐ **Datos personales:** el resultado de cargar no contiene las columnas de la sección 2.
-- ☐ `pytest` en verde desde la raíz del repo.
+  (Lo comprueba el grupo a mano; además `test_row_split_would_share_schools` muestra que partir por fila comparte sedes.)
+- ☒ **Una prueba por regla de limpieza** de la sección 3, con un caso normal y un caso sucio hechos a mano.
+- ☒ **Datos personales:** el resultado de limpiar (`clean`) no contiene las columnas de la sección 2 (`load_raw_saber11`
+  devuelve el archivo tal cual, como dice la sección 2).
+- ☐ `pytest` en verde desde la raíz del repo. (`pytest tests` sí pasa: 52 de 52. `pytest` a secas choca con las pruebas
+  de `material-del-curso/ejemplo-creditsight/tests/`, que tienen los mismos nombres de archivo.)
 
 ## 7. Criterios de cierre (H1)
 
-- ☐ La limpieza corre **de principio a fin desde cero** (`data/processed/` borrada y regenerada con el notebook 03), sin pasos manuales.
-- ☐ Unidad de análisis y forma de partir **escritas** (sección 1) y documentadas en `reports/01_eda.md`.
-- ☐ `pytest` en verde.
-- ☐ Conjunto de prueba guardado y sin mirar.
-- ☐ `data/raw/` intacta y `.env` fuera de Git (`git status`).
+- ☒ La limpieza corre **de principio a fin desde cero** (`data/processed/` borrada y regenerada con el notebook 03), sin pasos manuales.
+- ☒ Unidad de análisis y forma de partir **escritas** (sección 1) y documentadas en `reports/01_eda.md`.
+- ☒ `pytest` en verde (`pytest tests`: 52 de 52).
+- ☒ Conjunto de prueba guardado y sin mirar (solo se contaron filas y sedes).
+- ☒ `data/raw/` intacta (misma huella SHA-256 antes y después) y `.env` fuera de Git (`git status`).
 - ☐ Todo subido a GitHub.
 - ☐ Revisaron el código de Claude con `checklist-revision-ia.md` y cada integrante puede explicar una función.
 - ☐ **Hallazgo que no esperaban** (para la puesta en común): _______________
