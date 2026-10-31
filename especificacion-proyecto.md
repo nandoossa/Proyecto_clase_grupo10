@@ -30,7 +30,9 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 - **¿Una misma entidad (cliente, paciente, empresa) aparece en varias filas?** ☐ no  ☐ sí → la partición
   será por: _______________
 - **Datos personales o confidenciales presentes:** ☐ no  ☐ sí → se eliminarán/anonimizarán así:
-- **Licencia o permiso de uso de los datos:**
+- **Licencia o permiso de uso de los datos:** CC BY-SA 4.0 (Creative Commons Atribución-CompartirIgual 4.0
+  Internacional), según los metadatos del recurso `kgxf-xxbe` en datos.gov.co (consultado el 31 oct 2026). Crédito al
+  ICFES; las versiones modificadas de los datos que se publiquen deben usar la misma licencia.
 
 ## 4. Métrica
 

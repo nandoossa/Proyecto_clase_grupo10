@@ -13,7 +13,12 @@
 - **dataset_source:** Resultados oficiales del ICFES, prueba Saber 11, publicados en datos.gov.co (recurso `kgxf-xxbe`),
   filtrado a periodo 20224 y departamento ANTIOQUIA. Se descarga a `data/raw/saber11_antioquia_2022.csv` con:
   `https://www.datos.gov.co/resource/kgxf-xxbe.csv?$where=periodo=%2720224%27%20AND%20cole_depto_ubicacion=%27ANTIOQUIA%27&$order=estu_consecutivo&$limit=200000`.
-  **Licencia: por confirmar.**
+  **Licencia:** Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0), según los metadatos del
+  recurso `kgxf-xxbe` en datos.gov.co (consultado el 31 oct 2026). Fuente: Instituto Colombiano para la Evaluación de
+  la Educación (ICFES). Permite usar y transformar los datos, incluso con fines comerciales, siempre que se dé crédito
+  al ICFES, se indique la licencia y que los datos fueron modificados; si se publica una versión modificada de los
+  datos, debe compartirse bajo la misma licencia. Los datos usados aquí están filtrados a Antioquia, periodo 20224, y
+  sin filas duplicadas.
 
 - **dataset_rows:** 144.766 filas descargadas, que corresponden a **72.383 estudiantes**: cada fila viene duplicada
   exactamente en la fuente. Los duplicados se eliminan antes de cualquier análisis.
