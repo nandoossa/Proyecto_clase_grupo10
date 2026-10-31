@@ -32,8 +32,15 @@
 <!-- Una línea por idea: qué decidiste, con qué cifra y por qué. Las ideas descartadas se anotan
      igual: documentan lo que ya probaste. -->
 
--
--
+- **Escala de educación de los padres (grupo, 31 oct 2026, antes de medir):** para `educacion_max_padres` se usa
+  Ninguno 0, Primaria incompleta 1, Primaria completa 2, Secundaria incompleta 3, Secundaria completa 4, Técnica o
+  tecnológica incompleta 5, Técnica o tecnológica completa 6, Educación profesional incompleta 7, Educación profesional
+  completa 8, Postgrado 9. «No sabe» y «No Aplica» no entran en la escala: siguen como categorías propias en
+  `fami_educacionmadre` y `fami_educacionpadre` (decisión 6 del EDA). Motivo: una escala ordenada permite tomar el nivel
+  más alto del hogar; ubicar «técnica completa» por debajo de «profesional incompleta» es una convención del grupo.
+- **`estu_tipodocumento` se excluye como predictor (grupo, 31 oct 2026, antes de medir).** Motivo: su información ya está
+  en la edad (TI frente a CC), y los documentos de extranjeros (PEP, PPT, CE…) funcionarían como indicador de condición
+  migratoria, lo que va contra la condición de equidad.
 -
 
 ## Supuestos y riesgos

@@ -65,6 +65,13 @@ propuestas en el EDA). Se aplican en `notebooks/03_preprocesamiento.ipynb`.
 | 10 | La sede explica el 36 % de la variación del puntaje; 1.447 sedes | Partir entrenamiento/prueba y validación cruzada **por sede** (`cole_cod_dane_sede`, `GroupShuffleSplit` / `GroupKFold`) | Mide el error con colegios que el modelo nunca vio, como en la app; partir por estudiante daría un MAE optimista |
 | 11 | 235 estudiantes (0,3 %) de calendario "OTRO" en 3 sedes; no hay calendario B | Excluirlos. Alcance: el modelo aplica a estudiantes de **calendario A** | Muy pocos casos para aprender algo confiable; simplifica el modelo y el formulario de la app |
 
+**Precisión de las decisiones 6 y 7 (grupo, 31 oct 2026).** La decisión 7 convierte el estrato en número, pero la 6 pide
+conservar «Sin Estrato» (1.561 estudiantes, puntaje promedio 211,2) como marca propia. Regla: en `fami_estratovivienda`,
+«Sin Estrato» queda **vacío (nunca 0)** y la nueva columna `sin_estrato` = 1; los vacíos reales quedan vacíos con
+`sin_estrato` = 0; `Estrato 1`…`Estrato 6` → 1…6. Motivo: un 0 inventaría un estrato inexistente, y la columna aparte
+conserva la información de «Sin Estrato» sin mezclarla con quien no respondió. El imputador del `Pipeline` marca los
+vacíos con su indicador.
+
 ## Qué queda abierto
 
 - **Identificadores fuera del modelo:** ninguna columna que identifique al colegio (`cole_cod_dane_sede`, `cole_cod_dane_establecimiento`, `cole_codigo_icfes`, `cole_nombre_establecimiento`, `cole_nombre_sede`) ni al
