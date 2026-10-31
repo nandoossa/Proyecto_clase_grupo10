@@ -101,14 +101,15 @@ notebook 04 mide si mejoran el MAE con validación agrupada por sede. Si no lo m
 - ☒ **El preprocesador soporta vacíos y categorías nuevas:** transformar una fila con una categoría nunca vista y con
   vacíos no produce vacíos en la salida.
 - ☒ **Los centinelas sobreviven:** «No sabe» en `fami_educacionmadre` termina en su propia columna, distinta de «sin respuesta».
-- ☐ `pytest` en verde desde la raíz del repo. (`pytest tests` sí pasa: 32 de 32. `pytest` a secas choca con las pruebas
-  de `material-del-curso/ejemplo-creditsight/tests/`, que tienen los mismos nombres de archivo.)
+- ☒ `pytest` en verde desde la raíz del repo (con `pytest.ini`, que limita la búsqueda a `tests/`, `pytest` a secas ya pasa: 62 de 62, y no choca con las
+  pruebas de `material-del-curso/`.)
 
 ## 7. Criterios de cierre
 
-- ☐ El notebook 04 compara el MAE **con y sin** variables nuevas, y con otros umbrales de municipios (`min_frequency`), con validación cruzada agrupada por sede (`GroupKFold`)
+- ☒ El notebook 04 compara el MAE **con y sin** variables nuevas, y con otros umbrales de municipios (`min_frequency`), con validación cruzada agrupada por sede (`GroupKFold`)
   solo sobre entrenamiento, y deja escrita la decisión (encendidas o apagadas) con su cifra en `reports/`.
 - ☐ La decisión se anota en la sección 7 de `especificacion-proyecto.md`.
-- ☐ `pytest` en verde.
+- ☒ `pytest` en verde (con `pytest.ini`, que limita la búsqueda a `tests/`, `pytest` a secas ya pasa: 62 de 62, y no choca con las
+  pruebas de `material-del-curso/`.)
 - ☐ Revisaron el código de Claude con `checklist-revision-ia.md` y con el subagente `auditor-de-fuga`.
-- ☐ Todo subido a GitHub.
+- ☒ Todo subido a GitHub.

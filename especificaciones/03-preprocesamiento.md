@@ -100,8 +100,8 @@ Los nombres de función son una **propuesta** (en inglés, como pide `CLAUDE.md`
 - ☒ **Una prueba por regla de limpieza** de la sección 3, con un caso normal y un caso sucio hechos a mano.
 - ☒ **Datos personales:** el resultado de limpiar (`clean`) no contiene las columnas de la sección 2 (`load_raw_saber11`
   devuelve el archivo tal cual, como dice la sección 2).
-- ☐ `pytest` en verde desde la raíz del repo. (`pytest tests` sí pasa: 52 de 52. `pytest` a secas choca con las pruebas
-  de `material-del-curso/ejemplo-creditsight/tests/`, que tienen los mismos nombres de archivo.)
+- ☒ `pytest` en verde desde la raíz del repo (con `pytest.ini`, que limita la búsqueda a `tests/`, `pytest` a secas ya pasa: 62 de 62, y no choca con las
+  pruebas de `material-del-curso/`.)
 
 ## 7. Criterios de cierre (H1)
 
