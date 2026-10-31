@@ -11,6 +11,10 @@
 - **Métrica principal** (la del negocio) y **métricas técnicas** que reportas (AUC, PR-AUC, exactitud balanceada,
   precisión y recall por clase, F1 macro, log loss; en regresión: RMSE, MAE, R²):
 - **Variables usadas** (las decididas en `reports/04_features.md`):
+- **Candidatos (decisión del grupo, 31 oct 2026):** línea base (mediana), Ridge, Random Forest,
+  `HistGradientBoostingRegressor` (en lugar de LightGBM) y XGBoost, con los parámetros de partida del ejemplo
+  (`specs/003-model-training/research.md` §2). **LightGBM se reemplazó** porque no carga en Windows sin el Visual C++
+  Redistributable y el grupo no tiene permisos para instalarlo; HistGradientBoosting usa la misma técnica que LightGBM (boosting con histogramas), no requiere instalar nada adicional y funciona en el equipo de todos los integrantes, lo que cuida la reproducibilidad.
 
 ## Tabla comparativa
 

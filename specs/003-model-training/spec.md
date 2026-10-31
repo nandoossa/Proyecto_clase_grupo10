@@ -51,7 +51,7 @@ el caso de negocio), y las métricas MAE (principal), RMSE y R² calculadas igua
 
 - Una sede con un solo estudiante: va completa a un pliegue.
 - Un municipio nunca visto en un pliegue de validación: el preprocesador lo manda a «poco frecuente» (etapa 4).
-- LightGBM no disponible en el equipo (falta el Visual C++ Redistributable): hoy ocurre en este equipo; ver Assumptions.
+- Falta `cole_cod_dane_sede` en la tabla que llega a `evaluate_folds`: error claro (`ValueError`), no una partición por fila.
 
 ## Requirements *(mandatory)*
 
@@ -61,12 +61,14 @@ el caso de negocio), y las métricas MAE (principal), RMSE y R² calculadas igua
   un `Pipeline` [variables nuevas si `use_engineered`] → `build_preprocessor(...)` → modelo, y funcionar llamado solo con
   `build_pipeline(modelo)` (así lo llaman los notebooks).
 - **FR-002**: `candidates()` MUST devolver los modelos del torneo con la marca de si necesitan escalado: línea base
-  (mediana), Ridge, Random Forest, LightGBM y XGBoost, todos de **regresión**, con semilla 42.
+  (mediana), Ridge, Random Forest, HistGradientBoosting (en lugar de LightGBM) y XGBoost, todos de **regresión**, con
+  semilla 42.
 - **FR-003**: `scoring()` MUST devolver el diccionario para `cross_validate`: MAE, RMSE y R²; `cv_report` MUST mostrar
   MAE y RMSE en positivo (decisión del grupo, 31 oct 2026).
 - **FR-004**: `regression_metrics(y_true, y_pred)` MUST devolver MAE, RMSE y R² (en puntos, positivos).
 - **FR-005**: `evaluate_folds(pipeline, X, y, cv)` MUST partir por `cole_cod_dane_sede` y devolver una fila por pliegue con
-  las métricas y el tiempo de ajuste; `evaluate` MUST devolver media y desviación entre pliegues.
+  las métricas y el tiempo de ajuste; `evaluate` MUST devolver media y desviación entre pliegues. Si falta la columna
+  `cole_cod_dane_sede`, los dos MUST lanzar `ValueError`.
 - **FR-006**: `feature_frame(df)` MUST separar `X` (sin `punt_global`, conservando `cole_cod_dane_sede` para agrupar) e `y`.
 - **FR-007**: Nada de la matriz de costos, la regla de decisión ni las métricas de clasificación del ejemplo.
 
@@ -86,8 +88,8 @@ el caso de negocio), y las métricas MAE (principal), RMSE y R² calculadas igua
 ## Assumptions
 
 - Los parámetros de partida de los candidatos son los del ejemplo adaptados a regresión; la etapa 6 los optimiza.
-- LightGBM necesita el Microsoft Visual C++ Redistributable (x64) en Windows: hoy falta `vcomp140.dll` en este equipo y
-  `import lightgbm` falla. Hay que instalarlo antes de implementar (tarea T001).
+- LightGBM no carga en Windows sin el Visual C++ Redistributable, y el grupo no puede instalarlo: se reemplaza por
+  `HistGradientBoostingRegressor` (decisión del grupo, 31 oct 2026; `research.md` §4).
 - `GROUP_COL` viene de `src/proyecto/data/split.py` (etapa 3, planificada): la etapa 3 se implementa antes.
 - La condición de equidad (MAE por segmento) se evalúa en la etapa 7; queda fuera de esta pieza.
 - Fuera de alcance: optimización (`tuning.py`, etapa 6) y MLflow.

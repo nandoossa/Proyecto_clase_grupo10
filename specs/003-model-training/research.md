@@ -18,11 +18,11 @@
 | `línea base (mediana)` | `DummyRegressor(strategy="median")` | no | Es la línea base del caso (MAE 42,8): el torneo debe superarla |
 | `ridge` | `Ridge(alpha=1.0)` | sí | Modelo lineal simple e interpretable |
 | `random forest` | `RandomForestRegressor(n_estimators=200, min_samples_leaf=3, n_jobs=2)` | no | Mismos parámetros que el ejemplo |
-| `lightgbm` | `LGBMRegressor(n_estimators=300, learning_rate=0.05, num_leaves=31, n_jobs=2, verbose=-1)` | no | Mismos parámetros que el ejemplo |
+| `hist gradient boosting` | `HistGradientBoostingRegressor(max_iter=300, learning_rate=0.05, max_leaf_nodes=31, early_stopping=False)` | no | Reemplaza a LightGBM (decisión del grupo, §4), con parámetros equivalentes a los del ejemplo |
 | `xgboost` | `XGBRegressor(n_estimators=300, learning_rate=0.05, max_depth=6, tree_method="hist", n_jobs=2)` | no | Mismos parámetros que el ejemplo |
 
-- **Aprobado por el grupo (31 oct 2026):** los 5 candidatos con estos parámetros de partida. En el torneo, LightGBM y
-  XGBoost se comparan con su pérdida por defecto; entrenarlos con error absoluto (`objective="l1"` /
+- **Aprobado por el grupo (31 oct 2026):** los 5 candidatos con estos parámetros de partida (LightGBM reemplazado por
+  `HistGradientBoostingRegressor`, ver §4). En el torneo, los dos boosting se comparan con su pérdida por defecto; entrenarlos con error absoluto (`loss="absolute_error"` /
   `"reg:absoluteerror"`) queda para la etapa 6.
 
 ## 3. Métricas
@@ -43,12 +43,29 @@ puntaje y elegirían el modelo que más se equivoca. Por eso:
 **Alternative considered**: scorers positivos con `make_scorer(mean_absolute_error, greater_is_better=True)` (rechazada:
 invierte la búsqueda de la etapa 6).
 
-## 4. LightGBM en Windows
+## 4. LightGBM reemplazado por HistGradientBoostingRegressor
 
 - **Hallazgo (31 oct 2026)**: `import lightgbm` falla en el `.venv`: falta `vcomp140.dll` (OpenMP de Microsoft), que viene
   en el **Microsoft Visual C++ Redistributable (x64)**. `lib_lightgbm.dll` sí está. XGBoost 3.4.1 carga bien.
-- **Decision (grupo, 31 oct 2026)**: LightGBM se queda en el torneo; el grupo instala el redistribuible (tarea T001).
-  `train.py` importa LightGBM normalmente: si falta, el error debe verse, no esconderse ni omitirse.
+- **Primera decisión (31 oct 2026)**: instalar el redistribuible. **No se pudo**: el grupo no tiene permisos de
+  administrador.
+- **Decisión del grupo (31 oct 2026)**: reemplazar LightGBM por `HistGradientBoostingRegressor` de scikit-learn en el
+  torneo. Motivo: usa la misma técnica que LightGBM (boosting con histogramas), no requiere instalar nada adicional y funciona en el equipo de todos los integrantes, lo que cuida la reproducibilidad. XGBoost se mantiene como el otro modelo de boosting.
+- **Verificado**: `HistGradientBoostingRegressor` se ajusta sin errores en este equipo. scikit-learn trae su propia copia de
+  `vcomp140.dll` (en `sklearn/.libs/`), así que no depende del redistribuible.
+- **Parámetros equivalentes a los del ejemplo:**
+
+  | LightGBM (ejemplo) | `HistGradientBoostingRegressor` | ¿Equivalente? |
+  |---|---|---|
+  | `n_estimators=300` | `max_iter=300` | Sí: número de árboles (iteraciones de boosting) |
+  | `learning_rate=0.05` | `learning_rate=0.05` | Sí: misma tasa de aprendizaje |
+  | `num_leaves=31` | `max_leaf_nodes=31` | Sí: máximo de hojas por árbol |
+  | (sin parada temprana por defecto) | `early_stopping=False` | Sí: sin esto, scikit-learn activa la parada temprana con más de 10.000 filas, y el modelo dejaría de ser comparable |
+  | `min_child_samples=20` (valor por defecto) | `min_samples_leaf=20` (valor por defecto) | Sí, por defecto en los dos |
+  | `n_jobs=2` | — | No tiene equivalente: usa los hilos de OpenMP del equipo |
+  | `verbose=-1` | — | No hace falta: por defecto no imprime |
+  | — | `random_state=42` | Se fija igual que en los demás candidatos |
+
 - **Alternative considered**: importar LightGBM solo si está disponible y omitirlo en silencio (rechazado: el torneo
   cambiaría sin que nadie lo note).
 

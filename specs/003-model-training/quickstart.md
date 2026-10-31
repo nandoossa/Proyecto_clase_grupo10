@@ -1,12 +1,6 @@
 # Quickstart: comprobar train.py
 
-1. LightGBM carga (requiere el Visual C++ Redistributable x64 en Windows):
-
-   ```bash
-   python -c "import lightgbm; print(lightgbm.__version__)"
-   ```
-
-   **Esperado:** `4.7.0`.
+1. No hay requisitos de instalación extra: LightGBM se reemplazó por `HistGradientBoostingRegressor` de scikit-learn.
 
 2. Pruebas:
 
