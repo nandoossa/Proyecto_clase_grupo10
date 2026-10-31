@@ -61,14 +61,25 @@ Nombre de la "startup": Predictor de resultados Pruebas Saber 11 en Antioquia   
   `reports/00_caso.md`).
 - **Métricas secundarias:** RMSE (revela errores muy grandes que el MAE suaviza) y R² (qué parte de la variación explica
   el modelo).
-- **Línea base** (qué resultado obtiene una regla simple o un modelo trivial):
+- **Línea base** (qué resultado obtiene una regla simple o un modelo trivial): predecir siempre la mediana (242 puntos)
+  da un MAE de 42,8 (siempre el promedio: 42,9; al azar: 58,9). La línea base por segmento está en `reports/00_caso.md`.
 
 ## 5. Riesgos
 
-- Fuga de información posible:
-- Sesgos o equidad:
-- Datos faltantes o de mala calidad:
-- Límites de lo que el modelo puede decir:
+- Fuga de información posible: las 7 columnas excluidas (`punt_matematicas`, `punt_lectura_critica`,
+  `punt_sociales_ciudadanas`, `punt_c_naturales`, `punt_ingles`, `desemp_ingles` y `estu_estadoinvestigacion`) y los
+  duplicados exactos (72.383 filas), que se eliminan antes de partir. Los identificadores del colegio quedan fuera de los
+  predictores (`cole_cod_dane_sede` se usa solo para agrupar).
+- Sesgos o equidad: estrato, zona, naturaleza del colegio e internet se relacionan con el puntaje (estrato 1 ~231 vs.
+  estrato 5 ~281). Se exige la condición de equidad por segmento de estrato, zona y naturaleza (sección 4) y se revisa en
+  la validación.
+- Datos faltantes o de mala calidad: duplicados exactos (50 % del archivo); vacíos no aleatorios en `fami_` (10,1 % de
+  los estudiantes, con ~18 puntos menos de promedio); `cole_bilingue` con 16,4 % de vacíos; centinelas «No sabe»,
+  «No Aplica» y «Sin Estrato»; 30 edades menores de 13 años; 4 columnas con un solo valor; calendario «OTRO»
+  (235 estudiantes, 0,3 %) excluido.
+- Límites de lo que el modelo puede decir: aplica a estudiantes de calendario A en Antioquia, periodo 20224 (2022). El
+  puntaje estimado orienta; no se usa para excluir ni etiquetar a nadie. La edad es aproximada (año de la prueba − año de
+  nacimiento).
 
 ## 6. Entregables y fechas
 
@@ -83,4 +94,17 @@ Nombre de la "startup": Predictor de resultados Pruebas Saber 11 en Antioquia   
 
 | Fecha | Decisión | Motivo |
 |---|---|---|
-| | | |
+| 30 oct 2026 | EDA 1: eliminar duplicados exactos al cargar (72.383 filas, 50 % del archivo). Propuesta en el EDA, pendiente del acuerdo del grupo | Un mismo estudiante en entrenamiento y prueba haría que la métrica saliera optimista |
+| 30 oct 2026 | EDA 2: excluir las 7 columnas con fuga (5 puntajes por área, `desemp_ingles`, `estu_estadoinvestigacion`). Propuesta en el EDA, pendiente del acuerdo del grupo | Son la respuesta o información posterior al examen: fuga |
+| 30 oct 2026 | EDA 3: usar `estu_consecutivo` solo para controlar duplicados (nunca como variable); convertir la fecha de nacimiento en edad y eliminarla. Propuesta en el EDA, pendiente del acuerdo del grupo | No exponer datos personales; la edad conserva la información útil |
+| 30 oct 2026 | EDA 4: edad < 13 → vacío, sin borrar la fila (30 estudiantes). Propuesta en el EDA, pendiente del acuerdo del grupo | Es imposible presentar Saber 11 a esa edad; borrar filas perdería el resto de su información |
+| 30 oct 2026 | EDA 5: imputar vacíos como categoría propia «sin respuesta» dentro del `Pipeline`. Propuesta en el EDA, pendiente del acuerdo del grupo | El vacío es información (10,1 % en `fami_` con ~18 puntos menos; `cole_bilingue` 16,4 % con 16 puntos menos): imputar con la moda la borraría |
+| 30 oct 2026 | EDA 6: mantener «No sabe», «No Aplica» y «Sin Estrato» como categorías propias. Propuesta en el EDA, pendiente del acuerdo del grupo | Tienen puntajes distintos al resto: llevan información |
+| 30 oct 2026 | EDA 7: convertir estrato, personas y cuartos del hogar a números ordenados. Propuesta en el EDA, pendiente del acuerdo del grupo | Conservar el orden ayuda al modelo y simplifica la app |
+| 30 oct 2026 | EDA 8: eliminar las 4 columnas con un solo valor. Propuesta en el EDA, pendiente del acuerdo del grupo | No aportan información |
+| 30 oct 2026 | EDA 9: excluir como predictores los identificadores del colegio; `cole_cod_dane_sede` solo para agrupar. Propuesta en el EDA, pendiente del acuerdo del grupo | El modelo memorizaría el promedio de cada colegio y en prueba aparecerían colegios nunca vistos; los atributos del colegio sí los puede ingresar el usuario de la app |
+| 30 oct 2026 | EDA 10: partir y validar por sede (`cole_cod_dane_sede`, `GroupShuffleSplit` / `GroupKFold`). Propuesta por el grupo, pendiente del acuerdo del grupo según `reports/01_eda.md` | La sede explica el 36 % de la variación; mide el error con colegios no vistos, como en la app |
+| 30 oct 2026 | EDA 11: excluir calendario «OTRO» (235 estudiantes, 0,3 %); el modelo aplica a calendario A. Propuesta por el grupo, pendiente del acuerdo del grupo según `reports/01_eda.md` | Muy pocos casos para aprender algo confiable; simplifica el modelo y el formulario de la app |
+| 31 oct 2026 | Meta de éxito: MAE ≤ 38 (mínima) y ≤ 35 (deseable) en validación agrupada por sede | Mejorar claramente la línea base de 42,8 (11 % y 18 %), medida con colegios no vistos |
+| 31 oct 2026 | Condición de equidad: MAE del modelo menor que el de la línea base en cada segmento de estrato, zona y naturaleza del colegio | Un MAE promedio bueno puede esconder un grupo en el que el modelo se equivoca más que no usar modelo |
+| 31 oct 2026 | Licencia de los datos: CC BY-SA 4.0, verificada en los metadatos de datos.gov.co | Cumplir las condiciones de uso: crédito al ICFES y misma licencia para datos modificados que se publiquen |
