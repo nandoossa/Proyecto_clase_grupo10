@@ -95,7 +95,10 @@ Los nombres de función son una **propuesta** (en inglés, como pide `CLAUDE.md`
 ## 6. Pruebas que deben existir
 
 - ☒ **Partición:** ninguna entidad aparece en dos particiones y no se pierde ninguna fila (`tests/test_split.py`).
-- ☐ **La prueba de partición falla** si se cambia temporalmente a partición por fila (compruébenlo y vuelvan a dejarla bien).
+- ☒ **La prueba de partición falla** si se cambia temporalmente a partición por fila (compruébenlo y vuelvan a dejarla bien).
+  Comprobado a mano por Raúl Fernando Ossa Ramírez el 5 nov 2026: cambió `groups=df[group_col]` por `groups=df.index` en
+  `split.py`, fallaron 3 pruebas de `tests/test_split.py` con «132 sedes aparecen en más de una
+  partición» y lo revirtió con `git checkout`.
   (Lo comprueba el grupo a mano; además `test_row_split_would_share_schools` muestra que partir por fila comparte sedes.)
 - ☒ **Una prueba por regla de limpieza** de la sección 3, con un caso normal y un caso sucio hechos a mano.
 - ☒ **Datos personales:** el resultado de limpiar (`clean`) no contiene las columnas de la sección 2 (`load_raw_saber11`
