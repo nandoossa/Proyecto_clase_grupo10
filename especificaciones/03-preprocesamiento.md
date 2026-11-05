@@ -114,6 +114,7 @@ Los nombres de función son una **propuesta** (en inglés, como pide `CLAUDE.md`
 - ☒ Conjunto de prueba guardado y sin mirar (solo se contaron filas y sedes).
 - ☒ `data/raw/` intacta (misma huella SHA-256 antes y después) y `.env` fuera de Git (`git status`).
 - ☒ Todo subido a GitHub.
-- ☐ Revisaron el código de Claude con `checklist-revision-ia.md` y cada integrante puede explicar una función.
+- ☒ Revisaron el código de Claude con `checklist-revision-ia.md` y cada integrante puede explicar una función
+  (5 nov 2026, asignación en `reports/revision_grupo.md`).
 - ☒ **Hallazgo que no esperaban** (para la puesta en común): la mitad del archivo original (72.383 filas) eran
   duplicados exactos.

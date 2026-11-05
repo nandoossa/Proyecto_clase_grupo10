@@ -95,7 +95,7 @@ identificadores, con «sin respuesta», centinelas propios y municipios con «po
 ## Phase 5: Polish
 
 - [x] T023 Ejecutar toda la suite: `PYTHONUTF8=1 pytest` desde la raíz (sin romper `test_data_load.py`, `test_inference.py`, `test_tracking.py`)
-- [ ] T024 [P] Revisar `src/proyecto/features/engineering.py` con el subagente `auditor-de-fuga` y con `material-del-curso/kit/checklist-revision-ia.md`; corregir lo que encuentren
+- [x] T024 [P] Revisar `src/proyecto/features/engineering.py` con el subagente `auditor-de-fuga` y con `material-del-curso/kit/checklist-revision-ia.md`; corregir lo que encuentren
 - [x] T025 [P] Marcar en `especificaciones/04-features.md`, sección 6, las casillas de las pruebas que se vieron pasar
 
 ---

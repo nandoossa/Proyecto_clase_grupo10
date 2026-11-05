@@ -108,8 +108,9 @@ notebook 04 mide si mejoran el MAE con validación agrupada por sede. Si no lo m
 
 - ☒ El notebook 04 compara el MAE **con y sin** variables nuevas, y con otros umbrales de municipios (`min_frequency`), con validación cruzada agrupada por sede (`GroupKFold`)
   solo sobre entrenamiento, y deja escrita la decisión (encendidas o apagadas) con su cifra en `reports/`.
-- ☐ La decisión se anota en la sección 7 de `especificacion-proyecto.md`.
+- ☒ La decisión se anota en la sección 7 de `especificacion-proyecto.md`.
 - ☒ `pytest` en verde (con `pytest.ini`, que limita la búsqueda a `tests/`, `pytest` a secas ya pasa: 62 de 62, y no choca con las
   pruebas de `material-del-curso/`.)
-- ☐ Revisaron el código de Claude con `checklist-revision-ia.md` y con el subagente `auditor-de-fuga`.
+- ☒ Revisaron el código de Claude con `checklist-revision-ia.md` y con el subagente `auditor-de-fuga`
+  (5 nov 2026, `reports/revision_grupo.md`; auditorías en `reports/auditoria_etapa4.md` y `reports/auditoria_train.md`).
 - ☒ Todo subido a GitHub.

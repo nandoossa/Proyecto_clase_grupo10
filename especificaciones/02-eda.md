@@ -79,4 +79,5 @@ Marquen lo que aplica a su dataset. Lo que no aplique se tacha **con una razón*
 - ☒ Valores imposibles, centinelas y significado de los vacíos revisados.
 - ☒ Fuga sospechada: lista escrita, aunque sea "ninguna, porque…".
 - ☒ `reports/01_eda.md` completado.
-- ☐ Quien **no** escribió una decisión sabe explicar por qué se tomó.
+- ☒ Quien **no** escribió una decisión sabe explicar por qué se tomó (lo explicaron Jennifer Alejandra López Sánchez y
+  Raúl Fernando Ossa Ramírez).

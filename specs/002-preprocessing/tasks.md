@@ -103,7 +103,7 @@ se escribe **antes** que su función y debe fallar primero. Una tarea se marca h
 
 - [x] T032 Ejecutar `PYTHONUTF8=1 python -m pytest tests` (todas las del proyecto) en verde
 - [x] T033 [P] Corregir la sección 5 de `especificaciones/03-preprocesamiento.md` (`train.joblib` / `test.joblib`) si el grupo aprueba el formato, y marcar en sus secciones 6 y 7 lo que se vio funcionando
-- [ ] T034 [P] Revisar `src/proyecto/data/` y el notebook 03 con el subagente `auditor-de-fuga` (que lea la constitución y `03-preprocesamiento.md`) y con `material-del-curso/kit/checklist-revision-ia.md`
+- [x] T034 [P] Revisar `src/proyecto/data/` y el notebook 03 con el subagente `auditor-de-fuga` (que lea la constitución y `03-preprocesamiento.md`) y con `material-del-curso/kit/checklist-revision-ia.md`
 
 ---
 

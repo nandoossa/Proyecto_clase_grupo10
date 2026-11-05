@@ -60,7 +60,7 @@ description: "Lista de tareas: train.py (pipeline de modelo, candidatos y métri
 ## Phase 4: Polish
 
 - [x] T017 `PYTHONUTF8=1 python -m pytest tests` en verde
-- [ ] T018 [P] Revisar con `auditor-de-fuga` (que `evaluate_folds` agrupe por sede y nada lea la prueba) y con `checklist-revision-ia.md`
+- [x] T018 [P] Revisar con `auditor-de-fuga` (que `evaluate_folds` agrupe por sede y nada lea la prueba) y con `checklist-revision-ia.md`
 
 ## Dependencies & Execution Order
 
