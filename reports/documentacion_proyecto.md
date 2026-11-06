@@ -44,7 +44,7 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 6 · Optimización con seguimiento | Completa | `reports/06_optimizacion.md` |
 | 7 · Validación e interpretación | Completa | `reports/07_validacion.md` |
 | 8 · Registro del modelo | Completa | `reports/08_registro.md`, `models/ficha_modelo.md` |
-| 9 · Inferencia y app | Completa en local, sin desplegar (falta revisar con el checklist `form.py` y el notebook 09) | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
+| 9 · Inferencia y app | Completa en local, sin desplegar | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
 
 ## La variable objetivo y los datos
 
@@ -99,7 +99,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
 | Pruebas automáticas | 103 pruebas en `tests/`, todas en verde al cierre de la etapa 9 |
 | Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 5, 6, 7, 8 y 9 (`reports/auditoria_*.md`) |
-| Revisión del grupo con el checklist | Etapas 1 a 5 el 5 nov 2026 (una pieza por integrante) y etapas 6 a 9 el 6 nov 2026 (revisión conjunta de `tuning.py`, `evaluation.py`, `schema.py`, notebook 08, `streamlit_app.py` y `predict.py`), sin problemas encontrados; detalle en `reports/revision_grupo.md`. Falta `form.py` y el notebook 09 |
+| Revisión del grupo con el checklist | Etapas 1 a 5 el 5 nov 2026 (una pieza por integrante) y etapas 6 a 9 el 6 nov 2026 (revisión conjunta de `tuning.py`, `evaluation.py`, `schema.py`, notebook 08, `streamlit_app.py`, `predict.py`, `form.py` y notebook 09), sin problemas encontrados; detalle en `reports/revision_grupo.md` |
 
 ---
 
@@ -436,9 +436,7 @@ abre la app en local.
 2. **Etapa 9:**
    - desplegar la app en Streamlit Community Cloud y probar el enlace en una ventana privada (plan en
      `reports/09_despliegue.md`);
-   - ensayo cronometrado;
-   - revisión con el checklist de `src/proyecto/inference/form.py` y del notebook 09, que no figuran en la revisión del
-     grupo del 6 nov 2026.
+   - ensayo cronometrado.
 3. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
 4. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).

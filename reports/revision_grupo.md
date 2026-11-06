@@ -50,12 +50,9 @@ Giraldo.
 | 6 · Optimización | `src/proyecto/models/tuning.py` |
 | 7 · Validación | `src/proyecto/models/evaluation.py` |
 | 8 · Registro | `src/proyecto/inference/schema.py` y `notebooks/08_registro_modelo.ipynb` |
-| 9 · App e inferencia | `app/streamlit_app.py` y `src/proyecto/inference/predict.py` |
+| 9 · App e inferencia | `app/streamlit_app.py`, `src/proyecto/inference/predict.py`, `src/proyecto/inference/form.py` y `notebooks/09_inferencia.ipynb` |
 
 **Resultado: sin problemas encontrados.** No se corrigió nada a raíz de esta revisión.
-
-**No figuran en esta revisión:** `src/proyecto/inference/form.py` (traducción del formulario a las 21 columnas) y
-`notebooks/09_inferencia.ipynb`, ambos de la etapa 9.
 
 **Auditorías de fuga de estas etapas:** `reports/auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md` y
 `auditoria_etapa9.md`.

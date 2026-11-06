@@ -4,7 +4,7 @@
 > `material-del-curso/kit/guia-validacion-registro-y-app.md` (secciones 7 a 11). Claude la lee y la implementa; ustedes
 > revisan que el código haga **exactamente** esto.
 
-**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 6 nov 2026   **Estado:** ☐ borrador  ☒ cerrada (la revisión del grupo no incluyó `form.py` ni el notebook 09)
+**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 6 nov 2026   **Estado:** ☐ borrador  ☒ cerrada
 
 > Borrador preparado por Claude a partir del pedido del grupo del 6 nov 2026. Las cifras salen de `models/ficha_modelo.md`
 > (prueba, 5 nov 2026). Plan y tareas aprobados por el grupo el 6 nov 2026, con las respuestas a P1–P4 que se ven abajo.
@@ -70,4 +70,4 @@
 - ☒ Sin datos sensibles en lo que se sube: `.env`, tokens, correos, direcciones del espacio de trabajo, datos de estudiantes.
 - ☒ Todo subido a GitHub.
 - ☒ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`
-  (6 nov 2026, revisión conjunta del grupo: `streamlit_app.py` y `predict.py`; `form.py` y el notebook 09 no figuran en esa revisión; detalle en `reports/revision_grupo.md`).
+  (6 nov 2026, revisión conjunta del grupo: `streamlit_app.py`, `predict.py`, `form.py` y el notebook 09; detalle en `reports/revision_grupo.md`).
