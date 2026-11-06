@@ -1,8 +1,10 @@
 # Documentación del trabajo realizado · Predictor de resultados Saber 11 en Antioquia
 
-> Resumen de todo lo hecho hasta la etapa 7 (5 nov 2026): qué se decidió, con qué cifra y dónde está el detalle. Las cifras
-> se copian de los informes de `reports/` y de las salidas de los notebooks; no hay cifras nuevas aquí. Este documento no
-> reemplaza al informe técnico final (`reports/informe_tecnico.md`, hito H4): sirve de mapa para escribirlo.
+> Documentación general del proyecto, en lenguaje sencillo: de qué trata, qué se decidió y cuándo, qué resultados dio cada
+> etapa y dónde está el detalle. **Estado al 5 nov 2026: etapas 1 a 7 completas; etapa 8 (registro del modelo) sin
+> ejecutar; etapa 9 (app) sin empezar.** Las cifras se copian de los informes de `reports/` y de las salidas de los
+> notebooks; no hay cifras nuevas aquí. Este documento no reemplaza al informe técnico final (`reports/informe_tecnico.md`,
+> hito H4): sirve de mapa para escribirlo.
 
 **Grupo:** Jennifer Alejandra López Sánchez, Jaime Andrés Úsuga Jiménez, Raúl Fernando Ossa Ramírez, David Andrés Paniagua
 Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nandoossa/Proyecto_clase_grupo10
@@ -29,6 +31,55 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
   - explica el 36 % de la variación del puntaje (R² 0,363);
   - el error es mayor en estrato 5 (39,57), en hombres (35,74 frente a 31,40 en mujeres) y en colegios no oficiales (35,55);
   - aplica solo a calendario A, Antioquia, 2022.
+
+## Estado de las etapas
+
+| Etapa | Estado | Informe |
+|---|---|---|
+| 1 · Caso de negocio | Completa | `reports/00_caso.md` |
+| 2 · Análisis exploratorio | Completa | `reports/01_eda.md` |
+| 3 · Preprocesamiento y partición | Completa | `reports/auditoria_etapa3.md` |
+| 4 · Variables | Completa | `reports/04_features.md` |
+| 5 · Torneo de modelos | Completa | `reports/05_torneo.md` |
+| 6 · Optimización con seguimiento | Completa (falta la revisión del grupo con el checklist) | `reports/06_optimizacion.md` |
+| 7 · Validación e interpretación | Completa (falta la revisión del grupo con el checklist) | `reports/07_validacion.md` |
+| 8 · Registro del modelo | **Sin ejecutar** | `reports/08_registro.md` (plantilla en blanco) |
+| 9 · Inferencia y app | Sin empezar | `reports/09_despliegue.md` (plantilla) |
+
+## La variable objetivo y los datos
+
+- **Variable objetivo:** `punt_global`, el puntaje global de Saber 11, de 100 a 477 puntos (promedio 245,9, mediana 242,
+  sin vacíos). Es un problema de **regresión**: se estima un número, no una categoría.
+- **Fuente:** resultados oficiales del ICFES publicados en datos.gov.co (recurso `kgxf-xxbe`), Antioquia, periodo 20224.
+  Licencia CC BY-SA 4.0: hay que dar crédito al ICFES y compartir con la misma licencia los datos modificados que se
+  publiquen.
+- **Tamaño:** 144.766 filas descargadas, que son 72.383 estudiantes (cada fila venía duplicada); 51 columnas. Tras excluir
+  el calendario «OTRO» quedan 72.148 estudiantes de calendario A.
+- **Una fila = un estudiante.** La entidad que se repite es la **sede del colegio** (`cole_cod_dane_sede`): todo se parte
+  por sede.
+- **Predictores:** 21 columnas que se conocen antes del examen. Son 5 numéricas (edad, estrato, marca «Sin Estrato»,
+  personas y cuartos del hogar), 14 categóricas (del colegio, del estudiante y de la familia) y 2 códigos de municipio.
+- **Excluidas por fuga:** los 5 puntajes por área, `desemp_ingles` y `estu_estadoinvestigacion`.
+- **Datos personales:** el identificador del estudiante se usa solo para quitar duplicados, y la fecha de nacimiento se
+  convierte en edad y se elimina.
+
+## Decisiones principales con su fecha
+
+Registro completo en `especificacion-proyecto.md`, sección 7.
+
+| Fecha | Decisión | Motivo |
+|---|---|---|
+| 30 oct 2026 (aprobadas el 31 oct) | Once decisiones del EDA: quitar duplicados, excluir columnas con fuga, convertir la fecha de nacimiento en edad, edad < 13 como vacío, vacíos como «sin respuesta», conservar «No sabe»/«No Aplica»/«Sin Estrato», ordinales como números, quitar columnas constantes, excluir identificadores del colegio, partir por sede, excluir calendario «OTRO» | Evitar fuga, proteger datos personales y medir con colegios no vistos |
+| 31 oct 2026 | Metas: MAE ≤ 38 y ≤ 35; condición de equidad por segmento | Mejorar claramente la línea base de 42,8 sin perjudicar a ningún grupo |
+| 31 oct 2026 | «Sin Estrato» como vacío más la marca `sin_estrato` | Un 0 inventaría un estrato |
+| 31 oct 2026 | Excluir `estu_tipodocumento`, `estu_nacionalidad` y `estu_privado_libertad` | Equidad: indicadores de condición migratoria o datos sensibles |
+| 31 oct 2026 | Prueba del 20 % por sede, semilla 42 | Medir con colegios que el modelo no vio |
+| 31 oct 2026 | LightGBM reemplazado por HistGradientBoosting | LightGBM no carga en los equipos del grupo |
+| 31 oct 2026 | Variables nuevas apagadas; umbral del 1 %, con el 0,1 % como candidato | Ninguna idea superó el ruido entre pliegues |
+| 5 nov 2026 | Presupuesto de la optimización (25 + 30 ensayos) y reglas 1 y 2 | Escritas antes de buscar |
+| 5 nov 2026 | Modelo elegido: HistGradientBoosting optimizado (pérdida absoluta, umbral 0,1 %) | Regla 1: mejora clara; regla 2: empate con XGBoost |
+| 5 nov 2026, 19:53 | Decisiones congeladas para la prueba y regla de equidad con su clasificación | Escritas antes de abrir la prueba |
+| 5 nov 2026, 19:55 | Prueba abierta una sola vez | Medición final con 289 sedes nunca vistas |
 
 ---
 
@@ -242,6 +293,37 @@ Límites de esta medida:
 
 **Atributos sensibles declarados:** género (puesto 9), estrato, zona, municipios y edad.
 
+## Etapa 8 · Registro del modelo — **sin ejecutar**
+
+Esta etapa todavía no se ha hecho. Por eso este documento **no** trae nombre del modelo registrado, versión, alias,
+exportación ni esquema: no existen aún, y escribirlos sería inventarlos.
+
+**Lo que hay hoy en el repositorio**
+
+| Pieza | Estado |
+|---|---|
+| `notebooks/08_registro_modelo.ipynb` | Esqueleto del curso, sin ejecutar |
+| `reports/08_registro.md` | Plantilla en blanco |
+| `models/ficha_modelo.md` | Plantilla en blanco |
+| `models/final_pipeline.joblib` | Existe en el equipo donde se ejecutó la etapa 7 (pipeline completo entrenado con todo el entrenamiento). No se sube a Git |
+| `models/model.joblib` | **No existe** |
+| `models/input_schema.json` (esquema de entrada) | **No existe** |
+| `src/proyecto/inference/schema.py` y `predict.py` | Plantilla del curso para **clasificación** (clases, probabilidades, matriz de costos). Hay que adaptarlos a regresión antes de usarlos |
+| Registro en MLflow (nombre, versión, alias `champion`) | **No hecho** |
+
+**Lo que falta hacer** (guía: `material-del-curso/kit/guia-validacion-registro-y-app.md`, secciones 5 y 6):
+1. Especificación, plan y tareas de la etapa, como pide `CLAUDE.md`.
+2. Registrar el pipeline final en MLflow, con estos elementos:
+   - parámetros y métricas de la prueba (`reports/07_metricas_test.json`);
+   - firma y ejemplo de entrada;
+   - etiquetas.
+3. Darle el alias `champion` a esa versión.
+4. Comprobar la ida y vuelta: el modelo recuperado del registro debe predecir igual que el local.
+5. Exportar `models/model.joblib`.
+6. Adaptar `schema.py` y `predict.py` a regresión y generar `models/input_schema.json` con las 21 columnas de entrada, a
+   partir del entrenamiento.
+7. Completar `reports/08_registro.md` y la ficha del modelo, sin direcciones del espacio de trabajo ni correos.
+
 ---
 
 ## Archivos principales
@@ -274,7 +356,9 @@ Límites de esta medida:
 3. **Género como entrada del modelo:** decidir con el grupo y, si aplica, con la Secretaría. Aporta poco (0,48 puntos) y hay
    una brecha de error de 4,3 puntos entre hombres y mujeres. Cualquier cambio requiere validación por sede en un ciclo
    nuevo, porque la prueba ya se usó.
-4. **Etapa 8:** registrar el modelo con versión y alias en MLflow, y exportar `models/model.joblib` y `ficha_modelo.md`.
+4. **Etapa 8 (sin ejecutar):** registrar el modelo con versión y alias `champion` en MLflow, comprobar la ida y vuelta,
+   exportar `models/model.joblib`, adaptar el esquema y la predicción a regresión, y completar `reports/08_registro.md` y
+   `models/ficha_modelo.md`. Detalle en la sección de la etapa 8.
 5. **Etapa 9:** app en Streamlit que carga el modelo desde el repositorio, valida las entradas y muestra el aviso de uso
    responsable con los límites de arriba.
 6. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).

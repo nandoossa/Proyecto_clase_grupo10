@@ -69,6 +69,9 @@ scripts/
    las entradas del formulario y muestra un aviso de uso responsable.
 9. **Pruebas.** Cada función de `src/` que limpia datos o transforma variables debe tener una
    prueba en `tests/`. Ejecútalas con `pytest` antes de darme el cambio por terminado.
+10. **Documentación general.** Al terminar cualquier etapa o cambio importante, actualiza
+    `reports/documentacion_proyecto.md` para que refleje el estado actual del proyecto, con las mismas cifras de los
+    reportes y sin datos personales, direcciones del workspace ni tokens.
 
 ## Cómo quiero que respondas
 
