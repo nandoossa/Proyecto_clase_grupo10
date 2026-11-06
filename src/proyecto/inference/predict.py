@@ -1,4 +1,10 @@
-"""Inferencia: validar entradas y predecir clase y probabilidades.
+"""Inferencia: validar entradas y predecir (clasificación de la plantilla y regresión del proyecto).
+
+**Regresión (este proyecto, etapa 8):** `predict_score(df, model, schema)` devuelve `puntaje_estimado`, sin redondear ni
+recortar. Con un esquema de regresión, `validate_inputs` además rechaza vacíos en columnas que nunca los tuvieron y valores
+nuevos en las categóricas de lista cerrada; en `warn_only_categories` (códigos de municipio) solo advierte.
+Las funciones de clasificación (`predict_with_scores`, `decide_min_cost`) se conservan hasta la etapa 9 y se quitarán allí.
+
 
 Contrato (el mismo que el del ejemplo del curso):
   - Entrada: una tabla con las columnas CRUDAS que una persona conoce al decidir (las del esquema).
@@ -41,6 +47,12 @@ def validate_inputs(df: pd.DataFrame, schema: dict) -> list[str]:
         raise InputValidationError(f"Faltan columnas: {', '.join(missing)}")
 
     errors, warnings = [], []
+    regression = schema.get("task") == "regression"
+    if regression:   # vacíos solo donde el entrenamiento los tuvo («sin respuesta»)
+        nullable = set(schema.get("nullable", []))
+        for col in numeric + categorical:
+            if col not in nullable and df[col].isna().any():
+                errors.append(f"{col}: no admite vacío (en el entrenamiento nunca estuvo vacío)")
     for col in numeric:
         values = pd.to_numeric(df[col], errors="coerce")
         if (values.isna() & df[col].notna()).any():
@@ -49,13 +61,19 @@ def validate_inputs(df: pd.DataFrame, schema: dict) -> list[str]:
             low, high = schema["valid_range"][col]
             if (values.notna() & ~values.between(low, high)).any():
                 errors.append(f"{col}: debe estar entre {low:g} y {high:g}")
+    warn_only = set(schema.get("warn_only_categories", []))
+    for col, known in schema.get("categories", {}).items():
+        unseen = set(df[col].dropna().astype(str)) - set(known)
+        if not unseen:
+            continue
+        message = f"{col}: categoría no vista en el entrenamiento ({', '.join(sorted(unseen))})"
+        if regression and col not in warn_only:
+            errors.append(message + "; elige uno de los valores válidos")   # lista cerrada: es un error de captura
+        else:
+            warnings.append(message)
     if errors:
         raise InputValidationError("; ".join(errors))
 
-    for col, known in schema.get("categories", {}).items():
-        unseen = set(df[col].dropna().astype(str)) - set(known)
-        if unseen:
-            warnings.append(f"{col}: categoría no vista en el entrenamiento ({', '.join(sorted(unseen))})")
     for col, (low, high) in schema.get("observed_range", {}).items():
         values = pd.to_numeric(df[col], errors="coerce")
         if ((values < low) | (values > high)).any():
@@ -101,5 +119,18 @@ def predict_with_scores(df: pd.DataFrame, model, schema: dict) -> pd.DataFrame:
     if cost is not None:
         out["expected_cost"] = (proba @ np.asarray(cost, dtype=float))[np.arange(len(df)), decision]
     out["needs_review"] = (proba.max(axis=1) < schema.get("review_threshold", 0.55)) | (decision != most_likely)
+    out.attrs["warnings"] = warnings
+    return out
+
+
+def predict_score(df: pd.DataFrame, model, schema: dict) -> pd.DataFrame:
+    """Regresión: valida contra el esquema y devuelve `puntaje_estimado` (una fila por fila de entrada).
+
+    No calcula nada a partir de `df`: cada fila se predice con el modelo ya entrenado, sin redondear ni recortar.
+    Las advertencias de validación quedan en `resultado.attrs["warnings"]`.
+    """
+    warnings = validate_inputs(df, schema)
+    X = df[schema["numeric"] + schema["categorical"]]
+    out = pd.DataFrame({"puntaje_estimado": model.predict(X)}, index=df.index)
     out.attrs["warnings"] = warnings
     return out

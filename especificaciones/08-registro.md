@@ -4,7 +4,7 @@
 > `material-del-curso/kit/guia-validacion-registro-y-app.md` (secciones 5 a 8). Claude la lee y la implementa; ustedes
 > revisan que el código haga **exactamente** esto.
 
-**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☒ borrador (decisiones del grupo del 5 nov 2026 incorporadas)  ☐ cerrada
+**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☐ borrador  ☒ cerrada (falta la revisión del grupo con el checklist)
 
 > Borrador preparado por Claude a partir del pedido del grupo del 5 nov 2026. Ninguna cifra del registro (versión, nombre
 > completo) está escrita: salen de la ejecución.
@@ -84,20 +84,20 @@
 
 ## 7. Pruebas que deben existir
 
-- ☐ El esquema de regresión se guarda y se recarga, con las 21 columnas, sus categorías y rangos.
-- ☐ La mediana del esquema sale solo de la tabla que se le pasa, y `predict` no calcula nada de los datos que recibe.
-- ☐ `predict` de regresión: rechaza una columna faltante, un valor fuera del rango válido y uno no numérico; acepta una fila
+- ☒ El esquema de regresión se guarda y se recarga, con las 21 columnas, sus categorías y rangos.
+- ☒ La mediana del esquema sale solo de la tabla que se le pasa, y `predict` no calcula nada de los datos que recibe.
+- ☒ `predict` de regresión: rechaza una columna faltante, un valor fuera del rango válido y uno no numérico; acepta una fila
   con vacíos; devuelve un número por fila.
-- ☐ Con una fila real del entrenamiento y el modelo exportado, la predicción es un número en un rango plausible.
-- ☐ `pytest` en verde.
+- ☒ Con una fila real del entrenamiento y el modelo exportado, la predicción es un número en un rango plausible.
+- ☒ `pytest` en verde (92 de 92, 5 nov 2026).
 
 ## 8. Criterios de cierre
 
-- ☐ Modelo registrado con versión y alias `champion` en Databricks; ida y vuelta exacta.
-- ☐ `models/model.joblib` exportado desde `champion` y `models/input_schema.json` escritos; ninguno ignorado por Git.
-- ☐ Comprobación de que el exportado es el evaluado.
-- ☐ Ficha del modelo e informe completos; documentación general actualizada (regla 10 de `CLAUDE.md`).
-- ☐ Auditoría con `auditor-de-fuga` en `reports/auditoria_etapa8.md`.
-- ☐ Sin correos, direcciones del espacio de trabajo, tokens ni enlaces «View run» en lo que se sube.
-- ☐ Todo subido a GitHub.
+- ☒ Modelo registrado con versión y alias `champion` en Databricks; ida y vuelta exacta.
+- ☒ `models/model.joblib` exportado desde `champion` y `models/input_schema.json` escritos; ninguno ignorado por Git.
+- ☒ Comprobación de que el exportado es el evaluado.
+- ☒ Ficha del modelo e informe completos; documentación general actualizada (regla 10 de `CLAUDE.md`).
+- ☒ Auditoría con `auditor-de-fuga` en `reports/auditoria_etapa8.md`.
+- ☒ Sin correos, direcciones del espacio de trabajo, tokens ni enlaces «View run» en lo que se sube.
+- ☒ Todo subido a GitHub.
 - ☐ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`.

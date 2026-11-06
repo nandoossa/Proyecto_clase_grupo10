@@ -1,0 +1,93 @@
+{
+  "fecha_y_hora": "2026-11-05T20:31:30",
+  "donde": "databricks (token)",
+  "experimento": "saber11-modelo-final",
+  "modelo_registrado": "workspace.default.saber11_puntaje_global",
+  "version": 1,
+  "alias": "champion",
+  "ejecucion": "78b51940c3f74aa8a6d3877b8a4ee739",
+  "commit": "3a75853",
+  "cambios_sin_commit": true,
+  "ida_y_vuelta_identica_500_filas": true,
+  "exportado_desde": "models:/workspace.default.saber11_puntaje_global@champion",
+  "exportado_igual_a_evaluado_en_train": true,
+  "filas_entrenamiento_comparadas": 57286,
+  "mae_prueba_recalculado_con_guardadas": 33.315780735281685,
+  "columnas_entrada": [
+    "edad",
+    "fami_estratovivienda",
+    "sin_estrato",
+    "fami_personashogar",
+    "fami_cuartoshogar",
+    "cole_area_ubicacion",
+    "cole_bilingue",
+    "cole_caracter",
+    "cole_genero",
+    "cole_jornada",
+    "cole_naturaleza",
+    "cole_sede_principal",
+    "estu_genero",
+    "fami_educacionmadre",
+    "fami_educacionpadre",
+    "fami_tieneautomovil",
+    "fami_tienecomputador",
+    "fami_tieneinternet",
+    "fami_tienelavadora",
+    "cole_cod_mcpio_ubicacion",
+    "estu_cod_reside_mcpio"
+  ],
+  "admiten_vacio": [
+    "edad",
+    "fami_estratovivienda",
+    "fami_personashogar",
+    "fami_cuartoshogar",
+    "cole_bilingue",
+    "cole_caracter",
+    "fami_educacionmadre",
+    "fami_educacionpadre",
+    "fami_tieneautomovil",
+    "fami_tienecomputador",
+    "fami_tieneinternet",
+    "fami_tienelavadora"
+  ],
+  "rango_valido": {
+    "edad": [
+      13.0,
+      80.0
+    ],
+    "fami_estratovivienda": [
+      1.0,
+      6.0
+    ],
+    "sin_estrato": [
+      0.0,
+      1.0
+    ],
+    "fami_personashogar": [
+      1.0,
+      5.0
+    ],
+    "fami_cuartoshogar": [
+      1.0,
+      6.0
+    ]
+  },
+  "decisiones_congeladas": "2026-11-05T19:53:16",
+  "metricas_registradas": {
+    "test_mae": 33.315780735281685,
+    "test_rmse": 41.462770781871455,
+    "test_r2": 0.36313729449029075,
+    "test_mae_ic_inf": 32.39435328058212,
+    "test_mae_ic_sup": 34.20741072585397,
+    "test_rmse_ic_inf": 40.343766101423874,
+    "test_rmse_ic_sup": 42.49603478828732,
+    "test_r2_ic_inf": 0.3062456762045446,
+    "test_r2_ic_sup": 0.41431292440411677,
+    "baseline_mae": 43.08780783205491,
+    "baseline_rmse": 51.97143519959491,
+    "baseline_r2": -0.000595616808959365,
+    "dif_mae_vs_baseline": -9.772027096773225,
+    "dif_mae_ic_inf": -11.78060859533991,
+    "dif_mae_ic_sup": -7.989696048343278
+  }
+}

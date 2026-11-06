@@ -1,8 +1,8 @@
 # Documentación del trabajo realizado · Predictor de resultados Saber 11 en Antioquia
 
 > Documentación general del proyecto, en lenguaje sencillo: de qué trata, qué se decidió y cuándo, qué resultados dio cada
-> etapa y dónde está el detalle. **Estado al 5 nov 2026: etapas 1 a 7 completas; etapa 8 (registro del modelo) sin
-> ejecutar; etapa 9 (app) sin empezar.** Las cifras se copian de los informes de `reports/` y de las salidas de los
+> etapa y dónde está el detalle. **Estado al 5 nov 2026: etapas 1 a 8 completas; etapa 9 (inferencia y app) sin
+> empezar.** Las cifras se copian de los informes de `reports/` y de las salidas de los
 > notebooks; no hay cifras nuevas aquí. Este documento no reemplaza al informe técnico final (`reports/informe_tecnico.md`,
 > hito H4): sirve de mapa para escribirlo.
 
@@ -43,7 +43,7 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 5 · Torneo de modelos | Completa | `reports/05_torneo.md` |
 | 6 · Optimización con seguimiento | Completa (falta la revisión del grupo con el checklist) | `reports/06_optimizacion.md` |
 | 7 · Validación e interpretación | Completa (falta la revisión del grupo con el checklist) | `reports/07_validacion.md` |
-| 8 · Registro del modelo | **Sin ejecutar** | `reports/08_registro.md` (plantilla en blanco) |
+| 8 · Registro del modelo | Completa (falta la revisión del grupo con el checklist) | `reports/08_registro.md`, `models/ficha_modelo.md` |
 | 9 · Inferencia y app | Sin empezar | `reports/09_despliegue.md` (plantilla) |
 
 ## La variable objetivo y los datos
@@ -80,6 +80,8 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | 5 nov 2026 | Modelo elegido: HistGradientBoosting optimizado (pérdida absoluta, umbral 0,1 %) | Regla 1: mejora clara; regla 2: empate con XGBoost |
 | 5 nov 2026, 19:53 | Decisiones congeladas para la prueba y regla de equidad con su clasificación | Escritas antes de abrir la prueba |
 | 5 nov 2026, 19:55 | Prueba abierta una sola vez | Medición final con 289 sedes nunca vistas |
+| 5 nov 2026 | Etapa 8: comprobar que el exportado es el evaluado sin volver a predecir sobre la prueba; rangos válidos (edad 13–80); vacíos aceptados solo donde el entrenamiento los tuvo; categorías nuevas rechazadas salvo municipios | No reabrir la prueba; que la app se niegue a responder con datos imposibles |
+| 5 nov 2026, 20:31 | Modelo registrado como `workspace.default.saber11_puntaje_global` versión 1, alias `champion` | Saber qué modelo está en uso y en qué versión |
 
 ---
 
@@ -93,8 +95,8 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | Todo preprocesamiento dentro de un `Pipeline` | Imputación, codificación y modelo se ajustan solo con entrenamiento |
 | Nada sensible sale del equipo | `.env` ignorado; identificador y fecha de nacimiento del estudiante eliminados; se ocultaron correo y enlaces de Databricks en los notebooks públicos |
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
-| Pruebas automáticas | 82 pruebas en `tests/`, todas en verde al cierre de la etapa 7 |
-| Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 6 y 7 (`reports/auditoria_*.md`) |
+| Pruebas automáticas | 92 pruebas en `tests/`, todas en verde al cierre de la etapa 8 |
+| Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 6, 7 y 8 (`reports/auditoria_*.md`) |
 
 ---
 
@@ -293,15 +295,64 @@ Límites de esta medida:
 
 **Atributos sensibles declarados:** género (puesto 9), estrato, zona, municipios y edad.
 
-## Etapa 8 · Registro del modelo — **sin ejecutar**
+## Etapa 8 · Registro del modelo, exportación y esquema
 
-Esta etapa todavía no se ha hecho. Por eso este documento **no** trae nombre del modelo registrado, versión, alias,
-exportación ni esquema: no existen aún, y escribirlos sería inventarlos.
+Detalle en `reports/08_registro.md` y `models/ficha_modelo.md`. Guía en `especificaciones/08-registro.md`. Spec Kit en
+`specs/006-model-registry/`. Auditoría en `reports/auditoria_etapa8.md`.
 
-**Lo que hay hoy en el repositorio**
+**Antes de empezar: candado de la prueba (auditoría de la etapa 7).** El notebook 07 ahora:
+- no reescribe las decisiones congeladas si falta su archivo;
+- escribe la marca de apertura antes de evaluar;
+- guarda huellas SHA-256 de la prueba, el modelo y los resultados (`reports/prueba_huellas.json`);
+- carga el modelo evaluado en vez de reentrenarlo;
+- comprueba el umbral del preprocesador.
 
-| Pieza | Estado |
+Se volvió a ejecutar sin reevaluar, y los resultados de la etapa 7 quedaron idénticos byte a byte. La auditoría de la
+etapa 8 agregó que se detenga también si falta el archivo de huellas.
+
+**Auditoría:** `reports/auditoria_etapa8.md`. Sin fuga de información ni uso indebido de la prueba; 4 hallazgos (1 de
+privacidad: un aviso de MLflow imprimió la ruta con el correo en el notebook 08, y se quitó antes de subirlo), todos
+atendidos.
+
+**Qué quedó registrado**
+
+| Dato | Valor |
 |---|---|
+| Dónde | Databricks, Unity Catalog («databricks (token)»); experimento `saber11-modelo-final` |
+| Nombre y versión | `workspace.default.saber11_puntaje_global`, **versión 1** |
+| Alias | **`champion`** → versión 1 |
+| Junto al modelo | Parámetros; métricas de la prueba con sus intervalos (MAE 33,316 [32,394 ; 34,207], RMSE 41,463, R² 0,363) y de la línea base; firma y ejemplo con **solo las 21 columnas** del modelo, tomados del entrenamiento; etiquetas de etapa, fecha y commit |
+| Ida y vuelta | El modelo cargado por `@champion` predice **exactamente** igual que el original (500 filas del entrenamiento) |
+
+**Exportación y esquema de entrada**
+- **`models/model.joblib`:** exportado desde la versión `champion`. La app lo carga y no consulta Databricks.
+- **`models/input_schema.json`:** calculado solo con el entrenamiento. Contiene:
+  - las 21 columnas: 5 numéricas y 16 categóricas, con su tipo;
+  - los valores válidos de las categóricas;
+  - el rango observado y la mediana de las numéricas;
+  - el rango **válido**: edad 13–80, estrato 1–6, marca «Sin Estrato» 0–1, personas 1–5, cuartos 1–6;
+  - los **12 campos que admiten «sin respuesta»** (los que tenían vacíos en el entrenamiento); los otros 9 son
+    obligatorios.
+- Los dos archivos se suben al repositorio: ninguno está en `.gitignore`.
+
+**¿El exportado es el evaluado?** Sí, y sin volver a predecir sobre la prueba:
+1. La huella del modelo coincide con la del día de la apertura.
+2. `model.joblib` predice exactamente igual que el modelo evaluado en las 57.286 filas del entrenamiento.
+3. El MAE recalculado con las predicciones guardadas de la prueba es 33,316.
+
+**Predicción que valida antes de responder** (`src/proyecto/inference/`):
+- `predict_score` devuelve `puntaje_estimado`, sin redondear ni recortar.
+- **Se niega a responder** si:
+  - falta una columna;
+  - un valor no es número o está fuera del rango válido;
+  - un campo obligatorio viene vacío;
+  - una categoría de lista cerrada no existe.
+- Con municipios no vistos, solo advierte.
+- Las funciones de clasificación de la plantilla se quitarán en la etapa 9.
+- La mediana del esquema sale solo del entrenamiento y nunca se calcula al predecir (hallazgo 5 de la auditoría de la
+  etapa 3, resuelto).
+
+---|---|
 | `notebooks/08_registro_modelo.ipynb` | Esqueleto del curso, sin ejecutar |
 | `reports/08_registro.md` | Plantilla en blanco |
 | `models/ficha_modelo.md` | Plantilla en blanco |
@@ -334,13 +385,15 @@ exportación ni esquema: no existen aún, y escribirlos sería inventarlos.
 | Decisiones del grupo con fecha y motivo | `especificacion-proyecto.md`, sección 7 |
 | Especificaciones por etapa | `especificaciones/` · `specs/001` a `specs/005` |
 | Código reutilizable | `src/proyecto/data/`, `features/`, `models/` (`train.py`, `tuning.py`, `evaluation.py`), `tracking/`, `inference/` |
-| Pruebas (82) | `tests/` |
+| Pruebas (92) | `tests/` |
 | Notebooks (solo orquestan) | `notebooks/01` a `07` |
-| Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md` |
+| Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md` |
+| Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
+| Registro | `reports/08_registro.md`, `reports/08_registro.json`, `reports/prueba_huellas.json` |
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
 | Constancia de la prueba | `reports/07_decisiones_congeladas.json`, `reports/prueba_abierta.txt` |
 
-**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `82 passed`.
+**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `92 passed`.
 
 ---
 
@@ -348,17 +401,12 @@ exportación ni esquema: no existen aún, y escribirlos sería inventarlos.
 
 1. **Revisión del grupo con el checklist** (`material-del-curso/kit/checklist-revision-ia.md`) de `tuning.py` y
    `evaluation.py`. La casilla sigue sin marcar en `especificaciones/06-optimizacion.md` y `07-validacion.md`.
-2. **Mejoras de la auditoría de la etapa 7**, antes de la etapa 8:
-   - H1 (gravedad media): impedir que las decisiones congeladas se reescriban si se borra su archivo;
-   - H3 y H4: escribir la marca antes que los resultados y no reentrenar al re-ejecutar;
-   - H6: comprobar el umbral del preprocesador;
-   - H7 y H8: mantenimiento de pruebas y función.
+2. **Mejoras de la auditoría de la etapa 7:** H1, H3, H4 y H6 ya se aplicaron (etapa 8). Quedan pendientes:
+   - H7 y H8: mantenimiento de pruebas (`_frame` a `tests/conftest.py`) y de `permutation_importance_table`.
 3. **Género como entrada del modelo:** decidir con el grupo y, si aplica, con la Secretaría. Aporta poco (0,48 puntos) y hay
    una brecha de error de 4,3 puntos entre hombres y mujeres. Cualquier cambio requiere validación por sede en un ciclo
    nuevo, porque la prueba ya se usó.
-4. **Etapa 8 (sin ejecutar):** registrar el modelo con versión y alias `champion` en MLflow, comprobar la ida y vuelta,
-   exportar `models/model.joblib`, adaptar el esquema y la predicción a regresión, y completar `reports/08_registro.md` y
-   `models/ficha_modelo.md`. Detalle en la sección de la etapa 8.
+4. **Etapa 8:** revisión del grupo con el checklist de `schema.py`, `predict.py` y el notebook 08.
 5. **Etapa 9:** app en Streamlit que carga el modelo desde el repositorio, valida las entradas y muestra el aviso de uso
    responsable con los límites de arriba.
 6. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).

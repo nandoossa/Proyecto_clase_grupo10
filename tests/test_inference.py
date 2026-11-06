@@ -128,3 +128,136 @@ def test_app_module_imports_without_launching_streamlit():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)   # no ejecuta main(): solo importa
     assert callable(module.main) and module.UNKNOWN == "(no sé)"
+
+
+# --- Regresión (etapa 8): esquema y predicción del puntaje -------------------------------------------------------------
+# Datos inventados: `edad` y `ciudad` tienen vacíos en el entrenamiento (admiten «sin respuesta»); `ingreso` y `colegio`
+# no. `municipio` es un código: si llega uno no visto, solo se advierte.
+from sklearn.linear_model import LinearRegression
+
+from proyecto.inference.predict import predict_score
+
+R_NUM, R_CAT = ["edad", "ingreso"], ["ciudad", "colegio", "municipio"]
+
+
+@pytest.fixture(scope="module")
+def reg_data() -> pd.DataFrame:
+    rng = np.random.default_rng(1)
+    n = 300
+    df = pd.DataFrame({
+        "edad": rng.integers(15, 25, n).astype(float),
+        "ingreso": rng.normal(2000, 400, n).round(1),
+        "ciudad": rng.choice(["norte", "sur", "centro"], n).astype(object),
+        "colegio": rng.choice(["OFICIAL", "NO OFICIAL"], n),
+        "municipio": rng.choice([5001, 5088, 5360], n),
+    })
+    df.loc[:9, "edad"] = np.nan
+    df.loc[10:19, "ciudad"] = np.nan
+    df["y"] = 250 + 0.02 * (df["ingreso"] - 2000) - 2 * df["edad"].fillna(18) + rng.normal(0, 5, n)
+    return df
+
+
+@pytest.fixture(scope="module")
+def reg_model(reg_data) -> Pipeline:
+    prep = ColumnTransformer([
+        ("num", SimpleImputer(strategy="median", add_indicator=True), R_NUM),
+        ("cat", Pipeline([("imp", SimpleImputer(strategy="constant", fill_value="sin respuesta")),
+                          ("oh", OneHotEncoder(handle_unknown="ignore"))]), R_CAT),
+    ])
+    return Pipeline([("prep", prep), ("model", LinearRegression())]).fit(reg_data[R_NUM + R_CAT], reg_data["y"])
+
+
+def reg_schema(df, **kwargs) -> dict:
+    return build_schema(df, R_NUM, R_CAT, task="regression", valid_range={"edad": (13, 80)},
+                        warn_only_categories=["municipio"], **kwargs)
+
+
+def reg_row(**overrides) -> pd.DataFrame:
+    base = {"edad": 17.0, "ingreso": 2100.0, "ciudad": "sur", "colegio": "OFICIAL", "municipio": 5001}
+    base.update(overrides)
+    return pd.DataFrame([base])
+
+
+def test_regression_schema_saves_and_reloads(reg_data, tmp_path):
+    path = tmp_path / "input_schema.json"
+    schema = reg_schema(reg_data, path=path)
+    assert load_schema(path) == schema
+    assert schema["task"] == "regression" and "class_names" not in schema
+    assert schema["numeric"] == R_NUM and schema["categorical"] == R_CAT
+    assert schema["categories"]["colegio"] == ["NO OFICIAL", "OFICIAL"]
+    assert schema["categories"]["municipio"] == ["5001", "5088", "5360"]
+    assert sorted(schema["nullable"]) == ["ciudad", "edad"]          # solo los que tenían vacíos
+    assert schema["valid_range"]["edad"] == [13.0, 80.0]
+
+
+def test_schema_median_comes_only_from_given_frame(reg_data):
+    schema = reg_schema(reg_data)
+    assert schema["median"]["ingreso"] == pytest.approx(float(reg_data["ingreso"].median()))
+    other = reg_data.assign(ingreso=reg_data["ingreso"] + 1000)
+    assert reg_schema(other)["median"]["ingreso"] == pytest.approx(schema["median"]["ingreso"] + 1000)
+
+
+def test_predict_score_returns_one_number_per_row(reg_data, reg_model):
+    rows = pd.concat([reg_row(), reg_row(edad=20.0)], ignore_index=True)
+    result = predict_score(rows, reg_model, reg_schema(reg_data))
+    assert list(result.columns) == ["puntaje_estimado"] and len(result) == 2
+    assert np.isfinite(result["puntaje_estimado"]).all()
+    assert result["puntaje_estimado"].iloc[0] == reg_model.predict(reg_row()[R_NUM + R_CAT])[0]   # sin redondear
+
+
+def test_predict_score_rejects_missing_column(reg_data, reg_model):
+    with pytest.raises(InputValidationError, match="ingreso"):
+        predict_score(reg_row().drop(columns=["ingreso"]), reg_model, reg_schema(reg_data))
+
+
+def test_predict_score_rejects_out_of_valid_range(reg_data, reg_model):
+    for age in (12.0, 81.0):
+        with pytest.raises(InputValidationError, match="edad"):
+            predict_score(reg_row(edad=age), reg_model, reg_schema(reg_data))
+
+
+def test_predict_score_rejects_non_numeric(reg_data, reg_model):
+    with pytest.raises(InputValidationError, match="ingreso"):
+        predict_score(reg_row(ingreso="mucho"), reg_model, reg_schema(reg_data))
+
+
+def test_predict_score_accepts_missing_only_where_training_had_it(reg_data, reg_model):
+    schema = reg_schema(reg_data)
+    assert len(predict_score(reg_row(edad=np.nan, ciudad=np.nan), reg_model, schema)) == 1   # «sin respuesta»
+    with pytest.raises(InputValidationError, match="ingreso"):
+        predict_score(reg_row(ingreso=np.nan), reg_model, schema)                           # nunca tuvo vacíos
+    with pytest.raises(InputValidationError, match="colegio"):
+        predict_score(reg_row(colegio=np.nan), reg_model, schema)
+
+
+def test_predict_score_rejects_unknown_closed_category_but_warns_on_municipality(reg_data, reg_model):
+    schema = reg_schema(reg_data)
+    with pytest.raises(InputValidationError, match="colegio"):
+        predict_score(reg_row(colegio="PRIVADO"), reg_model, schema)
+    result = predict_score(reg_row(municipio=5999), reg_model, schema)
+    assert any("municipio" in w for w in result.attrs["warnings"])
+
+
+def test_predict_score_does_not_learn_from_input(reg_data, reg_model):
+    """Cada fila se predice sola: las otras filas del lote no cambian su puntaje, y el esquema no se modifica."""
+    schema = reg_schema(reg_data)
+    before = json.dumps(schema, sort_keys=True)
+    alone = predict_score(reg_row(), reg_model, schema)["puntaje_estimado"].iloc[0]
+    batch = pd.concat([reg_row(), reg_row(edad=np.nan, ingreso=9000.0), reg_row(ciudad=np.nan)], ignore_index=True)
+    assert predict_score(batch, reg_model, schema)["puntaje_estimado"].iloc[0] == alone
+    assert json.dumps(schema, sort_keys=True) == before
+
+
+def test_real_model_predicts_a_training_row():
+    """Con el modelo exportado y una fila real del entrenamiento (se salta si los archivos no están en este equipo)."""
+    model_path, schema_path = ROOT / "models" / "model.joblib", ROOT / "models" / "input_schema.json"
+    train_path = ROOT / "data" / "processed" / "train.joblib"
+    if not (model_path.exists() and schema_path.exists() and train_path.exists()):
+        pytest.skip("faltan models/model.joblib, models/input_schema.json o data/processed/train.joblib")
+    import joblib
+
+    from proyecto.inference.predict import load_model
+    schema = load_schema(schema_path)
+    row = joblib.load(train_path)[schema["numeric"] + schema["categorical"]].head(1)
+    result = predict_score(row, load_model(model_path), schema)
+    assert 100 <= result["puntaje_estimado"].iloc[0] <= 477
