@@ -84,6 +84,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | 5 nov 2026, 20:31 | Modelo registrado como `workspace.default.saber11_puntaje_global` versión 1, alias `champion` | Saber qué modelo está en uso y en qué versión |
 | 6 nov 2026 | Etapa 9: `predict.py` solo con regresión; formulario en español con edad numérica sin límites (fuera de 13–80 → mensaje), municipios con nombre y código, y «se equivoca en promedio 33 puntos; como referencia, entre X y Y» | Que quien usa la app entienda qué corregir y qué tan preciso es el puntaje, sin confundir la referencia con un intervalo de confianza |
 | 6 nov 2026 | El género se mantiene como entrada | Quitarlo exigiría reentrenar y volver a evaluar con la prueba, que ya se abrió; la brecha de error se muestra en la app |
+| 6 nov 2026 | Constitución ratificada (versión 1.0.0) con el principio VIII: el modelo orienta, no excluye ni etiqueta; su MAE por segmento de estrato, zona, naturaleza y género debe ser menor que el de la línea base | Regla del grupo que prevalece sobre las demás prácticas |
 
 ---
 
@@ -91,6 +92,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 
 | Regla | Cómo se cumplió |
 |---|---|
+| Constitución del proyecto | `.specify/memory/constitution.md`, versión 1.0.0 (ratificada el 6 nov 2026): principios I a VII del curso, ajustados al proyecto, y el principio VIII del grupo (el modelo orienta, no excluye; equidad por estrato, zona, naturaleza y género). Cada `plan.md` la revisa en su «Constitution Check» |
 | Especificación → plan → tareas → código (Spec Kit) | Cada pieza nueva tiene su guía en `especificaciones/` y su `spec.md`, `plan.md` y `tasks.md` en `specs/`; el grupo aprobó plan y tareas antes del código |
 | Partir por la unidad correcta | La sede del colegio (`cole_cod_dane_sede`) explica el 36 % de la variación del puntaje: partición, validación cruzada e intervalos se hacen **por sede** |
 | La prueba se abre una sola vez | `test.joblib` se abrió solo en la etapa 7, después de congelar las decisiones con fecha y hora |
