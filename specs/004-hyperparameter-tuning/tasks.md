@@ -65,16 +65,16 @@ description: "Lista de tareas: tuning.py (optimización de los finalistas con se
 ## Phase 4: User Story 3 - Notebook, registro e informe (P2)
 
 - [x] T016 [US3] Completar notebooks/06_optimizacion.ipynb siguiendo el ejemplo: configuración (`configure_mlflow()`, `set_experiment("saber11-optimizacion")`, aviso si quedó local), carga de `train.joblib` (sin abrir `test.joblib`), reserva de sedes con comprobación de 0 sedes compartidas, reglas de decisión escritas **antes** de los resultados, búsqueda con presupuesto 25 + 30 y tiempo medido, gráfico del mejor-hasta-ahora, importancia de parámetros, comprobación en la reserva (MAE, RMSE, R², diferencias con IC 95 % por sede, comparación entre finalistas), consulta de MLflow y guardado de `reports/06_best_params.json` y `reports/06_comprobacion.csv`
-- [ ] T017 [US3] Ejecutar el notebook completo en sitio (`jupyter nbconvert --execute --inplace`) y comprobar que tarda < 30 min y que MLflow tiene 1 ejecución por ensayo
-- [ ] T018 [US3] Completar reports/06_optimizacion.md solo con cifras de la salida del notebook (mejor modelo, parámetros, MAE antes y después con referencia 33,56, comprobación con IC, decisiones)
-- [ ] T019 [US3] Anotar la decisión en la sección 7 de especificacion-proyecto.md y marcar las casillas cumplidas de especificaciones/06-optimizacion.md
+- [x] T017 [US3] Ejecutar el notebook completo en sitio (`jupyter nbconvert --execute --inplace`) y comprobar que tarda < 30 min y que MLflow tiene 1 ejecución por ensayo (hecho con Databricks: 55 ensayos registrados; búsqueda 31,1 min, por encima del objetivo por el registro por red; en local 27,2 min)
+- [x] T018 [US3] Completar reports/06_optimizacion.md solo con cifras de la salida del notebook (mejor modelo, parámetros, MAE antes y después con referencia 33,56, comprobación con IC, decisiones)
+- [x] T019 [US3] Anotar la decisión en la sección 7 de especificacion-proyecto.md y marcar las casillas cumplidas de especificaciones/06-optimizacion.md
 
 ---
 
 ## Phase 5: Polish
 
-- [ ] T020 Lanzar el subagente `auditor-de-fuga` sobre src/proyecto/models/tuning.py y notebooks/06_optimizacion.ipynb y guardar su informe en reports/auditoria_etapa6.md
-- [ ] T021 `python -m pytest` completo en verde; commit y push a `origin main`
+- [x] T020 Lanzar el subagente `auditor-de-fuga` sobre src/proyecto/models/tuning.py y notebooks/06_optimizacion.ipynb y guardar su informe en reports/auditoria_etapa6.md
+- [x] T021 `python -m pytest` completo en verde; commit y push a `origin main`
 
 ## Dependencies
 

@@ -1,0 +1,71 @@
+{
+  "hist gradient boosting": {
+    "parametros_elegidos": "optimizados",
+    "params": {
+      "min_frequency": 0.001,
+      "loss": "absolute_error",
+      "learning_rate": 0.030107008010973057,
+      "max_iter": 587,
+      "max_leaf_nodes": 16,
+      "min_samples_leaf": 82,
+      "l2_regularization": 0.36568458128692466,
+      "max_features": 0.6154550174376242
+    },
+    "best_params_busqueda": {
+      "min_frequency": 0.001,
+      "loss": "absolute_error",
+      "learning_rate": 0.030107008010973057,
+      "max_iter": 587,
+      "max_leaf_nodes": 16,
+      "min_samples_leaf": 82,
+      "l2_regularization": 0.36568458128692466,
+      "max_features": 0.6154550174376242
+    },
+    "cv_mae_mejor": 33.40103804692611,
+    "cv_mae_partida": 33.786998521389314,
+    "ensayos": 25,
+    "minutos_busqueda": 19.987391459941865,
+    "mlflow_parent_run_id": "04e69d72e2aa45ddae3b35a620b7e357"
+  },
+  "xgboost": {
+    "parametros_elegidos": "optimizados",
+    "params": {
+      "min_frequency": 0.001,
+      "objective": "reg:squarederror",
+      "learning_rate": 0.038380335857190535,
+      "n_estimators": 501,
+      "max_depth": 7,
+      "min_child_weight": 61.9904277593356,
+      "subsample": 0.8974610571777635,
+      "colsample_bytree": 0.5599087047625603,
+      "reg_lambda": 0.18904711934463378
+    },
+    "best_params_busqueda": {
+      "min_frequency": 0.001,
+      "objective": "reg:squarederror",
+      "learning_rate": 0.038380335857190535,
+      "n_estimators": 501,
+      "max_depth": 7,
+      "min_child_weight": 61.9904277593356,
+      "subsample": 0.8974610571777635,
+      "colsample_bytree": 0.5599087047625603,
+      "reg_lambda": 0.18904711934463378
+    },
+    "cv_mae_mejor": 33.44008763631185,
+    "cv_mae_partida": 33.98162841796875,
+    "ensayos": 30,
+    "minutos_busqueda": 11.069191873073578,
+    "mlflow_parent_run_id": "a5272c975ae94ea3b19019fc49253351"
+  },
+  "modelo_final": {
+    "diferencia_hgb_menos_xgb": -0.04848615532819683,
+    "ic95": [
+      -0.2216011265008411,
+      0.11867107327599609
+    ],
+    "elegido": "hist gradient boosting",
+    "motivo": "el intervalo incluye el cero (empate): se elige HistGradientBoosting por la regla de desempate"
+  },
+  "tracking": "databricks (token)",
+  "experimento": "saber11-optimizacion"
+}

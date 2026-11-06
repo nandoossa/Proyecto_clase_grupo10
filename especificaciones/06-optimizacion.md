@@ -6,7 +6,7 @@
 > Ejemplo de estructura (no de decisiones): `material-del-curso/ejemplo-creditsight/src/creditsight/models/tuning.py` y
 > `material-del-curso/ejemplo-creditsight/notebooks/06_optimizacion.ipynb`. Guía: `material-del-curso/kit/guia-modelado-y-optimizacion.md`, secciones 3 y 4.
 
-**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☒ borrador  ☐ cerrada
+**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☐ borrador  ☒ cerrada (falta la revisión del grupo con el checklist)
 
 > Borrador preparado por Claude a partir del pedido del grupo del 5 nov 2026. Los tiempos de la sección 4 se midieron en
 > este equipo (5 nov 2026) con un ajuste de cada modelo sobre ~29.000 estudiantes. Ninguna cifra de resultados está escrita
@@ -107,19 +107,21 @@ remuestreos de **sedes completas** (no de filas).
 
 ## 8. Pruebas que deben existir
 
-- ☐ **Espacios válidos:** cada espacio devuelve parámetros dentro de sus rangos (incluidos `min_frequency` y la pérdida) y
+- ☒ **Espacios válidos:** cada espacio devuelve parámetros dentro de sus rangos (incluidos `min_frequency` y la pérdida) y
   la fábrica construye un modelo que se ajusta y predice sin vacíos.
-- ☐ **El bootstrap agrupa por sede:** con una sola sede el intervalo se reduce al valor puntual (remuestrear filas daría
+- ☒ **El bootstrap agrupa por sede:** con una sola sede el intervalo se reduce al valor puntual (remuestrear filas daría
   un intervalo con ancho); el valor puntual es exactamente MAE(A) − MAE(B).
-- ☐ **La reserva no comparte sedes con la búsqueda** y reserva ~25 % de las sedes.
-- ☐ **`tune` mide los parámetros de partida con los mismos pliegues y se reanuda** desde el archivo sqlite sin repetir ensayos.
-- ☐ `pytest` en verde.
+- ☒ **La reserva no comparte sedes con la búsqueda** y reserva ~25 % de las sedes.
+- ☒ **`tune` mide los parámetros de partida con los mismos pliegues y se reanuda** desde el archivo sqlite sin repetir ensayos.
+- ☒ `pytest` en verde (74 de 74, 5 nov 2026).
 
 ## 9. Criterios de cierre
 
-- ☐ Búsqueda completa en < 30 minutos, con cada ensayo registrado en MLflow (se informa cuántos y cuánto tardó).
-- ☐ `reports/06_optimizacion.md` con el mejor modelo, parámetros, MAE antes y después, comprobación en sedes reservadas con
+- ☒ Cada ensayo registrado en MLflow (Databricks: 25 + 30 ensayos y 2 mediciones de partida). ☐ Búsqueda en < 30 minutos:
+  con Databricks tardó 31,1 min (por el registro por red); la misma búsqueda con MLflow local tardó 27,2 min.
+- ☒ `reports/06_optimizacion.md` con el mejor modelo, parámetros, MAE antes y después, comprobación en sedes reservadas con
   intervalo y decisiones, **solo con cifras de la ejecución**.
-- ☐ Decisión anotada en la sección 7 de `especificacion-proyecto.md`.
-- ☐ Auditoría con `auditor-de-fuga` en `reports/auditoria_etapa6.md`.
-- ☐ Todo subido a GitHub.
+- ☒ Decisión anotada en la sección 7 de `especificacion-proyecto.md`.
+- ☒ Auditoría con `auditor-de-fuga` en `reports/auditoria_etapa6.md`.
+- ☒ Todo subido a GitHub.
+- ☐ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`.

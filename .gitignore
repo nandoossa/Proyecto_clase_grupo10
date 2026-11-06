@@ -24,7 +24,7 @@ Thumbs.db
 # MLflow local de respaldo y salidas de verificación
 mlflow_local.db
 # Estudios de Optuna (se regeneran con el notebook 06; el registro auditable es MLflow y reports/)
-optuna_*.db
+optuna_*.db*
 mlruns/
 .verify-*
 
