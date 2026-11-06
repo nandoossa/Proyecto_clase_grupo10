@@ -1,142 +1,123 @@
-"""App de tu proyecto: un formulario que se construye solo a partir de `models/input_schema.json`.
+"""App: Predictor de resultados Pruebas Saber 11 en Antioquia (etapa 9).
 
-- Carga `models/model.joblib` desde ESTE repositorio. NO consulta Databricks: no se ponen credenciales
-  en la nube, y la app no depende de la cuota de ninguna plataforma.
-- Valida las entradas: si un dato es imposible, explica qué corregir en vez de responder cualquier cosa.
+- Carga `models/model.joblib` y `models/input_schema.json` desde ESTE repositorio. No se conecta a ninguna plataforma
+  externa ni lleva credenciales.
+- La persona llena un formulario en español; `proyecto.inference.form` lo traduce a las 21 columnas del modelo y
+  `predict_score` valida contra el esquema. Si un dato es inválido, se explica qué corregir y no se muestra ningún puntaje.
+- El aviso de uso responsable está siempre visible, con los límites de `models/ficha_modelo.md`.
 
-Ejecutar en local (desde la raíz de tu repo):  streamlit run app/streamlit_app.py
-
-Para personalizarla (título, etiquetas, aviso de uso responsable) edita `models/input_schema.json`
-(claves `app_title`, `labels`, `responsible_use`) o este archivo. Pídele a Claude cambios pequeños,
-de uno en uno, y pruébalos con `streamlit run`.
+Ejecutar en local (desde la raíz del repositorio):  streamlit run app/streamlit_app.py
 """
-import importlib
 import sys
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from proyecto.inference.form import (  # noqa: E402  (después de agregar src/ al path)
+    SECTIONS,
+    SIN_RESPUESTA,
+    TYPICAL_ERROR,
+    display_value,
+    form_to_row,
+    options,
+    reference_range,
+)
+from proyecto.inference.predict import InputValidationError, load_model, predict_score  # noqa: E402
+from proyecto.inference.schema import load_schema  # noqa: E402
+
 MODEL_PATH = ROOT / "models" / "model.joblib"
 SCHEMA_PATH = ROOT / "models" / "input_schema.json"
-UNKNOWN = "(no sé)"
+TITLE = "Predictor de resultados Pruebas Saber 11 en Antioquia"
 
-# El paquete de src/ puede llamarse `proyecto` o el nombre que le hayas puesto: lo buscamos.
-SRC = ROOT / "src"
-sys.path.insert(0, str(SRC))
-PACKAGE = next((p.name for p in sorted(SRC.iterdir()) if p.is_dir() and (p / "__init__.py").exists()), "proyecto")
-predict_module = importlib.import_module(f"{PACKAGE}.inference.predict")
-schema_module = importlib.import_module(f"{PACKAGE}.inference.schema")
+# Cifras de models/ficha_modelo.md (prueba con 289 sedes nunca vistas, 5 nov 2026).
+RESPONSIBLE_USE = """
+**Uso responsable.** Esta estimación **orienta; no excluye**. La decisión final la toma una persona.
 
-DEFAULT_RESPONSIBLE_USE = (
-    "- Esta herramienta **apoya** una decisión; la decisión final es de una persona.\n"
-    "- Fue entrenada con los datos de este proyecto: no la uses fuera de ese contexto sin validarla de nuevo.\n"
-    "- Revisa los **límites del modelo** en `models/ficha_modelo.md` antes de usarla."
-)
+- **No** la uses para excluir, clasificar o etiquetar a estudiantes o colegios, ni la trates como el puntaje real.
+- Solo vale para estudiantes de **calendario A en Antioquia**, con datos de **2022**. Fuera de eso no se ha validado.
+- El modelo explica el **36 %** de la variación del puntaje (R² 0,363): hay estudiantes con errores mucho mayores que el
+  típico.
+- **El error no es igual para todos:** en **estrato 5** se equivoca en promedio **39,57 puntos**; en **hombres 35,74**
+  frente a **31,40 en mujeres**; en colegios no oficiales 35,55 frente a 32,66 en los oficiales.
+- Lo que más pesa en la estimación (edad, jornada del colegio) no es la causa del puntaje.
+"""
 
 
 @st.cache_resource
 def get_model():
-    return predict_module.load_model(MODEL_PATH)
+    return load_model(MODEL_PATH)
 
 
 @st.cache_data
 def get_schema() -> dict:
-    return schema_module.load_schema(SCHEMA_PATH)
+    return load_schema(SCHEMA_PATH)
 
 
-def label(schema: dict, column: str) -> str:
-    return schema.get("labels", {}).get(column, column)
+def ask(field: str, label: str, schema: dict):
+    """Un campo del formulario. Listas sin opción elegida al inicio, para notar si falta un dato obligatorio."""
+    if field == "edad":
+        age = st.number_input(label, value=None, step=1, placeholder="Por ejemplo, 17", key="edad")
+        no_answer = st.checkbox(f"{SIN_RESPUESTA} (edad)", key="edad_sin_respuesta")
+        return SIN_RESPUESTA if no_answer else age
+    return st.selectbox(
+        label,
+        options(field, schema),
+        index=None,
+        placeholder="Elige una opción",
+        format_func=lambda value: display_value(field, value, schema),
+        key=field,
+    )
 
 
-def numeric_field(schema: dict, column: str, key: str):
-    """Un campo numérico con su rango y mediana, y una casilla 'no sé' que deja el dato vacío."""
-    low, high = schema.get("valid_range", {}).get(column) or schema["observed_range"][column]
-    default = float(schema["median"][column])
-    is_int = column in schema.get("integer_columns", [])
-    if high <= low:
-        high = low + 1
-    default = min(max(default, low), high)
-    unknown = st.checkbox(f"No sé: {label(schema, column)}", key=f"unk_{key}")
-    if unknown:
-        return np.nan
-    if is_int:
-        return st.number_input(label(schema, column), min_value=int(low), max_value=int(high), value=int(round(default)), step=1, key=key)
-    return st.number_input(label(schema, column), min_value=float(low), max_value=float(high), value=float(default), key=key)
-
-
-def build_form(schema: dict) -> dict:
-    """Dibuja el formulario (tres columnas) y devuelve una fila de entrada."""
-    row = {}
-    columns = schema["numeric"] + schema["categorical"]
-    cols = st.columns(3)
-    for i, column in enumerate(columns):
-        with cols[i % 3]:
-            if column in schema["categorical"]:
-                options = schema["categories"][column] + [UNKNOWN]
-                choice = st.selectbox(label(schema, column), options, key=f"cat_{column}")
-                row[column] = np.nan if choice == UNKNOWN else choice
-            else:
-                row[column] = numeric_field(schema, column, f"num_{column}")
-    return row
+def show_result(score: float, warnings: list[str]) -> None:
+    low, high = reference_range(score)
+    st.metric("Puntaje global estimado", f"{round(score)}")
+    st.markdown(
+        f"El modelo **se equivoca en promedio {TYPICAL_ERROR} puntos; como referencia, entre {low} y {high}** "
+        "(MAE 33,3 con colegios que el modelo no vio)."
+    )
+    st.caption(
+        "Ese rango no es un intervalo de confianza: el error típico es un promedio, y para algunos estudiantes el "
+        "puntaje real queda fuera de él."
+    )
+    for message in warnings:
+        st.warning(message)
 
 
 def main() -> None:
-    st.set_page_config(page_title="Mi proyecto", page_icon="🧭", layout="wide")
+    st.set_page_config(page_title=TITLE, page_icon="🎓", layout="wide")
+    st.title(TITLE)
+    st.caption("Estima el puntaje global de Saber 11 a partir de datos del colegio, del estudiante y del hogar.")
 
     if not MODEL_PATH.exists() or not SCHEMA_PATH.exists():
-        st.title("Mi proyecto")
-        st.error(
-            "Falta `models/model.joblib` o `models/input_schema.json`. "
-            "Ejecuta el notebook `notebooks/09_inferencia.ipynb` para generarlos."
-        )
+        st.error("Falta `models/model.joblib` o `models/input_schema.json`. Se generan en el notebook 08_registro_modelo.")
         st.stop()
-
     model, schema = get_model(), get_schema()
-    st.title(schema.get("app_title", "Mi proyecto"))
-    st.caption("Herramienta de apoyo a la decisión. **No decide por sí sola.**")
 
-    with st.form("entrada"):
-        row = build_form(schema)
-        submitted = st.form_submit_button("Evaluar", type="primary")
+    with st.form("perfil"):
+        answers = {}
+        for column, (section, fields) in zip(st.columns(3), SECTIONS.items()):
+            with column:
+                st.subheader(section)
+                for field, label in fields.items():
+                    answers[field] = ask(field, label, schema)
+        submitted = st.form_submit_button("Estimar", type="primary")
 
-    if not submitted:
-        st.info("Completa los datos y pulsa **Evaluar**. Marca *No sé* en lo que no conozcas.")
-        return
-
-    try:
-        result = predict_module.predict_with_scores(pd.DataFrame([row]), model, schema)
-    except predict_module.InputValidationError as error:
-        st.error(f"Revisa los datos: {error}")
-        return
-
-    first = result.iloc[0]
-    class_names = schema["class_names"]
-    left, right = st.columns(2)
-    with left:
-        st.metric("Resultado sugerido", str(first["decision"]))
-        detail = f"Clase más probable: **{first['most_likely']}**"
-        if "expected_cost" in result.columns:
-            detail += f" · costo esperado de esta decisión: **{first['expected_cost']:.2f}**"
-        st.caption(detail)
-        if bool(first["needs_review"]):
-            st.warning("**Revisión recomendada:** el modelo duda, o la decisión de menor costo difiere de la clase más probable.")
+    if submitted:
+        try:
+            row = form_to_row(answers, schema)
+            result = predict_score(row, model, schema)
+        except InputValidationError as error:
+            st.error(f"Revisa estos datos: {error}")
         else:
-            st.success("El modelo está seguro de este resultado.")
-        for message in result.attrs.get("warnings", []):
-            st.warning(message)
-    with right:
-        st.write("**Probabilidad por clase**")
-        st.bar_chart(pd.DataFrame({"probabilidad": [first[f"proba_{c}"] for c in class_names]}, index=class_names))
+            show_result(float(result["puntaje_estimado"].iloc[0]), result.attrs.get("warnings", []))
+    else:
+        st.info(f"Completa los datos y pulsa **Estimar**. Si no conoces un dato, elige «{SIN_RESPUESTA}» donde aparece.")
 
-    if "cost_matrix" in schema:
-        with st.expander("¿Cómo se decide? (matriz de costos)"):
-            st.markdown("La decisión es la de **menor costo esperado**, no necesariamente la más probable.")
-            st.dataframe(pd.DataFrame(schema["cost_matrix"], index=[f"real {c}" for c in class_names], columns=[f"decide {c}" for c in class_names]))
-    with st.expander("Uso responsable"):
-        st.markdown(schema.get("responsible_use", DEFAULT_RESPONSIBLE_USE))
+    st.markdown(RESPONSIBLE_USE)
 
 
 if __name__ == "__main__":  # `streamlit run` ejecuta el archivo como programa principal

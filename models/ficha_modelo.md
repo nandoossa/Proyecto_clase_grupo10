@@ -85,7 +85,9 @@ educación de los padres, se reparten el crédito.
   nacimiento). Un campo vacío se trata como «sin respuesta» solo en los 12 campos que tenían vacíos en el entrenamiento;
   los demás son obligatorios.
 - **Atributos sensibles o de uso cuidadoso:** género, estrato, zona, municipios y edad. El género aporta poco (+0,48
-  puntos) y tiene la brecha de error descrita; su uso como entrada está pendiente de revisión por el grupo.
+  puntos) y tiene la brecha de error descrita. **Decisión del grupo (6 nov 2026): se mantiene como entrada.** Quitarlo
+  exigiría reentrenar el modelo y volver a evaluarlo con la prueba, que ya se abrió una vez; una segunda evaluación ya no
+  sería una medición limpia. La app pide el género y muestra la brecha de error en el aviso de uso responsable.
 - **Qué NO debe hacerse con este modelo:**
   - excluir, clasificar o etiquetar a estudiantes o colegios;
   - tratar la estimación como el puntaje real;

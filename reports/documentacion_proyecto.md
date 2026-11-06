@@ -1,8 +1,8 @@
 # Documentación del trabajo realizado · Predictor de resultados Saber 11 en Antioquia
 
 > Documentación general del proyecto, en lenguaje sencillo: de qué trata, qué se decidió y cuándo, qué resultados dio cada
-> etapa y dónde está el detalle. **Estado al 5 nov 2026: etapas 1 a 8 completas; etapa 9 (inferencia y app) sin
-> empezar.** Las cifras se copian de los informes de `reports/` y de las salidas de los
+> etapa y dónde está el detalle. **Estado al 6 nov 2026: etapas 1 a 9 completas; la app corre en local y todavía no se
+> desplegó.** Las cifras se copian de los informes de `reports/` y de las salidas de los
 > notebooks; no hay cifras nuevas aquí. Este documento no reemplaza al informe técnico final (`reports/informe_tecnico.md`,
 > hito H4): sirve de mapa para escribirlo.
 
@@ -44,7 +44,7 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 6 · Optimización con seguimiento | Completa (falta la revisión del grupo con el checklist) | `reports/06_optimizacion.md` |
 | 7 · Validación e interpretación | Completa (falta la revisión del grupo con el checklist) | `reports/07_validacion.md` |
 | 8 · Registro del modelo | Completa (falta la revisión del grupo con el checklist) | `reports/08_registro.md`, `models/ficha_modelo.md` |
-| 9 · Inferencia y app | Sin empezar | `reports/09_despliegue.md` (plantilla) |
+| 9 · Inferencia y app | Completa en local, sin desplegar (falta la revisión del grupo con el checklist) | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
 
 ## La variable objetivo y los datos
 
@@ -82,6 +82,8 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | 5 nov 2026, 19:55 | Prueba abierta una sola vez | Medición final con 289 sedes nunca vistas |
 | 5 nov 2026 | Etapa 8: comprobar que el exportado es el evaluado sin volver a predecir sobre la prueba; rangos válidos (edad 13–80); vacíos aceptados solo donde el entrenamiento los tuvo; categorías nuevas rechazadas salvo municipios | No reabrir la prueba; que la app se niegue a responder con datos imposibles |
 | 5 nov 2026, 20:31 | Modelo registrado como `workspace.default.saber11_puntaje_global` versión 1, alias `champion` | Saber qué modelo está en uso y en qué versión |
+| 6 nov 2026 | Etapa 9: `predict.py` solo con regresión; formulario en español con edad numérica sin límites (fuera de 13–80 → mensaje), municipios con nombre y código, y «se equivoca en promedio 33 puntos; como referencia, entre X y Y» | Que quien usa la app entienda qué corregir y qué tan preciso es el puntaje, sin confundir la referencia con un intervalo de confianza |
+| 6 nov 2026 | El género se mantiene como entrada | Quitarlo exigiría reentrenar y volver a evaluar con la prueba, que ya se abrió; la brecha de error se muestra en la app |
 
 ---
 
@@ -95,7 +97,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | Todo preprocesamiento dentro de un `Pipeline` | Imputación, codificación y modelo se ajustan solo con entrenamiento |
 | Nada sensible sale del equipo | `.env` ignorado; identificador y fecha de nacimiento del estudiante eliminados; se ocultaron correo y enlaces de Databricks en los notebooks públicos |
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
-| Pruebas automáticas | 92 pruebas en `tests/`, todas en verde al cierre de la etapa 8 |
+| Pruebas automáticas | 103 pruebas en `tests/`, todas en verde al cierre de la etapa 9 |
 | Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 6, 7 y 8 (`reports/auditoria_*.md`) |
 
 ---
@@ -348,32 +350,59 @@ atendidos.
   - un campo obligatorio viene vacío;
   - una categoría de lista cerrada no existe.
 - Con municipios no vistos, solo advierte.
-- Las funciones de clasificación de la plantilla se quitarán en la etapa 9.
+- Las funciones de clasificación de la plantilla se quitaron en la etapa 9.
 - La mediana del esquema sale solo del entrenamiento y nunca se calcula al predecir (hallazgo 5 de la auditoría de la
   etapa 3, resuelto).
 
----|---|
-| `notebooks/08_registro_modelo.ipynb` | Esqueleto del curso, sin ejecutar |
-| `reports/08_registro.md` | Plantilla en blanco |
-| `models/ficha_modelo.md` | Plantilla en blanco |
-| `models/final_pipeline.joblib` | Existe en el equipo donde se ejecutó la etapa 7 (pipeline completo entrenado con todo el entrenamiento). No se sube a Git |
-| `models/model.joblib` | **No existe** |
-| `models/input_schema.json` (esquema de entrada) | **No existe** |
-| `src/proyecto/inference/schema.py` y `predict.py` | Plantilla del curso para **clasificación** (clases, probabilidades, matriz de costos). Hay que adaptarlos a regresión antes de usarlos |
-| Registro en MLflow (nombre, versión, alias `champion`) | **No hecho** |
+## Etapa 9 · Inferencia y app
 
-**Lo que falta hacer** (guía: `material-del-curso/kit/guia-validacion-registro-y-app.md`, secciones 5 y 6):
-1. Especificación, plan y tareas de la etapa, como pide `CLAUDE.md`.
-2. Registrar el pipeline final en MLflow, con estos elementos:
-   - parámetros y métricas de la prueba (`reports/07_metricas_test.json`);
-   - firma y ejemplo de entrada;
-   - etiquetas.
-3. Darle el alias `champion` a esa versión.
-4. Comprobar la ida y vuelta: el modelo recuperado del registro debe predecir igual que el local.
-5. Exportar `models/model.joblib`.
-6. Adaptar `schema.py` y `predict.py` a regresión y generar `models/input_schema.json` con las 21 columnas de entrada, a
-   partir del entrenamiento.
-7. Completar `reports/08_registro.md` y la ficha del modelo, sin direcciones del espacio de trabajo ni correos.
+Detalle en `reports/09_despliegue.md`. Guía en `especificaciones/09-app.md`. Spec Kit en `specs/007-app-inference/`.
+Auditoría en `reports/auditoria_etapa9.md`.
+
+**Predicción solo de regresión.** `src/proyecto/inference/predict.py` quedó con `load_model`, `validate_inputs` y
+`predict_score`; las funciones de clasificación de la plantilla se quitaron, con sus pruebas.
+
+**Del formulario al modelo** (`src/proyecto/inference/form.py`, nuevo). La persona elige textos en español y
+`form_to_row` los traduce a las 21 columnas del modelo:
+- personas («1 a 2» … «9 o más») y cuartos («Uno» … «Seis o más») a los códigos de la etapa 3;
+- un solo campo de estrato: «1» a «6», «Sin estrato» (estrato vacío y `sin_estrato` = 1) o «Sin respuesta»;
+- «Sin respuesta» solo en los 12 campos que admiten vacío; los otros 9 son obligatorios;
+- si la edad no es un entero entre 13 y 80, o falta un dato obligatorio, no hay puntaje: un mensaje dice qué corregir.
+
+**La app** (`app/streamlit_app.py`):
+- título «Predictor de resultados Pruebas Saber 11 en Antioquia» y formulario en tres secciones: colegio, estudiante y
+  hogar;
+- municipios con nombre y código, por ejemplo «MEDELLÍN (5001)». Los nombres se agregaron al esquema
+  (`municipality_names`, 139 municipios), calculados solo con el entrenamiento;
+- resultado: el puntaje redondeado y «se equivoca en promedio 33 puntos; como referencia, entre X y Y». La app aclara
+  que no es un intervalo de confianza;
+- aviso de uso responsable siempre visible, con los límites de la ficha: estrato 5 (MAE 39,57) y la brecha por género
+  (35,74 frente a 31,40);
+- carga `models/model.joblib` desde el repositorio y no consulta Databricks.
+
+**Notebook 09.** Cuatro perfiles inventados, sin Databricks y sin la prueba:
+
+| Perfil (inventado) | Puntaje estimado | Referencia (± 33) |
+|---|---|---|
+| A · colegio oficial urbano en Medellín, estrato 2 | 250 | 217 a 283 |
+| B · colegio no oficial bilingüe en Envigado, estrato 5 | 323 | 290 a 356 |
+| C · colegio oficial rural en Turbo, estrato 1, sin computador ni internet | 212 | 179 a 245 |
+| D · incompleto: «Sin estrato» y varios «Sin respuesta» (Rionegro) | 247 | 214 a 280 |
+
+Un ejemplo con edad 12 y la jornada sin elegir se rechaza sin puntaje, con un mensaje que nombra los dos datos.
+
+**Pruebas.** `tests/test_app.py` prueba el formulario y la app con AppTest:
+- un perfil normal da un puntaje entero;
+- «Sin respuesta» no rompe nada;
+- una edad inválida o un dato obligatorio vacío muestran un mensaje y ningún puntaje;
+- el aviso de uso responsable está visible;
+- el código no menciona Databricks.
+
+**Despliegue:** no se hizo. `reports/09_despliegue.md` deja el plan de despliegue en Streamlit Community Cloud, el plan B
+(app en local) y los casos probados en local con sus resultados.
+
+**Género:** se mantiene como entrada (decisión del grupo, 6 nov 2026); quitarlo exigiría reentrenar y volver a evaluar
+con la prueba, que ya se abrió. Anotado en la ficha del modelo.
 
 ---
 
@@ -383,17 +412,19 @@ atendidos.
 |---|---|
 | Caso, EDA, variables, torneo, optimización, validación | `reports/00_caso.md`, `01_eda.md`, `04_features.md`, `05_torneo.md`, `06_optimizacion.md`, `07_validacion.md` |
 | Decisiones del grupo con fecha y motivo | `especificacion-proyecto.md`, sección 7 |
-| Especificaciones por etapa | `especificaciones/` · `specs/001` a `specs/005` |
+| Especificaciones por etapa | `especificaciones/` · `specs/001` a `specs/007` |
 | Código reutilizable | `src/proyecto/data/`, `features/`, `models/` (`train.py`, `tuning.py`, `evaluation.py`), `tracking/`, `inference/` |
-| Pruebas (92) | `tests/` |
-| Notebooks (solo orquestan) | `notebooks/01` a `07` |
-| Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md` |
+| Pruebas (103) | `tests/` |
+| Notebooks (solo orquestan) | `notebooks/01` a `09` |
+| Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md`, `auditoria_etapa9.md` |
 | Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
+| App e inferencia | `app/streamlit_app.py`, `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
 | Registro | `reports/08_registro.md`, `reports/08_registro.json`, `reports/prueba_huellas.json` |
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
 | Constancia de la prueba | `reports/07_decisiones_congeladas.json`, `reports/prueba_abierta.txt` |
 
-**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `92 passed`.
+**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `103 passed`, y `streamlit run app/streamlit_app.py`
+abre la app en local.
 
 ---
 
@@ -403,10 +434,12 @@ atendidos.
    `evaluation.py`. La casilla sigue sin marcar en `especificaciones/06-optimizacion.md` y `07-validacion.md`.
 2. **Mejoras de la auditoría de la etapa 7:** H1, H3, H4 y H6 ya se aplicaron (etapa 8). Quedan pendientes:
    - H7 y H8: mantenimiento de pruebas (`_frame` a `tests/conftest.py`) y de `permutation_importance_table`.
-3. **Género como entrada del modelo:** decidir con el grupo y, si aplica, con la Secretaría. Aporta poco (0,48 puntos) y hay
-   una brecha de error de 4,3 puntos entre hombres y mujeres. Cualquier cambio requiere validación por sede en un ciclo
-   nuevo, porque la prueba ya se usó.
-4. **Etapa 8:** revisión del grupo con el checklist de `schema.py`, `predict.py` y el notebook 08.
-5. **Etapa 9:** app en Streamlit que carga el modelo desde el repositorio, valida las entradas y muestra el aviso de uso
-   responsable con los límites de arriba.
+3. **Etapa 8:** revisión del grupo con el checklist de `schema.py`, `predict.py` y el notebook 08.
+4. **Etapa 9:**
+   - desplegar la app en Streamlit Community Cloud y probar el enlace en una ventana privada (plan en
+     `reports/09_despliegue.md`);
+   - ensayo cronometrado;
+   - revisión del grupo con el checklist de `form.py`, la app y el notebook 09.
+5. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
+   por sede, porque la prueba ya se usó.
 6. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
