@@ -411,6 +411,48 @@ con la prueba, que ya se abrió. Anotado en la ficha del modelo.
 
 ---
 
+## Uso de Databricks
+
+**Qué se hizo**
+- **Seguimiento de experimentos (etapa 6).** La búsqueda de hiperparámetros se registró con MLflow en Databricks, en el
+  experimento `saber11-optimizacion`:
+  - 55 ensayos: 25 de HistGradientBoosting y 30 de XGBoost;
+  - la medición de partida de cada modelo, con sus parámetros del torneo y los mismos pliegues.
+- **Registro del modelo (etapa 8).** El modelo final quedó en Unity Catalog como
+  `workspace.default.saber11_puntaje_global`:
+  - **versión 1**, con el alias **`champion`**;
+  - experimento `saber11-modelo-final`.
+- **Dónde corrió el cómputo.** El entrenamiento y la búsqueda corrieron en los equipos del grupo; Databricks guardó los
+  registros (parámetros, métricas, modelos), no hizo los cálculos.
+  - Una ejecución completa con MLflow local dio los mismos 55 ensayos, con los mismos parámetros y el mismo MAE, bit a bit.
+  - El registro por red hizo que la búsqueda tardara 31,1 minutos, frente a 27,2 en local.
+
+**Para qué sirvió**
+- **Trazabilidad:** cada resultado de la optimización (etapa 6) y del modelo registrado (etapa 8) se puede rastrear
+  hasta la ejecución que lo produjo. Las etapas anteriores quedaron en los notebooks y en `reports/`.
+- **Comparación de ensayos:** los 55 ensayos y las mediciones de partida quedan uno junto a otro, con sus parámetros y su
+  MAE.
+- **Registro compartido:** todo el grupo ve los mismos experimentos y el mismo modelo, sin pasarse archivos.
+- **Versionado del modelo:** el alias `champion` dice qué versión está vigente. Si aparece una mejor, se mueve el alias.
+- **Linaje:** junto al modelo registrado quedaron:
+  - sus parámetros;
+  - las métricas de la prueba con sus intervalos;
+  - la firma y el ejemplo de entrada (solo las 21 columnas, tomadas del entrenamiento);
+  - el commit de origen.
+
+**Por qué la app no depende de Databricks**
+- La app carga `models/model.joblib` desde el repositorio. Ese archivo se exportó desde la versión `champion`, y se
+  comprobó que predice exactamente igual que el modelo evaluado.
+- No hay credenciales en la nube: la app no necesita token ni conexión a Databricks. Una prueba automática verifica que
+  su código no menciona `mlflow`, `databricks` ni `token`.
+- No depende de la cuota ni de la disponibilidad de otra plataforma: si Databricks no está disponible, la app sigue
+  funcionando.
+
+Detalle en `reports/06_optimizacion.md` y `reports/08_registro.md`. La ruta completa de los experimentos no se publica
+porque incluye el correo de un integrante.
+
+---
+
 ## Archivos principales
 
 | Qué | Dónde |
