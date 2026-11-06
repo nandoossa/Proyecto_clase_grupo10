@@ -154,6 +154,17 @@ Veredicto final: sin fuga evidente; hay 0 problemas graves y 8 mejoras menores d
 - **R3:** atendido en `reports/07_validacion.md` §5 («uso solo descriptivo»).
 - **R4 y R5:** ya estaban en `reports/07_validacion.md` §3 (transparencia, y comparación con las etapas 5 y 6).
 - **R6:** `pytest` completo en verde (82 de 82) antes del commit.
-- **H1, H3, H4 y H6** (endurecer el candado de la prueba en el notebook 07) y **H7, H8** (mantenimiento): **pendientes**, se
-  proponen al grupo antes de la etapa 8. No se aplicaron ahora para no cambiar el código de un notebook ya ejecutado; si se
-  aplican, re-ejecutarlo reutiliza los resultados guardados y no reabre la prueba.
+- **H1, H3, H4 y H6:** atendidos el 5 nov 2026 (pedido del grupo, antes de la etapa 8), sin volver a evaluar con la prueba:
+  - **H1:** si existe la marca de apertura y falta `07_decisiones_congeladas.json`, el notebook se detiene (no reescribe).
+    Si existe, lo relee y se detiene si `06_best_params.json` ya no coincide con lo congelado.
+  - **H3:** en una apertura nueva, la marca se escribe **antes** de evaluar (si algo falla a mitad, el notebook se detiene
+    en vez de reabrir). Se guardan huellas SHA-256 de `test.joblib`, `final_pipeline.joblib` y `prueba_resultados.joblib` en
+    `reports/prueba_huellas.json`; para la apertura del 5 nov se calcularon después, y las fechas de modificación muestran
+    que los tres archivos no cambiaron desde entonces. Al reutilizar, se verifica la huella de los resultados guardados.
+  - **H4:** si la prueba ya se abrió, el notebook **carga** el modelo evaluado (verificando su huella) en vez de reentrenar.
+  - **H6:** se comprueba que el one-hot del preprocesador usa `min_frequency` = 0,001.
+  - **Comprobación:** el notebook 07 se volvió a ejecutar; reutilizó los resultados guardados y los cinco archivos de
+    resultados (`07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv`, `07_decisiones_congeladas.json`,
+    `prueba_abierta.txt`) quedaron **idénticos byte a byte**; el modelo y los resultados guardados conservan su huella.
+- **H7 y H8** (mantenimiento: mover `_frame` a `tests/conftest.py` y filtrar `X[columns]` dentro de
+  `permutation_importance_table`): **anotados como pendientes**.

@@ -1,0 +1,11 @@
+{
+  "test.joblib": "b9f23d31d9ae1d036b6a703909f31e01cd7aea6af484a9f820504823ab35ea4d",
+  "final_pipeline.joblib": "e6147bc96326cde771b3c3066d79ffd9ba64a3082e5df10c95ba699c26eb78c9",
+  "prueba_resultados.joblib": "47d5b7e4abd677aa07b92ac26a0cac8ce81113005a97afcde7dafcdd518a0aae",
+  "modificados_por_ultima_vez": {
+    "test.joblib": "2026-11-05T18:03:25",
+    "final_pipeline.joblib": "2026-11-05T19:53:39",
+    "prueba_resultados.joblib": "2026-11-05T19:55:52"
+  },
+  "nota": "Huellas SHA-256 calculadas el 5 nov 2026 después de la apertura (auditoría etapa 7, H3). Las fechas de modificación muestran que los tres archivos no cambiaron desde la apertura (19:55:52): el modelo es de 19:53:39 y la prueba de 18:03:25. Calcular una huella solo lee bytes; no evalúa nada con la prueba."
+}
