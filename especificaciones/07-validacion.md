@@ -5,7 +5,7 @@
 > **exactamente** esto (`material-del-curso/kit/checklist-revision-ia.md`). Guía:
 > `material-del-curso/kit/guia-validacion-registro-y-app.md`, secciones 1 a 4.
 
-**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☐ borrador  ☒ cerrada (falta la revisión del grupo con el checklist)
+**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☐ borrador  ☒ cerrada
 
 > Borrador preparado por Claude a partir del pedido del grupo del 5 nov 2026. **La prueba no se ha abierto.** Ninguna cifra
 > de la prueba está escrita aquí; se llenan después de ejecutar el notebook 07.
@@ -102,4 +102,5 @@ por sedes.
   la ejecución**; los segmentos que no cumplen se dicen claramente.
 - ☒ Auditoría con `auditor-de-fuga` en `reports/auditoria_etapa7.md`.
 - ☒ Todo subido a GitHub.
-- ☐ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`.
+- ☒ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`
+  (6 nov 2026, revisión conjunta del grupo: `evaluation.py`; detalle en `reports/revision_grupo.md`).

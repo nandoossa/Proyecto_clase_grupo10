@@ -6,7 +6,7 @@
 > Ejemplo de estructura (no de decisiones): `material-del-curso/ejemplo-creditsight/src/creditsight/models/tuning.py` y
 > `material-del-curso/ejemplo-creditsight/notebooks/06_optimizacion.ipynb`. Guía: `material-del-curso/kit/guia-modelado-y-optimizacion.md`, secciones 3 y 4.
 
-**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☐ borrador  ☒ cerrada (falta la revisión del grupo con el checklist)
+**Grupo:** Predictor de resultados Pruebas Saber 11 en Antioquia   **Fecha:** 5 nov 2026   **Estado:** ☐ borrador  ☒ cerrada
 
 > Borrador preparado por Claude a partir del pedido del grupo del 5 nov 2026. Los tiempos de la sección 4 se midieron en
 > este equipo (5 nov 2026) con un ajuste de cada modelo sobre ~29.000 estudiantes. Ninguna cifra de resultados está escrita
@@ -129,4 +129,5 @@ remuestreos de **sedes completas** (no de filas).
 - ☒ Decisión anotada en la sección 7 de `especificacion-proyecto.md`.
 - ☒ Auditoría con `auditor-de-fuga` en `reports/auditoria_etapa6.md`.
 - ☒ Todo subido a GitHub.
-- ☐ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`.
+- ☒ Revisión del código de Claude por el grupo con `material-del-curso/kit/checklist-revision-ia.md`
+  (6 nov 2026, revisión conjunta del grupo: `tuning.py`; detalle en `reports/revision_grupo.md`).

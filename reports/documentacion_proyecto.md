@@ -41,10 +41,10 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 3 · Preprocesamiento y partición | Completa | `reports/auditoria_etapa3.md` |
 | 4 · Variables | Completa | `reports/04_features.md` |
 | 5 · Torneo de modelos | Completa | `reports/05_torneo.md` |
-| 6 · Optimización con seguimiento | Completa (falta la revisión del grupo con el checklist) | `reports/06_optimizacion.md` |
-| 7 · Validación e interpretación | Completa (falta la revisión del grupo con el checklist) | `reports/07_validacion.md` |
-| 8 · Registro del modelo | Completa (falta la revisión del grupo con el checklist) | `reports/08_registro.md`, `models/ficha_modelo.md` |
-| 9 · Inferencia y app | Completa en local, sin desplegar (falta la revisión del grupo con el checklist) | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
+| 6 · Optimización con seguimiento | Completa | `reports/06_optimizacion.md` |
+| 7 · Validación e interpretación | Completa | `reports/07_validacion.md` |
+| 8 · Registro del modelo | Completa | `reports/08_registro.md`, `models/ficha_modelo.md` |
+| 9 · Inferencia y app | Completa en local, sin desplegar (falta revisar con el checklist `form.py` y el notebook 09) | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
 
 ## La variable objetivo y los datos
 
@@ -98,7 +98,8 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | Nada sensible sale del equipo | `.env` ignorado; identificador y fecha de nacimiento del estudiante eliminados; se ocultaron correo y enlaces de Databricks en los notebooks públicos |
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
 | Pruebas automáticas | 103 pruebas en `tests/`, todas en verde al cierre de la etapa 9 |
-| Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 6, 7 y 8 (`reports/auditoria_*.md`) |
+| Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 5, 6, 7, 8 y 9 (`reports/auditoria_*.md`) |
+| Revisión del grupo con el checklist | Etapas 1 a 5 el 5 nov 2026 (una pieza por integrante) y etapas 6 a 9 el 6 nov 2026 (revisión conjunta de `tuning.py`, `evaluation.py`, `schema.py`, notebook 08, `streamlit_app.py` y `predict.py`), sin problemas encontrados; detalle en `reports/revision_grupo.md`. Falta `form.py` y el notebook 09 |
 
 ---
 
@@ -430,16 +431,14 @@ abre la app en local.
 
 ## Pendientes
 
-1. **Revisión del grupo con el checklist** (`material-del-curso/kit/checklist-revision-ia.md`) de `tuning.py` y
-   `evaluation.py`. La casilla sigue sin marcar en `especificaciones/06-optimizacion.md` y `07-validacion.md`.
-2. **Mejoras de la auditoría de la etapa 7:** H1, H3, H4 y H6 ya se aplicaron (etapa 8). Quedan pendientes:
+1. **Mejoras de la auditoría de la etapa 7:** H1, H3, H4 y H6 ya se aplicaron (etapa 8). Quedan pendientes:
    - H7 y H8: mantenimiento de pruebas (`_frame` a `tests/conftest.py`) y de `permutation_importance_table`.
-3. **Etapa 8:** revisión del grupo con el checklist de `schema.py`, `predict.py` y el notebook 08.
-4. **Etapa 9:**
+2. **Etapa 9:**
    - desplegar la app en Streamlit Community Cloud y probar el enlace en una ventana privada (plan en
      `reports/09_despliegue.md`);
    - ensayo cronometrado;
-   - revisión del grupo con el checklist de `form.py`, la app y el notebook 09.
-5. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
+   - revisión con el checklist de `src/proyecto/inference/form.py` y del notebook 09, que no figuran en la revisión del
+     grupo del 6 nov 2026.
+3. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
-6. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
+4. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
