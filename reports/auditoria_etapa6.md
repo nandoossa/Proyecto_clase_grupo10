@@ -73,4 +73,9 @@ No pude comprobar estas cosas:
   Queda como precaución escrita en el informe: borrar o renombrar `optuna_06.db` antes de repetir con otros datos o semilla.
 - **H4:** `.gitignore` cambiado a `optuna_*.db*`. Los `reports/06_*_local.*` se conservan a propósito (resultado de la
   ejecución local, pedido por el grupo para comparar con Databricks).
-- **H5:** pendiente; se propone al grupo como mejora de pruebas.
+- **H5:** atendido (pedido del grupo, 5 nov 2026). Dos pruebas nuevas en `tests/test_tuning.py`:
+  `test_tune_uses_folds_grouped_by_school` (un validador espía anota las sedes de cada pliegue: ninguna a los dos lados y
+  la partida usa los mismos pliegues que los ensayos) y `test_min_frequency_fitted_inside_each_fold` (un espía del one-hot
+  verifica que se ajusta una vez por pliegue, solo con sus filas de ajuste, con el umbral del ensayo, y que no conoce
+  categorías que solo están en validación). Se comprobó con una versión con fuga simulada (ajuste con toda la tabla) que la
+  segunda prueba falla. `pytest`: 76 de 76.

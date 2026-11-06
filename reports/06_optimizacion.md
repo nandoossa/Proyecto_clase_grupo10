@@ -47,7 +47,7 @@
   segundos de ajuste y etiquetas `etapa=06_optimizacion`, `modelo`, `metrica_optimizada=mae`.
 - **Mejor ejecución:** `hist gradient boosting-ensayo-14`, MAE 33,401 (± 0,153).
 - **Tiempo:** búsqueda de 31,1 minutos (HGB 20,0 + XGB 11,1); el notebook completo tardó 1.932 s (32,2 min). Supera por
-  poco el límite de 30 minutos: la misma búsqueda con MLflow local tardó 27,2 minutos (notebook completo 1.724 s, 28,7 min).
+  poco el límite de 30 minutos (**el grupo lo aceptó el 5 nov 2026**): la misma búsqueda con MLflow local tardó 27,2 minutos (notebook completo 1.724 s, 28,7 min).
   La diferencia es el registro por red en Databricks (más de un centenar de ejecuciones con varias llamadas cada una), no
   el cálculo.
 - **Reproducibilidad (ejecución local frente a Databricks):** antes de configurar Databricks se hizo una ejecución completa
@@ -166,7 +166,8 @@ finalistas incluye el cero, se elige HistGradientBoosting; si no, el de menor MA
   repetir con otros datos o semilla, renombrarlo o borrarlo (como se hizo aquí con `optuna_06_local.db`).
 - **Privacidad:** el notebook no publica la ruta del experimento (incluye el correo del usuario) ni los enlaces al espacio
   de trabajo de Databricks que MLflow imprime en cada ejecución (se quitaron de las salidas).
-- **Auditoría de fuga:** `reports/auditoria_etapa6.md`, sin fuga evidente; 5 observaciones menores con su seguimiento.
+- **Auditoría de fuga:** `reports/auditoria_etapa6.md`, sin fuga evidente; 5 observaciones menores con su seguimiento. Las
+  pruebas que pedía H5 (pliegues por sede en la búsqueda y `min_frequency` ajustado dentro de cada pliegue) ya existen.
 
 ## Para la clase siguiente
 

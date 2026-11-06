@@ -113,12 +113,17 @@ remuestreos de **sedes completas** (no de filas).
   un intervalo con ancho); el valor puntual es exactamente MAE(A) − MAE(B).
 - ☒ **La reserva no comparte sedes con la búsqueda** y reserva ~25 % de las sedes.
 - ☒ **`tune` mide los parámetros de partida con los mismos pliegues y se reanuda** desde el archivo sqlite sin repetir ensayos.
-- ☒ `pytest` en verde (74 de 74, 5 nov 2026).
+- ☒ **Pruebas de la auditoría (H5):** la búsqueda y la medición de partida usan pliegues por sede (ninguna sede en ajuste y
+  validación de un mismo pliegue, los mismos pliegues para todos) y el one-hot con `min_frequency` se ajusta solo con las
+  filas de ajuste de cada pliegue.
+- ☒ `pytest` en verde (76 de 76, 5 nov 2026).
 
 ## 9. Criterios de cierre
 
-- ☒ Cada ensayo registrado en MLflow (Databricks: 25 + 30 ensayos y 2 mediciones de partida). ☐ Búsqueda en < 30 minutos:
-  con Databricks tardó 31,1 min (por el registro por red); la misma búsqueda con MLflow local tardó 27,2 min.
+- ☒ Cada ensayo registrado en MLflow (Databricks: 25 + 30 ensayos y 2 mediciones de partida). ☒ Tiempo de la búsqueda
+  **aceptado por el grupo (5 nov 2026)**: con Databricks tardó 31,1 min de búsqueda (32,2 min el notebook completo). El
+  cálculo es idéntico al de la ejecución con MLflow local (27,2 min, mismos 55 ensayos bit a bit); la diferencia se debe al
+  registro por red en Databricks.
 - ☒ `reports/06_optimizacion.md` con el mejor modelo, parámetros, MAE antes y después, comprobación en sedes reservadas con
   intervalo y decisiones, **solo con cifras de la ejecución**.
 - ☒ Decisión anotada en la sección 7 de `especificacion-proyecto.md`.

@@ -118,6 +118,74 @@ def test_tune_minimizes_mae_and_resumes(tmp_path):
     assert len(again.trials) == 3  # solo se agregó el que faltaba
 
 
+class _RecordingGroupCV:
+    """Validación cruzada por sede que anota qué sedes quedan en ajuste y en validación de cada pliegue."""
+
+    def __init__(self, n_splits: int = 3):
+        self.cv = group_cv(n_splits)
+        self.records = []
+
+    def split(self, X, y=None, groups=None):
+        assert groups is not None, "la búsqueda debe partir con groups = sede"
+        groups = np.asarray(groups)
+        for train_idx, valid_idx in self.cv.split(X, y, groups=groups):
+            self.records.append((set(groups[train_idx]), set(groups[valid_idx]), len(train_idx)))
+            yield train_idx, valid_idx
+
+    def get_n_splits(self, X=None, y=None, groups=None):
+        return self.cv.get_n_splits(X, y, groups)
+
+
+def test_tune_uses_folds_grouped_by_school():
+    """Auditoría H5: ningún pliegue de la búsqueda (ni de la medición de partida) tiene una sede a los dos lados."""
+    X, y = feature_frame(_frame(n_schools=30, per_school=6))
+    cv = _RecordingGroupCV(3)
+    tune("xgboost", X, y, cv, n_trials=2, log=False, max_trees=5)
+    assert len(cv.records) == 3 * 3  # partida + 2 ensayos, 3 pliegues cada uno
+    for train_groups, valid_groups, _ in cv.records:
+        assert train_groups.isdisjoint(valid_groups)
+        assert train_groups | valid_groups == set(X[GROUP_COL])
+    # la partida y los ensayos usan exactamente los mismos pliegues
+    first = [(tr, va) for tr, va, _ in cv.records[:3]]
+    for start in (3, 6):
+        assert [(tr, va) for tr, va, _ in cv.records[start:start + 3]] == first
+
+
+def test_min_frequency_fitted_inside_each_fold(monkeypatch):
+    """Auditoría H5: el one-hot (con su umbral `min_frequency`) se ajusta solo con las filas de ajuste de cada pliegue."""
+    from sklearn.preprocessing import OneHotEncoder
+
+    fits = []
+    original_fit = OneHotEncoder.fit
+
+    def spy_fit(self, X, y=None):
+        result = original_fit(self, X, y)
+        fits.append((len(X), self.min_frequency, np.asarray(X).copy()))
+        return result
+
+    monkeypatch.setattr(OneHotEncoder, "fit", spy_fit)
+    df = _frame(n_schools=30, per_school=6)
+    X, y = feature_frame(df)
+    cv = _RecordingGroupCV(3)
+    study = tune("hist gradient boosting", X, y, cv, n_trials=2, log=False, max_trees=5)
+
+    fold_sizes = {n for _, _, n in cv.records}
+    thresholds = {0.01} | {t.params["min_frequency"] for t in study.trials}
+    assert len(fits) == len(cv.records)          # un ajuste del codificador por pliegue, ni uno más
+    for n_rows, min_frequency, _ in fits:
+        assert n_rows in fold_sizes and n_rows < len(X)   # nunca con la tabla completa ni con validación
+        assert min_frequency in thresholds
+
+    # Las categorías «poco frecuentes» salen solo de las filas de ajuste del pliegue.
+    train_idx, _ = next(group_cv(3).split(X, y, groups=X[GROUP_COL]))
+    prep = build_tuned_pipeline("hist gradient boosting", STARTING_PARAMS["hist gradient boosting"]).named_steps["prep"]
+    fold_prep = prep.fit(X.iloc[train_idx])
+    encoder = fold_prep.named_transformers_["cat"].named_steps["onehot"]
+    for col, cats in enumerate(encoder.categories_):
+        seen = set(fits[0][2][:, col])           # lo que vio el codificador en el primer pliegue de la búsqueda
+        assert set(cats) == seen                 # ninguna categoría que solo esté en validación
+
+
 def test_tune_requires_group_column():
     X, y = feature_frame(_frame())
     with pytest.raises(ValueError, match=GROUP_COL):

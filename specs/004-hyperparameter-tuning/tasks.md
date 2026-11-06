@@ -75,6 +75,7 @@ description: "Lista de tareas: tuning.py (optimización de los finalistas con se
 
 - [x] T020 Lanzar el subagente `auditor-de-fuga` sobre src/proyecto/models/tuning.py y notebooks/06_optimizacion.ipynb y guardar su informe en reports/auditoria_etapa6.md
 - [x] T021 `python -m pytest` completo en verde; commit y push a `origin main`
+- [x] T022 [P] Pruebas de la auditoría H5 en tests/test_tuning.py: `test_tune_uses_folds_grouped_by_school` y `test_min_frequency_fitted_inside_each_fold`; `pytest` completo en verde (76 de 76)
 
 ## Dependencies
 
