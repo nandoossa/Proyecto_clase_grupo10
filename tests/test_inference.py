@@ -200,3 +200,82 @@ def test_real_model_predicts_a_training_row():
     row = joblib.load(train_path)[schema["numeric"] + schema["categorical"]].head(1)
     result = predict_score(row, load_model(model_path), schema)
     assert 100 <= result["puntaje_estimado"].iloc[0] <= 477
+
+
+# --- Pruebas agregadas tras la revisión de la app (6 nov 2026) --------------------------------------------------------
+# Cubren funciones públicas de `inference/` que no tenían prueba directa: `form.options`, `predict.load_model`,
+# `predict.validate_inputs` (llamada sin pasar por `predict_score`) y `schema.save_schema` / `load_schema`.
+from proyecto.inference import form
+from proyecto.inference.schema import save_schema
+
+REAL_SCHEMA_PATH = ROOT / "models" / "input_schema.json"
+
+
+@pytest.fixture(scope="module")
+def real_schema() -> dict:
+    if not REAL_SCHEMA_PATH.exists():
+        pytest.skip("falta models/input_schema.json")
+    return load_schema(REAL_SCHEMA_PATH)
+
+
+def test_options_offers_sin_respuesta_only_for_nullable_fields(real_schema):
+    """Un campo que admite vacío ofrece «Sin respuesta» al final; uno que no lo admite, no."""
+    nullable_field = "cole_bilingue"          # en schema["nullable"]
+    required_field = "cole_naturaleza"        # fuera de schema["nullable"]
+    assert nullable_field in real_schema["nullable"] and required_field not in real_schema["nullable"]
+    with_blank = form.options(nullable_field, real_schema)
+    assert with_blank[-1] == form.SIN_RESPUESTA == "Sin respuesta"
+    assert with_blank[:-1] == list(real_schema["categories"][nullable_field])
+    without_blank = form.options(required_field, real_schema)
+    assert form.SIN_RESPUESTA not in without_blank
+    assert without_blank == list(real_schema["categories"][required_field])
+
+
+def test_options_stratum_offers_sin_estrato(real_schema):
+    """El estrato ofrece 1 a 6 y «Sin estrato»; «Sin respuesta» solo si `fami_estratovivienda` admite vacío."""
+    result = form.options(form.STRATUM_FIELD, real_schema)
+    assert result[:7] == ["1", "2", "3", "4", "5", "6", "Sin estrato"]
+    assert ("fami_estratovivienda" in real_schema["nullable"]) == (form.SIN_RESPUESTA in result)
+
+
+def test_options_stratum_without_blank_when_not_nullable():
+    """Esquema mínimo a mano: si el estrato no admite vacío, solo quedan 1 a 6 y «Sin estrato»."""
+    result = form.options(form.STRATUM_FIELD, {"nullable": [], "categories": {}})
+    assert result == ["1", "2", "3", "4", "5", "6", "Sin estrato"]
+    with_blank = form.options(form.STRATUM_FIELD, {"nullable": ["fami_estratovivienda"], "categories": {}})
+    assert with_blank == result + ["Sin respuesta"]
+
+
+def test_load_model_missing_path_raises_file_not_found(tmp_path):
+    """Una ruta que no existe lanza FileNotFoundError con un mensaje que dice cuál era."""
+    missing = tmp_path / "no_existe.joblib"
+    with pytest.raises(FileNotFoundError, match="no_existe.joblib"):
+        predict.load_model(missing)
+
+
+def test_validate_inputs_valid_row_returns_no_warnings(reg_data):
+    """Fila normal: dentro de lo observado, categorías conocidas, sin vacíos prohibidos."""
+    assert validate_inputs(reg_row(), reg_schema(reg_data)) == []
+
+
+def test_validate_inputs_outside_observed_but_inside_valid_range_only_warns(reg_data):
+    """Edad 30: el entrenamiento solo vio 15 a 24, pero 30 es posible (13 a 80). Advierte y no lanza error."""
+    schema = reg_schema(reg_data)
+    assert schema["observed_range"]["edad"][1] < 30 <= schema["valid_range"]["edad"][1]
+    warnings = validate_inputs(reg_row(edad=30.0), schema)
+    assert len(warnings) == 1 and "edad" in warnings[0] and "rango visto" in warnings[0]
+
+
+def test_validate_inputs_unseen_municipality_only_warns(reg_data):
+    """Un municipio no visto (y listado en warn_only_categories) da advertencia, no error."""
+    warnings = validate_inputs(reg_row(municipio=5999), reg_schema(reg_data))
+    assert len(warnings) == 1 and "municipio" in warnings[0] and "5999" in warnings[0]
+
+
+def test_save_schema_then_load_schema_gives_same_dict(reg_data, tmp_path):
+    """Guardar y volver a leer devuelve el mismo diccionario (también en una carpeta que aún no existe)."""
+    schema = reg_schema(reg_data)
+    path = tmp_path / "subcarpeta" / "esquema.json"
+    save_schema(schema, path)
+    assert path.exists()
+    assert load_schema(path) == schema
