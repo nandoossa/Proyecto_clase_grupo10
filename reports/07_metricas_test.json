@@ -1,0 +1,79 @@
+{
+  "decisiones_congeladas": "2026-11-05T19:53:16",
+  "prueba_abierta": "Prueba abierta el 2026-11-05T19:55:52 · modelo hist gradient boosting · 14,862 estudiantes, 289 sedes. Una sola vez.",
+  "prueba": {
+    "estudiantes": 14862,
+    "sedes": 289
+  },
+  "modelo_final": "hist gradient boosting",
+  "metricas_modelo": {
+    "mae": 33.315780735281685,
+    "rmse": 41.462770781871455,
+    "r2": 0.36313729449029075
+  },
+  "metricas_linea_base": {
+    "mae": 43.08780783205491,
+    "rmse": 51.97143519959491,
+    "r2": -0.000595616808959365
+  },
+  "linea_base_constante": 243.0,
+  "intervalos_95_sedes": {
+    "MAE": {
+      "modelo": [
+        32.39435328058212,
+        34.20741072585397
+      ],
+      "linea_base": [
+        41.376258422544424,
+        44.97981316996836
+      ],
+      "diferencia": -9.772027096773225,
+      "diferencia_ic": [
+        -11.78060859533991,
+        -7.989696048343278
+      ]
+    },
+    "RMSE": {
+      "modelo": [
+        40.343766101423874,
+        42.49603478828732
+      ],
+      "linea_base": [
+        49.79179967789348,
+        54.36655448332242
+      ],
+      "diferencia": -10.508664417723452,
+      "diferencia_ic": [
+        -12.738284558202391,
+        -8.466863250568299
+      ]
+    },
+    "R²": {
+      "modelo": [
+        0.3062456762045446,
+        0.41431292440411677
+      ],
+      "linea_base": [
+        -0.019700611888836653,
+        -7.159633282077811e-06
+      ],
+      "diferencia": 0.3637329112992501,
+      "diferencia_ic": [
+        0.30897318427490966,
+        0.42121864579087026
+      ]
+    }
+  },
+  "mejora_a_linea_base_con_confianza": true,
+  "metas": {
+    "minima_38_puntual": true,
+    "minima_38_ic_superior": true,
+    "deseable_35_puntual": true,
+    "deseable_35_ic_superior": true
+  },
+  "equidad_resumen": {
+    "cumple con ventaja clara": 14,
+    "cumple sin ventaja concluyente": 0,
+    "no cumple": 0
+  }
+}

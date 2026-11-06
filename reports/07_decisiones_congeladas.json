@@ -1,0 +1,29 @@
+{
+  "fecha_y_hora": "2026-11-05T19:53:16",
+  "modelo_final": "hist gradient boosting",
+  "parametros": {
+    "min_frequency": 0.001,
+    "loss": "absolute_error",
+    "learning_rate": 0.030107008010973057,
+    "max_iter": 587,
+    "max_leaf_nodes": 16,
+    "min_samples_leaf": 82,
+    "l2_regularization": 0.36568458128692466,
+    "max_features": 0.6154550174376242
+  },
+  "fijos": {
+    "early_stopping": false,
+    "random_state": 42
+  },
+  "entrenamiento": "todo train.joblib (búsqueda + sedes reservadas de la etapa 6)",
+  "calibrar": "no aplica (regresión)",
+  "regla_de_decision": "no aplica (regresión: se muestra el puntaje estimado)",
+  "metrica_principal": "MAE (puntos); controles RMSE y R²",
+  "linea_base": "DummyRegressor(strategy='median') ajustado con todo el entrenamiento",
+  "metas": {
+    "minima": 38,
+    "deseable": 35
+  },
+  "regla_equidad": "cumple si MAE modelo < MAE línea base en el segmento; si cumple: 'con ventaja clara' si el IC 95 % (sedes) de la diferencia excluye el cero, 'sin ventaja concluyente' si lo incluye",
+  "como_se_decidio": "etapas 5 y 6 con validación agrupada por sede; la prueba no se miró"
+}
