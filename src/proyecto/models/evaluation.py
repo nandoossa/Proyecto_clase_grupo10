@@ -101,7 +101,11 @@ def permutation_importance_table(pipeline, X: pd.DataFrame, y, columns: list[str
     Se permutan las columnas **originales** (antes del one-hot), así cada variable cuenta como una sola. Explica al modelo,
     no al mundo: las variables correlacionadas se reparten el crédito y una importancia alta no es causa.
     """
-    # Se desordena cada columna de X; para no gastar tiempo en columnas que el modelo no usa, pasar X[model_columns()].
+    # H8 (auditoría de la etapa 7): solo se desordenan las columnas que usa el modelo; las demás (por ejemplo, la sede)
+    # se quitan antes. No se filtra a `columns`, porque el modelo necesita todas sus columnas para predecir. scikit-learn
+    # usa una sola semilla para todas las columnas, así que el resultado es el mismo que pasando X[model_columns()], como
+    # hizo el notebook 07.
+    X = X[model_columns()]
     result = permutation_importance(pipeline, X, y, scoring="neg_mean_absolute_error", n_repeats=n_repeats,
                                     random_state=seed, n_jobs=1)
     table = pd.DataFrame({"aumento_mae": result.importances_mean, "desviacion": result.importances_std},

@@ -167,4 +167,29 @@ Veredicto final: sin fuga evidente; hay 0 problemas graves y 8 mejoras menores d
     resultados (`07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv`, `07_decisiones_congeladas.json`,
     `prueba_abierta.txt`) quedaron **idénticos byte a byte**; el modelo y los resultados guardados conservan su huella.
 - **H7 y H8** (mantenimiento: mover `_frame` a `tests/conftest.py` y filtrar `X[columns]` dentro de
-  `permutation_importance_table`): **anotados como pendientes**.
+  `permutation_importance_table`): anotados como pendientes el 5 nov 2026; **atendidos el 6 nov 2026** (ver abajo).
+
+## Seguimiento (6 nov 2026): H7 y H8
+
+- **H7 (atendido):** `_frame` pasó de `tests/test_models.py` a `tests/conftest.py`, como el fixture `school_frame`.
+  - Es una fábrica: se llama igual, `school_frame(n_schools=..., per_school=...)`.
+  - `test_models.py`, `test_tuning.py` y `test_evaluation.py` lo reciben como fixture; ya no hay
+    `from test_models import _frame`.
+  - Cada archivo de prueba corre también solo (`pytest tests/test_evaluation.py`).
+  - `test_features.py` tiene su propio `_frame`, distinto, y no se tocó.
+- **H8 (atendido, con un ajuste):** `permutation_importance_table` ahora quita de `X`, antes de permutar, las columnas que
+  el modelo no usa (por ejemplo, la sede).
+  - **El ajuste:** se filtra con `X[model_columns()]` y no con `X[columns]`, como proponía la tabla. El modelo necesita
+    sus 21 columnas para predecir. Con `X[columns]`, pedir solo algunas columnas (como hace
+    `test_permutation_importance_detects_signal`) daba error («columns are missing»).
+  - **El resultado del notebook 07 no cambia:** el notebook ya llamaba a la función con `X_test[cols]`, con
+    `cols = model_columns()`; filtrar de nuevo con `model_columns()` deja la misma tabla.
+  - Además, `permutation_importance` de scikit-learn usa **una sola semilla** para desordenar todas las columnas, así
+    que las columnas de más no cambian el desorden de las demás.
+  - `reports/07_importancia.csv` **no se recalculó**: usa la prueba, que ya se abrió.
+  - **Pruebas nuevas en `tests/test_evaluation.py`:**
+    - `test_permutation_importance_only_permutes_model_columns`: la función permuta solo las 21 columnas del modelo,
+      sin la sede, y se pueden pedir solo algunas. Falló antes del cambio.
+    - `test_permutation_importance_same_result_with_extra_columns`: con datos inventados, pasar `X` completo (con la
+      sede) da exactamente la misma tabla que pasar `X[model_columns()]`.
+- **pytest:** 105 de 105 en verde.

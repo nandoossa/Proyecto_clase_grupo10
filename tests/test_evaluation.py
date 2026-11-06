@@ -18,7 +18,6 @@ from proyecto.models.evaluation import (
     stratum_segment,
 )
 from proyecto.models.train import TARGET, build_pipeline, feature_frame
-from test_models import _frame
 
 
 def test_stratum_segment_labels():
@@ -83,8 +82,8 @@ def test_model_columns_exclude_group_and_target():
     assert len(cols) == len(set(cols)) == 21
 
 
-def test_permutation_importance_detects_signal():
-    df = _frame(n_schools=40, per_school=10)   # el puntaje depende del estrato y de la edad
+def test_permutation_importance_detects_signal(school_frame):
+    df = school_frame(n_schools=40, per_school=10)   # el puntaje depende del estrato y de la edad
     X, y = feature_frame(df)
     pipe = build_pipeline(HistGradientBoostingRegressor(max_iter=50, random_state=0), scale=False).fit(X, y)
     table = permutation_importance_table(pipe, X, y, ["fami_estratovivienda", "cole_bilingue"], n_repeats=3)
@@ -92,3 +91,34 @@ def test_permutation_importance_detects_signal():
     assert table.loc["fami_estratovivienda", "aumento_mae"] > 5          # define el puntaje
     assert abs(table.loc["cole_bilingue", "aumento_mae"]) < 1           # no influye en el puntaje inventado
     assert table.index[0] == "fami_estratovivienda"                     # ordenada de mayor a menor
+
+
+def test_permutation_importance_only_permutes_model_columns(school_frame, monkeypatch):
+    """H8 (auditoría de la etapa 7): la función quita de X lo que el modelo no usa (la sede) antes de permutar."""
+    import proyecto.models.evaluation as evaluation
+
+    X, y = feature_frame(school_frame(n_schools=20, per_school=5))
+    pipe = build_pipeline(HistGradientBoostingRegressor(max_iter=10, random_state=0), scale=False).fit(X, y)
+    seen = {}
+    original = evaluation.permutation_importance
+
+    def spy(estimator, X_perm, *args, **kwargs):
+        seen["columns"] = list(X_perm.columns)
+        return original(estimator, X_perm, *args, **kwargs)
+
+    monkeypatch.setattr(evaluation, "permutation_importance", spy)
+    table = permutation_importance_table(pipe, X, y, ["fami_estratovivienda", "edad"], n_repeats=2)
+    assert seen["columns"] == model_columns() and GROUP_COL not in seen["columns"]
+    assert sorted(table.index) == ["edad", "fami_estratovivienda"]          # se pueden pedir solo algunas
+
+
+def test_permutation_importance_same_result_with_extra_columns(school_frame):
+    """Filtrar dentro no cambia el resultado: pasar X completo (con la sede) da lo mismo que pasar X ya filtrado,
+    que es como lo llamó el notebook 07. scikit-learn usa una sola semilla para todas las columnas."""
+    X, y = feature_frame(school_frame(n_schools=30, per_school=6))
+    pipe = build_pipeline(HistGradientBoostingRegressor(max_iter=20, random_state=0), scale=False).fit(X, y)
+    cols = model_columns()
+    assert GROUP_COL in X.columns and GROUP_COL not in cols
+    filtered = permutation_importance_table(pipe, X[cols], y, cols, n_repeats=3)
+    full = permutation_importance_table(pipe, X, y, cols, n_repeats=3)
+    pd.testing.assert_frame_equal(filtered, full)

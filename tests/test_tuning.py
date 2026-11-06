@@ -1,6 +1,6 @@
 """Pruebas de tuning.py: espacios de búsqueda, búsqueda reanudable, reserva de sedes y bootstrap por sede.
 
-Las tablas se arman a mano con valores inventados (`_frame` de test_models.py) y modelos diminutos, para que corran rápido.
+Las tablas se arman a mano con valores inventados (`school_frame` de conftest.py) y modelos diminutos, para que corran rápido.
 """
 import numpy as np
 import optuna
@@ -21,7 +21,6 @@ from proyecto.models.tuning import (
     tune,
     xgb_space,
 )
-from test_models import _frame
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
@@ -79,8 +78,8 @@ def _tiny(params: dict, name: str) -> dict:
 
 
 @pytest.mark.parametrize("name", list(MODELS))
-def test_factories_build_models_that_fit(name):
-    X, y = feature_frame(_frame())
+def test_factories_build_models_that_fit(name, school_frame):
+    X, y = feature_frame(school_frame())
     space_fn, _ = MODELS[name]
     for params in [_sample(space_fn, 1)[0], STARTING_PARAMS[name]]:
         pipe = build_tuned_pipeline(name, _tiny(params, name)).fit(X, y)
@@ -103,8 +102,8 @@ def test_starting_params_match_tournament(name):
     assert STARTING_PARAMS[name]["min_frequency"] == 0.01
 
 
-def test_tune_minimizes_mae_and_resumes(tmp_path):
-    X, y = feature_frame(_frame())
+def test_tune_minimizes_mae_and_resumes(tmp_path, school_frame):
+    X, y = feature_frame(school_frame())
     storage = tmp_path / "estudio.db"
     space_fn, make_fn = MODELS["xgboost"]
 
@@ -136,9 +135,9 @@ class _RecordingGroupCV:
         return self.cv.get_n_splits(X, y, groups)
 
 
-def test_tune_uses_folds_grouped_by_school():
+def test_tune_uses_folds_grouped_by_school(school_frame):
     """Auditoría H5: ningún pliegue de la búsqueda (ni de la medición de partida) tiene una sede a los dos lados."""
-    X, y = feature_frame(_frame(n_schools=30, per_school=6))
+    X, y = feature_frame(school_frame(n_schools=30, per_school=6))
     cv = _RecordingGroupCV(3)
     tune("xgboost", X, y, cv, n_trials=2, log=False, max_trees=5)
     assert len(cv.records) == 3 * 3  # partida + 2 ensayos, 3 pliegues cada uno
@@ -151,7 +150,7 @@ def test_tune_uses_folds_grouped_by_school():
         assert [(tr, va) for tr, va, _ in cv.records[start:start + 3]] == first
 
 
-def test_min_frequency_fitted_inside_each_fold(monkeypatch):
+def test_min_frequency_fitted_inside_each_fold(monkeypatch, school_frame):
     """Auditoría H5: el one-hot (con su umbral `min_frequency`) se ajusta solo con las filas de ajuste de cada pliegue."""
     from sklearn.preprocessing import OneHotEncoder
 
@@ -164,7 +163,7 @@ def test_min_frequency_fitted_inside_each_fold(monkeypatch):
         return result
 
     monkeypatch.setattr(OneHotEncoder, "fit", spy_fit)
-    df = _frame(n_schools=30, per_school=6)
+    df = school_frame(n_schools=30, per_school=6)
     X, y = feature_frame(df)
     cv = _RecordingGroupCV(3)
     study = tune("hist gradient boosting", X, y, cv, n_trials=2, log=False, max_trees=5)
@@ -186,14 +185,14 @@ def test_min_frequency_fitted_inside_each_fold(monkeypatch):
         assert set(cats) == seen                 # ninguna categoría que solo esté en validación
 
 
-def test_tune_requires_group_column():
-    X, y = feature_frame(_frame())
+def test_tune_requires_group_column(school_frame):
+    X, y = feature_frame(school_frame())
     with pytest.raises(ValueError, match=GROUP_COL):
         tune("xgboost", X.drop(columns=[GROUP_COL]), y, group_cv(3), n_trials=1, log=False, max_trees=10)
 
 
-def test_reserve_groups_disjoint():
-    df = _frame(n_schools=40, per_school=5)
+def test_reserve_groups_disjoint(school_frame):
+    df = school_frame(n_schools=40, per_school=5)
     search, reserved = reserve_groups(df)
     assert set(search[GROUP_COL]).isdisjoint(set(reserved[GROUP_COL]))
     assert len(search) + len(reserved) == len(df)

@@ -97,7 +97,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | Todo preprocesamiento dentro de un `Pipeline` | Imputación, codificación y modelo se ajustan solo con entrenamiento |
 | Nada sensible sale del equipo | `.env` ignorado; identificador y fecha de nacimiento del estudiante eliminados; se ocultaron correo y enlaces de Databricks en los notebooks públicos |
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
-| Pruebas automáticas | 103 pruebas en `tests/`, todas en verde al cierre de la etapa 9 |
+| Pruebas automáticas | 105 pruebas en `tests/`, todas en verde (6 nov 2026) |
 | Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 5, 6, 7, 8 y 9 (`reports/auditoria_*.md`) |
 | Revisión del grupo con el checklist | Etapas 1 a 5 el 5 nov 2026 (una pieza por integrante) y etapas 6 a 9 el 6 nov 2026 (revisión conjunta de `tuning.py`, `evaluation.py`, `schema.py`, notebook 08, `streamlit_app.py`, `predict.py`, `form.py` y notebook 09), sin problemas encontrados; detalle en `reports/revision_grupo.md` |
 
@@ -225,7 +225,9 @@ Detalle en `reports/06_optimizacion.md`. Guía en `especificaciones/06-optimizac
 ## Etapa 7 · Validación final e interpretación
 
 Detalle en `reports/07_validacion.md`. Guía en `especificaciones/07-validacion.md`. Spec Kit en `specs/005-validation/`.
-Auditoría en `reports/auditoria_etapa7.md`.
+Auditoría en `reports/auditoria_etapa7.md`: sus 8 mejoras menores (H1 a H8) quedaron atendidas; las últimas, H7 y H8, el 6
+nov 2026. H8 hace que `permutation_importance_table` permute solo las columnas del modelo, y no cambia la tabla de
+importancia de la etapa 7, porque el notebook 07 ya le pasaba esas columnas.
 
 **Qué se construyó**
 - `src/proyecto/models/evaluation.py`:
@@ -415,7 +417,7 @@ con la prueba, que ya se abrió. Anotado en la ficha del modelo.
 | Decisiones del grupo con fecha y motivo | `especificacion-proyecto.md`, sección 7 |
 | Especificaciones por etapa | `especificaciones/` · `specs/001` a `specs/007` |
 | Código reutilizable | `src/proyecto/data/`, `features/`, `models/` (`train.py`, `tuning.py`, `evaluation.py`), `tracking/`, `inference/` |
-| Pruebas (103) | `tests/` |
+| Pruebas (105) | `tests/` (datos inventados compartidos en `tests/conftest.py`) |
 | Notebooks (solo orquestan) | `notebooks/01` a `09` |
 | Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md`, `auditoria_etapa9.md` |
 | Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
@@ -424,19 +426,17 @@ con la prueba, que ya se abrió. Anotado en la ficha del modelo.
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
 | Constancia de la prueba | `reports/07_decisiones_congeladas.json`, `reports/prueba_abierta.txt` |
 
-**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `103 passed`, y `streamlit run app/streamlit_app.py`
+**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `105 passed`, y `streamlit run app/streamlit_app.py`
 abre la app en local.
 
 ---
 
 ## Pendientes
 
-1. **Mejoras de la auditoría de la etapa 7:** H1, H3, H4 y H6 ya se aplicaron (etapa 8). Quedan pendientes:
-   - H7 y H8: mantenimiento de pruebas (`_frame` a `tests/conftest.py`) y de `permutation_importance_table`.
-2. **Etapa 9:**
+1. **Etapa 9:**
    - desplegar la app en Streamlit Community Cloud y probar el enlace en una ventana privada (plan en
      `reports/09_despliegue.md`);
    - ensayo cronometrado.
-3. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
+2. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
-4. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
+3. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
