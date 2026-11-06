@@ -36,28 +36,22 @@ def data() -> pd.DataFrame:
     return df
 
 
-def make_schema(data, **kwargs) -> dict:
-    return build_schema(data, NUMERIC, CATEGORICAL, CLASSES, valid_range={"edad": (0, 120)}, **kwargs)
-
-
-def test_build_schema_saves_and_reloads(data, tmp_path):
-    path = tmp_path / "input_schema.json"
-    schema = make_schema(data, path=path)
-    assert path.exists() and load_schema(path) == json.loads(path.read_text(encoding="utf-8"))
-    assert schema["numeric"] == NUMERIC and schema["class_names"] == CLASSES
-    assert set(schema["categories"]["ciudad"]) == {"norte", "sur", "centro"}
-    assert "edad" in schema["integer_columns"] and "ingreso" not in schema["integer_columns"]
-    assert schema["observed_range"]["edad"][0] >= 18
-
-
-def test_build_schema_rejects_bad_cost_matrix(data):
-    with pytest.raises(ValueError, match="cost_matrix"):
-        make_schema(data, cost_matrix=[[0, 1, 2], [1, 0, 2]])
+def test_build_schema_rejects_classification(data):
+    """Revisión de la app, H3: el esquema solo admite regresión (la rama de clasificación de la plantilla se quitó)."""
+    with pytest.raises(ValueError, match="regression"):
+        build_schema(data, NUMERIC, CATEGORICAL, task="classification")
 
 
 def test_build_schema_rejects_missing_column(data):
     with pytest.raises(ValueError, match="Faltan columnas"):
-        build_schema(data.drop(columns=["ingreso"]), NUMERIC, CATEGORICAL, CLASSES)
+        build_schema(data.drop(columns=["ingreso"]), NUMERIC, CATEGORICAL)
+
+
+def test_build_schema_marks_integer_columns_and_observed_range(data):
+    schema = build_schema(data, NUMERIC, CATEGORICAL, valid_range={"edad": (0, 120)})
+    assert "edad" in schema["integer_columns"] and "ingreso" not in schema["integer_columns"]
+    assert schema["observed_range"]["edad"][0] >= 18
+    assert "class_names" not in schema and "cost_matrix" not in schema and "review_threshold" not in schema
 
 
 def test_classification_functions_removed():
@@ -69,8 +63,9 @@ def test_classification_functions_removed():
 def test_validate_requires_regression_schema(data):
     """Un esquema de clasificación ya no se acepta: el error lo dice en vez de validar a medias."""
     row = pd.DataFrame([{"edad": 40, "ingreso": 2500.0, "ciudad": "norte"}])
+    old_schema = {"task": "classification", "numeric": NUMERIC, "categorical": CATEGORICAL, "class_names": CLASSES}
     with pytest.raises(InputValidationError, match="regresión"):
-        validate_inputs(row, make_schema(data))
+        validate_inputs(row, old_schema)
 
 
 # --- Regresión (etapa 8): esquema y predicción del puntaje -------------------------------------------------------------

@@ -1,0 +1,11 @@
+# Librerías que necesita SOLO la app (revisión de la app, H4, 6 nov 2026).
+# Streamlit Community Cloud busca primero el archivo de dependencias en la carpeta del archivo principal
+# (app/streamlit_app.py) y, si no lo encuentra, en la raíz. Con este archivo instala solo lo necesario y no
+# mlflow, databricks-sdk, optuna, shap, etc. El requirements.txt de la raíz se mantiene completo para el proyecto.
+# Mismas versiones que el requirements.txt de la raíz (con las que se entrenó y guardó el modelo). Python 3.12.
+streamlit==1.66.0
+pandas==3.0.6
+numpy==2.5.4
+scikit-learn==1.9.1
+scipy==1.18.1
+joblib==1.6.0

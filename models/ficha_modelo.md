@@ -111,3 +111,9 @@ educación de los padres, se reparten el crédito.
   ejecución `78b51940c3f74aa8a6d3877b8a4ee739` del experimento `saber11-modelo-final`.
 - La copia exportada predice **exactamente** igual que el modelo evaluado en las 57.286 filas del entrenamiento. El MAE
   recalculado con las predicciones guardadas de la prueba es 33,316.
+- **Dependencia del código** (revisión de la app, H6): `models/model.joblib` guarda una referencia a la función
+  `proyecto.features.engineering._as_text`. Para cargarlo hace falta que `src/` esté en el path, como hace la app, y que ese
+  archivo siga en el repositorio con el mismo nombre. Si se mueve o se renombra, el modelo no carga. Es un *pickle*: solo se
+  carga este archivo, nunca uno de origen desconocido.
+- **Librerías para usarlo:** las de `app/requirements.txt` (streamlit 1.66.0, pandas 3.0.6, numpy 2.5.4, scikit-learn 1.9.1,
+  scipy 1.18.1, joblib 1.6.0) con Python 3.12. Comprobado el 6 nov 2026 en un entorno limpio, solo con esas librerías.

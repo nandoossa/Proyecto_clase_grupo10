@@ -23,6 +23,7 @@
 |---|---|
 | La app carga `models/model.joblib` desde el repo y **no consulta Databricks** | Regla 8 de `CLAUDE.md`: no se ponen credenciales en la nube y la app no depende de la cuota de otra plataforma. Una prueba verifica que el código no menciona `mlflow`, `databricks` ni `token` |
 | Versiones fijadas en `requirements.txt` (Python 3.12, `streamlit==1.66.0`, `scikit-learn==1.9.1`) | El modelo se guardó con scikit-learn 1.9.1; otra versión podría no cargarlo o predecir distinto |
+| `app/requirements.txt` con solo las 6 librerías de la app (6 nov 2026, revisión de la app H4) | Streamlit Community Cloud lo usa porque está junto a `app/streamlit_app.py`: instala menos y no instala `mlflow` ni `databricks-sdk`. Comprobado en un entorno limpio |
 | Qué NO se subió al repo (y por qué) | `.env` (credenciales), `data/raw/` y `data/processed/` (datos de estudiantes; se regeneran con el notebook 03), `models/final_pipeline.joblib` (intermedio). La app no los necesita |
 | Formulario en español con textos, no códigos | Quien la usa no conoce los códigos de la etapa 3: elige «3 a 4» o «Dos» y la app los traduce (`src/proyecto/inference/form.py`) |
 | Edad: campo numérico entero sin mínimo ni máximo (decisión del grupo, 6 nov 2026) | Si se escribe un valor fuera de 13–80, la app muestra el mensaje de corrección en lugar de impedir escribirlo |

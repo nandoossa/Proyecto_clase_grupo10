@@ -45,7 +45,7 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 7 · Validación e interpretación | Completa | `reports/07_validacion.md` |
 | 8 · Registro del modelo | Completa | `reports/08_registro.md`, `models/ficha_modelo.md` |
 | 9 · Inferencia y app | Completa en local, sin desplegar | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
-| 10 · Preparación del despliegue | Revisada; repositorio listo; 4 hallazgos importantes por decidir; sin desplegar | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
+| 10 · Preparación del despliegue | Repositorio listo; hallazgos importantes corregidos; sin desplegar | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
 
 ## La variable objetivo y los datos
 
@@ -100,7 +100,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | Todo preprocesamiento dentro de un `Pipeline` | Imputación, codificación y modelo se ajustan solo con entrenamiento |
 | Nada sensible sale del equipo | `.env` ignorado; identificador y fecha de nacimiento del estudiante eliminados; se ocultaron correo y enlaces de Databricks en los notebooks públicos |
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
-| Pruebas automáticas | 113 pruebas en `tests/`, todas en verde y ninguna saltada (6 nov 2026) |
+| Pruebas automáticas | 115 pruebas en `tests/`, todas en verde y ninguna saltada (6 nov 2026) |
 | Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 5, 6, 7, 8 y 9 (`reports/auditoria_*.md`) |
 | Revisión del grupo con el checklist | Etapas 1 a 5 el 5 nov 2026 (una pieza por integrante) y etapas 6 a 9 el 6 nov 2026 (revisión conjunta de `tuning.py`, `evaluation.py`, `schema.py`, notebook 08, `streamlit_app.py`, `predict.py`, `form.py` y notebook 09), sin problemas encontrados; detalle en `reports/revision_grupo.md` |
 
@@ -424,18 +424,30 @@ Detalle en `reports/despliegue_preparacion.md`. Especificación en `specs/008-de
 - no hay `.env`, datos de estudiantes, correos, direcciones del espacio de trabajo ni tokens en el repositorio;
 - Python 3.12 en el equipo; en la nube se elige en **Advanced settings** al crear la app.
 
-**Revisión del código** (subagente `revisor-de-codigo-ia`): **aceptar con cambios.** Cuatro hallazgos importantes, que el
-grupo debe decidir antes de desplegar:
-1. **H1:** si el modelo no carga, el usuario ve un error técnico en vez de un mensaje claro.
-2. **H2:** el aviso de uso responsable queda al final de la página y no aparece si faltan los archivos.
-3. **H3:** `schema.py` conserva el código de clasificación de la plantilla, que se iba a quitar en la etapa 9.
-4. **H4:** `requirements.txt` instala librerías que la app no usa (`mlflow`, `databricks-sdk`, `optuna`, `shap`…), lo que
-   alarga el despliegue.
+**Revisión del código** (subagente `revisor-de-codigo-ia`): **aceptar con cambios.** Los cuatro hallazgos importantes
+**se corrigieron** el 6 nov 2026, a pedido del grupo:
+1. **H1:** si el modelo o el esquema no cargan, la app muestra un mensaje claro, sin rutas ni detalles técnicos, y se
+   detiene.
+2. **H2:** el aviso de uso responsable se muestra arriba, bajo el título, y se ve aunque el modelo no cargue.
+3. **H3:** `schema.py` quedó solo para regresión (se quitó el código de clasificación de la plantilla).
+4. **H4:** nuevo `app/requirements.txt` con solo las 6 librerías de la app (streamlit, pandas, numpy, scikit-learn, scipy,
+   joblib), con las mismas versiones. Streamlit Community Cloud lo usa porque está junto al archivo principal; el de la raíz
+   sigue completo. **Comprobado en un entorno limpio:** la app arranca y el perfil de prueba da 250, igual que antes.
 
-Hay además 7 hallazgos menores (H5 a H11). No se cambió el código de la app: el pedido fue revisar.
+De los 7 menores se aplicaron los que no cambian el comportamiento:
+- H5: no duplicar `sys.path`;
+- H6: la dependencia del modelo con `src/`, anotada en la ficha;
+- H7: prueba anti-Databricks más firme;
+- parte de H9: una sola constante para el MAE;
+- parte de H10: un cambio de forma.
 
-**Pruebas:** el subagente `escritor-de-pruebas` agregó 8 pruebas de inferencia (`options`, `load_model`,
-`validate_inputs` con regresión, guardar y leer el esquema). Total: **113 pruebas, todas en verde**.
+No se aplicaron H8 ni H11, porque cambiarían qué entradas se rechazan. Detalle en `reports/revision_app.md`.
+
+**Pruebas:**
+- el subagente `escritor-de-pruebas` agregó 8 pruebas de inferencia;
+- las correcciones agregaron 2 pruebas de la app y cambiaron 3 de clasificación por 3 de regresión.
+
+Total: **115 pruebas, todas en verde**.
 
 ---
 
@@ -489,25 +501,25 @@ porque incluye el correo de un integrante.
 | Decisiones del grupo con fecha y motivo | `especificacion-proyecto.md`, sección 7 |
 | Especificaciones por etapa | `especificaciones/` · `specs/001` a `specs/008` |
 | Código reutilizable | `src/proyecto/data/`, `features/`, `models/` (`train.py`, `tuning.py`, `evaluation.py`), `tracking/`, `inference/` |
-| Pruebas (113) | `tests/` (datos inventados compartidos en `tests/conftest.py`) |
+| Pruebas (115) | `tests/` (datos inventados compartidos en `tests/conftest.py`) |
 | Notebooks (solo orquestan) | `notebooks/01` a `09` |
 | Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md`, `auditoria_etapa9.md` |
 | Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
-| App e inferencia | `app/streamlit_app.py`, `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
+| App e inferencia | `app/streamlit_app.py`, `app/requirements.txt` (librerías de la app), `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
 | Preparación del despliegue | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
 | Registro | `reports/08_registro.md`, `reports/08_registro.json`, `reports/prueba_huellas.json` |
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
 | Constancia de la prueba | `reports/07_decisiones_congeladas.json`, `reports/prueba_abierta.txt` |
 
-**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `113 passed`, y `streamlit run app/streamlit_app.py`
+**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `115 passed`, y `streamlit run app/streamlit_app.py`
 abre la app en local.
 
 ---
 
 ## Pendientes
 
-1. **Antes de desplegar:** decidir y, si se aprueba, corregir los hallazgos importantes H1 a H4 de
-   `reports/revision_app.md`; revisar también los menores H5 a H11.
+1. **Antes de desplegar:** decidir si se aplican H8 y H11 de `reports/revision_app.md` (cambian qué entradas se
+   rechazan; con el esquema y la app actuales no ocurren).
 2. **Despliegue (lo hace el grupo):** crear la app en Streamlit Community Cloud (repo `nandoossa/Proyecto_clase_grupo10`,
    rama `main`, `app/streamlit_app.py`, Python 3.12), probar el enlace en una ventana privada con los casos de
    `reports/09_despliegue.md`, pegar el enlace en `README.md` y completar la lista de verificación de

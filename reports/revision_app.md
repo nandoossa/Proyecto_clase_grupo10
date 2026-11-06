@@ -205,5 +205,24 @@ Entre paréntesis, qué las cubre de forma indirecta.
 ## Seguimiento (6 nov 2026)
 
 - **Pruebas faltantes:** el subagente `escritor-de-pruebas` agregó 8 pruebas (options, load_model, validate_inputs con regresión, guardar y leer el esquema); el proyecto pasa de 105 a 113 pruebas, todas en verde (ver `reports/despliegue_preparacion.md` §3).
-- **H1 a H11:** **no se aplicaron**: el pedido de esta etapa fue revisar, no cambiar la app. Quedan para decisión del grupo
-  antes del despliegue (los importantes, H1 a H4, están en la lista de pendientes de `reports/documentacion_proyecto.md`).
+- **H1 a H11:** en la revisión no se aplicaron (el pedido fue revisar). El grupo pidió después aplicar H1 a H4 y los
+  menores que no cambian el comportamiento; ver la tabla siguiente.
+
+### Qué se hizo con cada hallazgo (6 nov 2026, pedido del grupo)
+
+| # | ¿Se aplicó? | Qué cambió / por qué no |
+|---|---|---|
+| H1 | ☒ sí | `main()` carga el modelo y el esquema dentro de `try/except`. Si fallan, muestra «No se pudo cargar el modelo o su esquema…» (sin rutas ni traza técnica) y se detiene. Prueba nueva: `test_app_shows_clear_message_if_model_fails_to_load` |
+| H2 | ☒ sí | El aviso de uso responsable se muestra con `st.warning` justo bajo el título, **antes** de cualquier `st.stop()`, y ya no al final. Pruebas: `test_responsible_use_is_shown_before_the_form` y la de H1 (el aviso se ve aunque el modelo no cargue) |
+| H3 | ☒ sí (opción a) | `schema.py` quedó solo para regresión: se quitaron `class_names`, `cost_matrix`, `review_threshold` y la rama de clasificación (con su error latente). `task` se conserva y solo acepta `"regression"`, porque el notebook 08 lo pasa. Se reemplazaron 3 pruebas de clasificación por 3 de regresión (`test_build_schema_rejects_classification`, `…_rejects_missing_column`, `…_marks_integer_columns_and_observed_range`). `models/input_schema.json` no cambia |
+| H4 | ☒ sí | Nuevo `app/requirements.txt` con solo lo que usa la app y las mismas versiones de la raíz: streamlit 1.66.0, pandas 3.0.6, numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1, joblib 1.6.0. Streamlit Community Cloud busca primero el archivo junto al archivo principal. El `requirements.txt` de la raíz se mantiene completo (CLAUDE.md). **Comprobado** en un entorno limpio con Python 3.12.10 y solo esas 6 librerías (sin mlflow): la app arrancó, el chequeo de salud respondió 200 y el perfil inventado de las pruebas dio 250, igual que en `reports/09_despliegue.md`, sin advertencias de versión |
+| H5 | ☒ sí | `sys.path.insert` solo si `src/` no está ya en el path. No cambia el comportamiento |
+| H6 | ☒ sí (documentación) | Anotado en `models/ficha_modelo.md`: el modelo necesita `src/proyecto/features/engineering.py` con el mismo nombre; solo se carga este pickle |
+| H7 | ☒ sí | La prueba `test_app_code_does_not_use_databricks` ahora revisa los cuatro archivos (`streamlit_app.py`, `form.py`, `predict.py`, `schema.py`) buscando imports de `mlflow`, `databricks` o `dotenv` y lecturas de `os.environ` / `os.getenv`, no palabras sueltas en comentarios |
+| H8 | ☐ no | Cambiaría el comportamiento (el error ante un esquema que no es de regresión pasaría de `KeyError` a otro tipo). Con el esquema actual no ocurre. Queda para el grupo |
+| H9 | ☒ sí (parcial) | `TEST_MAE = 33.32` en `form.py` es la única fuente del «33» y del «MAE 33,3» de la app (el texto que se ve es idéntico). Las cifras por segmento del aviso siguen escritas en la app (un solo sitio), con la nota de actualizarlas con la ficha |
+| H10 | ☒ sí (parcial) | Solo el cambio de forma `field in ("estu_genero",)` → `field == "estu_genero"`. No se quitaron `median`, `integer_columns` ni `labels` del esquema: cambiaría su contenido (y `median` la verifican pruebas de la etapa 8) |
+| H11 | ☐ no | Agregar el control de coherencia estrato / «Sin estrato» en `validate_inputs` cambiaría qué filas se rechazan. La app ya no permite esa combinación. Queda para el grupo |
+
+**Pruebas:** 115 de 115 en verde, ninguna saltada (`PYTHONUTF8=1 python -m pytest -q -rs`).
+

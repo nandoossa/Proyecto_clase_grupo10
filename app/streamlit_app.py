@@ -4,7 +4,10 @@
   externa ni lleva credenciales.
 - La persona llena un formulario en español; `proyecto.inference.form` lo traduce a las 21 columnas del modelo y
   `predict_score` valida contra el esquema. Si un dato es inválido, se explica qué corregir y no se muestra ningún puntaje.
-- El aviso de uso responsable está siempre visible, con los límites de `models/ficha_modelo.md`.
+- El aviso de uso responsable se muestra arriba, bajo el título, antes de cualquier comprobación: se ve aunque el
+  modelo no cargue (revisión de la app, H2). Sus cifras son las de `models/ficha_modelo.md`.
+- Si el modelo o el esquema no cargan (archivo dañado, otra versión de scikit-learn), la app muestra un mensaje claro en
+  vez de un error técnico (revisión de la app, H1).
 
 Ejecutar en local (desde la raíz del repositorio):  streamlit run app/streamlit_app.py
 """
@@ -14,11 +17,13 @@ from pathlib import Path
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+if str(ROOT / "src") not in sys.path:   # Streamlit re-ejecuta el archivo en cada interacción (revisión de la app, H5)
+    sys.path.insert(0, str(ROOT / "src"))
 
 from proyecto.inference.form import (  # noqa: E402  (después de agregar src/ al path)
     SECTIONS,
     SIN_RESPUESTA,
+    TEST_MAE,
     TYPICAL_ERROR,
     display_value,
     form_to_row,
@@ -77,7 +82,7 @@ def show_result(score: float, warnings: list[str]) -> None:
     st.metric("Puntaje global estimado", f"{round(score)}")
     st.markdown(
         f"El modelo **se equivoca en promedio {TYPICAL_ERROR} puntos; como referencia, entre {low} y {high}** "
-        "(MAE 33,3 con colegios que el modelo no vio)."
+        f"(MAE {TEST_MAE:.1f} con colegios que el modelo no vio).".replace(".", ",", 1)
     )
     st.caption(
         "Ese rango no es un intervalo de confianza: el error típico es un promedio, y para algunos estudiantes el "
@@ -91,11 +96,19 @@ def main() -> None:
     st.set_page_config(page_title=TITLE, page_icon="🎓", layout="wide")
     st.title(TITLE)
     st.caption("Estima el puntaje global de Saber 11 a partir de datos del colegio, del estudiante y del hogar.")
+    st.warning(RESPONSIBLE_USE)   # arriba y antes de cualquier st.stop(): siempre visible (H2)
 
     if not MODEL_PATH.exists() or not SCHEMA_PATH.exists():
         st.error("Falta `models/model.joblib` o `models/input_schema.json`. Se generan en el notebook 08_registro_modelo.")
         st.stop()
-    model, schema = get_model(), get_schema()
+    try:
+        model, schema = get_model(), get_schema()
+    except Exception:   # H1: archivo dañado, otra versión de scikit-learn, esquema roto…; sin rutas ni detalles técnicos
+        st.error(
+            "No se pudo cargar el modelo o su esquema. Revisa que `requirements.txt` tenga las mismas versiones con las que "
+            "se entrenó el modelo (por ejemplo, scikit-learn 1.9.1) y que `models/` esté completo en el repositorio."
+        )
+        st.stop()
 
     with st.form("perfil"):
         answers = {}
@@ -116,8 +129,6 @@ def main() -> None:
             show_result(float(result["puntaje_estimado"].iloc[0]), result.attrs.get("warnings", []))
     else:
         st.info(f"Completa los datos y pulsa **Estimar**. Si no conoces un dato, elige «{SIN_RESPUESTA}» donde aparece.")
-
-    st.markdown(RESPONSIBLE_USE)
 
 
 if __name__ == "__main__":  # `streamlit run` ejecuta el archivo como programa principal

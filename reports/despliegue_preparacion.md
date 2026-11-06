@@ -11,7 +11,7 @@
 | Repo **público** en GitHub | ☒ sí | `curl https://api.github.com/repos/nandoossa/Proyecto_clase_grupo10` sin sesión → HTTP 200 |
 | `requirements.txt` en la **raíz** | ☒ sí | `git ls-files requirements.txt` → `requirements.txt` |
 | Versiones **fijadas** (`nombre==versión`) | ☒ sí | 0 líneas sin `==`; las 18 versiones fijadas coinciden con las instaladas en el equipo donde se entrenó (`scikit-learn 1.9.1`, `pandas 3.0.6`, `numpy 2.5.4`, `joblib 1.6.0`, `streamlit 1.66.0`, …) |
-| `requirements.txt` cubre lo que importa la app | ☒ sí | Al importar la app y cargar el modelo se cargan solo `streamlit`, `pandas`, `numpy`, `scikit-learn`, `scipy` y `joblib`; todas están en el archivo. ⚠ El archivo también trae librerías que la app no usa (hallazgo H4) |
+| `requirements.txt` cubre lo que importa la app | ☒ sí | Al importar la app y cargar el modelo se cargan solo `streamlit`, `pandas`, `numpy`, `scikit-learn`, `scipy` y `joblib`. **`app/requirements.txt`** (H4) trae solo esas 6, con las versiones de la raíz; Streamlit Community Cloud lo usa porque está junto al archivo principal. Comprobado en un entorno limpio: la app arranca y estima 250 con el perfil de prueba |
 | `models/model.joblib` **dentro** del repo | ☒ sí | `git ls-files models/` lo lista; `git check-ignore` no lo ignora; tamaño 1,17 MB |
 | `models/input_schema.json` dentro del repo | ☒ sí | Versionado y no ignorado; 11,2 KB |
 | Python **3.12** | ☒ sí (se elige al desplegar) | Entorno local: Python 3.12.10. No hay `runtime.txt`: la versión se elige en **Advanced settings → Python 3.12** al crear la app |
@@ -35,7 +35,9 @@ Informe completo en `reports/revision_app.md`. **Veredicto: aceptar con cambios.
 | H4 | Importante | `requirements.txt` instala librerías que la app no usa (`mlflow`, `databricks-sdk`, `optuna`, `shap`, `nbconvert`…) | Despliegue más lento y más puntos de falla; decisión del grupo (CLAUDE.md pide un solo `requirements.txt`) |
 | H5–H11 | Menores | `sys.path` duplicado; el pickle depende de `src/proyecto/features/engineering.py`; prueba anti-Databricks débil; `form.py` sin defensa ante un esquema viejo; cifras del aviso escritas en tres sitios; datos del esquema sin uso; sin control de coherencia estrato / «Sin estrato» fuera de la app | Bajo |
 
-**No se cambió el código de la app**: el pedido fue revisar. H1 a H4 quedan para que el grupo decida antes de desplegar.
+**Aplicados el 6 nov 2026** (pedido del grupo): H1 a H4, y de los menores los que no cambian el comportamiento (H5, H6,
+H7, parte de H9 y de H10). H8 y H11 no se aplicaron porque cambiarían qué entradas se rechazan. Detalle en la tabla
+«Qué se hizo con cada hallazgo» de `reports/revision_app.md`. Pruebas: 115 de 115.
 
 ## 3. Pruebas faltantes (subagente `escritor-de-pruebas`)
 

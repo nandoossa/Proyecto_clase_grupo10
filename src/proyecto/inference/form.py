@@ -16,7 +16,9 @@ from proyecto.inference.predict import InputValidationError
 SIN_RESPUESTA = "Sin respuesta"
 SIN_ESTRATO = "Sin estrato"
 STRATUM_FIELD = "estrato"   # un solo campo del formulario para `fami_estratovivienda` y `sin_estrato` (regla 7b)
-TYPICAL_ERROR = 33          # MAE 33,32 en la prueba (models/ficha_modelo.md), redondeado para mostrarlo
+# Cifra de la prueba en un solo sitio (revisión de la app, H9): si el modelo se reentrena, se cambia aquí y en la ficha.
+TEST_MAE = 33.32            # MAE en la prueba (models/ficha_modelo.md, reports/07_metricas_test.json)
+TYPICAL_ERROR = round(TEST_MAE)   # 33: lo que ve la persona («se equivoca en promedio 33 puntos»)
 SCORE_RANGE = (100, 477)    # rango posible del puntaje global
 
 # Etiquetas en español claro, en el orden y las secciones del formulario.
@@ -81,7 +83,7 @@ def display_value(field: str, value, schema: dict) -> str:
     if field in MUNICIPALITY_FIELDS:
         name = schema.get("municipality_names", {}).get(value)
         return f"{name} ({value})" if name else value
-    if field in ("estu_genero",) or field in YES_NO_COLUMNS or value in ("UNICA", "Seis o mas"):
+    if field == "estu_genero" or field in YES_NO_COLUMNS or value in ("UNICA", "Seis o mas"):
         return VALUE_LABELS.get(value, value)
     return value
 

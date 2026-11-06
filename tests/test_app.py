@@ -199,6 +199,50 @@ def test_missing_required_field_shows_correction_and_no_score():
 
 
 def test_app_code_does_not_use_databricks():
-    source = APP.read_text(encoding="utf-8").lower() + (ROOT / "src/proyecto/inference/form.py").read_text(encoding="utf-8").lower()
-    for word in ("mlflow", "databricks", "token"):
-        assert word not in source, f"la app no debe mencionar '{word}'"
+    """Regla 8 (revisión de la app, H7): ni la app ni la inferencia importan MLflow/Databricks ni leen credenciales.
+
+    Se buscan imports y lecturas del entorno en el CÓDIGO (no palabras sueltas en comentarios) de los cuatro archivos.
+    """
+    import re
+
+    files = [APP] + [ROOT / "src" / "proyecto" / "inference" / f for f in ("form.py", "predict.py", "schema.py")]
+    forbidden = re.compile(
+        r"^\s*(import|from)\s+(mlflow|databricks|dotenv)\b|os\.environ|os\.getenv|load_dotenv", re.MULTILINE
+    )
+    for path in files:
+        hits = forbidden.findall(path.read_text(encoding="utf-8"))
+        assert not hits, f"{path.name} no debe usar Databricks, MLflow ni credenciales: {hits}"
+
+
+def test_responsible_use_is_shown_before_the_form():
+    """H2: el aviso de uso responsable va arriba (antes del formulario), no al final de la página."""
+    at = run_app()
+    first_warning = at.warning[0].value
+    assert "Uso responsable" in first_warning and "39,57" in first_warning
+
+
+def test_app_shows_clear_message_if_model_fails_to_load(monkeypatch):
+    """H1: si el modelo no carga, la app muestra un mensaje claro (sin rutas ni traza técnica) y el aviso sigue visible."""
+    if not (MODEL_PATH.exists() and SCHEMA_PATH.exists()):
+        pytest.skip("faltan models/model.joblib o models/input_schema.json")
+    pytest.importorskip("streamlit")
+    import streamlit as st
+    from streamlit.testing.v1 import AppTest
+
+    import proyecto.inference.predict as predict
+
+    def broken(path):
+        raise RuntimeError("modelo dañado (simulado en la prueba)")
+
+    monkeypatch.setattr(predict, "load_model", broken)
+    st.cache_resource.clear()
+    st.cache_data.clear()
+    at = AppTest.from_file(str(APP), default_timeout=60).run()
+    st.cache_resource.clear()
+
+    assert not at.exception
+    errors = " ".join(e.value for e in at.error)
+    assert "No se pudo cargar el modelo" in errors
+    assert "simulado" not in errors and str(ROOT) not in errors        # sin detalles técnicos ni rutas del equipo
+    assert "Uso responsable" in at.warning[0].value                     # H2: el aviso se ve aunque la app se detenga
+    assert len(at.metric) == 0 and len(at.selectbox) == 0               # no hay formulario ni puntaje
