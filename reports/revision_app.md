@@ -219,10 +219,18 @@ Entre paréntesis, qué las cubre de forma indirecta.
 | H5 | ☒ sí | `sys.path.insert` solo si `src/` no está ya en el path. No cambia el comportamiento |
 | H6 | ☒ sí (documentación) | Anotado en `models/ficha_modelo.md`: el modelo necesita `src/proyecto/features/engineering.py` con el mismo nombre; solo se carga este pickle |
 | H7 | ☒ sí | La prueba `test_app_code_does_not_use_databricks` ahora revisa los cuatro archivos (`streamlit_app.py`, `form.py`, `predict.py`, `schema.py`) buscando imports de `mlflow`, `databricks` o `dotenv` y lecturas de `os.environ` / `os.getenv`, no palabras sueltas en comentarios |
-| H8 | ☐ no | Cambiaría el comportamiento (el error ante un esquema que no es de regresión pasaría de `KeyError` a otro tipo). Con el esquema actual no ocurre. Queda para el grupo |
+| H8 | ☐ no | Cambiaría el comportamiento (el error ante un esquema que no es de regresión pasaría de `KeyError` a otro tipo). Con el esquema actual no ocurre. **No se aplica: decisión del grupo, 7 nov 2026** (ver abajo) |
 | H9 | ☒ sí (parcial) | `TEST_MAE = 33.32` en `form.py` es la única fuente del «33» y del «MAE 33,3» de la app (el texto que se ve es idéntico). Las cifras por segmento del aviso siguen escritas en la app (un solo sitio), con la nota de actualizarlas con la ficha |
 | H10 | ☒ sí (parcial) | Solo el cambio de forma `field in ("estu_genero",)` → `field == "estu_genero"`. No se quitaron `median`, `integer_columns` ni `labels` del esquema: cambiaría su contenido (y `median` la verifican pruebas de la etapa 8) |
-| H11 | ☐ no | Agregar el control de coherencia estrato / «Sin estrato» en `validate_inputs` cambiaría qué filas se rechazan. La app ya no permite esa combinación. Queda para el grupo |
+| H11 | ☐ no | Agregar el control de coherencia estrato / «Sin estrato» en `validate_inputs` cambiaría qué filas se rechazan. La app ya no permite esa combinación. **No se aplica: decisión del grupo, 7 nov 2026** (ver abajo) |
 
 **Pruebas:** 115 de 115 en verde, ninguna saltada (`PYTHONUTF8=1 python -m pytest -q -rs`).
 
+### Decisión del grupo sobre H8 y H11 (7 nov 2026)
+
+**H8 y H11 no se aplican.** Motivo: la app solo carga nuestro esquema de regresión y el formulario usa un único campo para el estrato, así que esas situaciones no ocurren; aplicarlos cambiaría qué entradas se rechazan.
+
+- **H8:** la app solo carga `models/input_schema.json`, que es de regresión, así que `form.py` nunca recibe un esquema
+  de otro tipo.
+- **H11:** el formulario tiene un solo campo de estrato («1» a «6», «Sin estrato» o «Sin respuesta»), que `form_to_row`
+  convierte siempre en una combinación coherente de `fami_estratovivienda` y `sin_estrato`.

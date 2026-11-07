@@ -86,6 +86,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | 6 nov 2026 | Etapa 9: `predict.py` solo con regresión; formulario en español con edad numérica sin límites (fuera de 13–80 → mensaje), municipios con nombre y código, y «se equivoca en promedio 33 puntos; como referencia, entre X y Y» | Que quien usa la app entienda qué corregir y qué tan preciso es el puntaje, sin confundir la referencia con un intervalo de confianza |
 | 6 nov 2026 | El género se mantiene como entrada | Quitarlo exigiría reentrenar y volver a evaluar con la prueba, que ya se abrió; la brecha de error se muestra en la app |
 | 6 nov 2026 | Constitución ratificada (versión 1.0.0) con el principio VIII: el modelo orienta, no excluye ni etiqueta; su MAE por segmento de estrato, zona, naturaleza y género debe ser menor que el de la línea base | Regla del grupo que prevalece sobre las demás prácticas |
+| 7 nov 2026 | H8 y H11 de la revisión de la app no se aplican | Esas situaciones no ocurren con nuestro esquema y nuestro formulario; aplicarlos cambiaría qué entradas se rechazan |
 
 ---
 
@@ -444,7 +445,9 @@ De los 7 menores se aplicaron los que no cambian el comportamiento:
 - parte de H9: una sola constante para el MAE;
 - parte de H10: un cambio de forma.
 
-No se aplicaron H8 ni H11, porque cambiarían qué entradas se rechazan. Detalle en `reports/revision_app.md`.
+**H8 y H11 no se aplican (decisión del grupo, 7 nov 2026):** la app solo carga nuestro esquema de regresión y el
+formulario usa un único campo para el estrato, así que esas situaciones no ocurren; aplicarlos cambiaría qué entradas se
+rechazan. Detalle en `reports/revision_app.md`.
 
 **Pruebas:**
 - el subagente `escritor-de-pruebas` agregó 8 pruebas de inferencia;
@@ -533,9 +536,7 @@ abre la app en local.
 
 ## Pendientes
 
-1. **Revisión de la app:** decidir si se aplican H8 y H11 de `reports/revision_app.md` (cambian qué entradas se
-   rechazan; con el esquema y la app actuales no ocurren).
-2. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
-3. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
+1. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
+2. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
-4. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
+3. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
