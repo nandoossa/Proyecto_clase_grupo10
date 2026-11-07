@@ -35,6 +35,11 @@ from proyecto.inference.schema import load_schema  # noqa: E402
 
 MODEL_PATH = ROOT / "models" / "model.joblib"
 SCHEMA_PATH = ROOT / "models" / "input_schema.json"
+# Logo en la barra lateral: ruta relativa a la carpeta de la app (funciona igual en local y en Streamlit Cloud).
+LOGO_PATH = Path(__file__).resolve().parent / "assets" / "icfes_saber11.png"
+ATTRIBUTION = (
+    "Datos: ICFES (datos.gov.co, CC BY-SA 4.0). Esta herramienta no es oficial ni está avalada por el ICFES."
+)
 TITLE = "Predictor de resultados Pruebas Saber 11 en Antioquia"
 
 # Cifras de models/ficha_modelo.md (prueba con 289 sedes nunca vistas, 5 nov 2026).
@@ -92,11 +97,24 @@ def show_result(score: float, warnings: list[str]) -> None:
         st.warning(message)
 
 
+def show_attribution() -> None:
+    """Barra lateral: logo pequeño (si está) y la atribución de los datos. Si la imagen falta o no se puede leer, solo
+    se muestra el texto: la app sigue funcionando."""
+    with st.sidebar:
+        if LOGO_PATH.exists():
+            try:
+                st.image(str(LOGO_PATH), width=160)
+            except Exception:   # imagen dañada: se omite sin interrumpir la app
+                pass
+        st.caption(ATTRIBUTION)
+
+
 def main() -> None:
     st.set_page_config(page_title=TITLE, page_icon="🎓", layout="wide")
     st.title(TITLE)
     st.caption("Estima el puntaje global de Saber 11 a partir de datos del colegio, del estudiante y del hogar.")
     st.warning(RESPONSIBLE_USE)   # arriba y antes de cualquier st.stop(): siempre visible (H2)
+    show_attribution()            # también antes de cualquier st.stop()
 
     if not MODEL_PATH.exists() or not SCHEMA_PATH.exists():
         st.error("Falta `models/model.joblib` o `models/input_schema.json`. Se generan en el notebook 08_registro_modelo.")

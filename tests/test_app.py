@@ -246,3 +246,38 @@ def test_app_shows_clear_message_if_model_fails_to_load(monkeypatch):
     assert "simulado" not in errors and str(ROOT) not in errors        # sin detalles técnicos ni rutas del equipo
     assert "Uso responsable" in at.warning[0].value                     # H2: el aviso se ve aunque la app se detenga
     assert len(at.metric) == 0 and len(at.selectbox) == 0               # no hay formulario ni puntaje
+
+
+# --- Logo y atribución en la barra lateral (6 nov 2026) ------------------------------------------------------------------
+ATTRIBUTION = "Datos: ICFES (datos.gov.co, CC BY-SA 4.0). Esta herramienta no es oficial ni está avalada por el ICFES."
+LOGO = ROOT / "app" / "assets" / "icfes_saber11.png"
+
+
+def sidebar_text(at) -> str:
+    return " ".join(e.value for e in at.sidebar.caption)
+
+
+def test_sidebar_shows_logo_and_attribution():
+    if not LOGO.exists():
+        pytest.skip("falta app/assets/icfes_saber11.png")
+    at = run_app()
+    assert not at.exception
+    assert ATTRIBUTION in sidebar_text(at)
+    assert len(at.get("image")) == 1                     # el logo
+
+
+def test_app_still_works_without_logo():
+    """Si la imagen falta (por ejemplo, no se subió), la app sigue funcionando y muestra solo el texto."""
+    hidden = LOGO.with_name("icfes_saber11.png.oculto")
+    moved = LOGO.exists()
+    if moved:
+        LOGO.rename(hidden)
+    try:
+        at = run_app(answers())
+        assert not at.exception and not at.error
+        assert ATTRIBUTION in sidebar_text(at)
+        assert len(at.get("image")) == 0
+        assert len(at.metric) == 1                       # la estimación sigue saliendo
+    finally:
+        if moved:
+            hidden.rename(LOGO)

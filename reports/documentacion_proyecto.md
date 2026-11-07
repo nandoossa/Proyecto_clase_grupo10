@@ -100,7 +100,7 @@ Registro completo en `especificacion-proyecto.md`, sección 7.
 | Todo preprocesamiento dentro de un `Pipeline` | Imputación, codificación y modelo se ajustan solo con entrenamiento |
 | Nada sensible sale del equipo | `.env` ignorado; identificador y fecha de nacimiento del estudiante eliminados; se ocultaron correo y enlaces de Databricks en los notebooks públicos |
 | No se inventan cifras | Los informes usan solo cifras impresas por los notebooks |
-| Pruebas automáticas | 115 pruebas en `tests/`, todas en verde y ninguna saltada (6 nov 2026) |
+| Pruebas automáticas | 117 pruebas en `tests/`, todas en verde y ninguna saltada (6 nov 2026) |
 | Revisión de fuga | Subagente `auditor-de-fuga` en las etapas 3, 4, 5, 6, 7, 8 y 9 (`reports/auditoria_*.md`) |
 | Revisión del grupo con el checklist | Etapas 1 a 5 el 5 nov 2026 (una pieza por integrante) y etapas 6 a 9 el 6 nov 2026 (revisión conjunta de `tuning.py`, `evaluation.py`, `schema.py`, notebook 08, `streamlit_app.py`, `predict.py`, `form.py` y notebook 09), sin problemas encontrados; detalle en `reports/revision_grupo.md` |
 
@@ -449,6 +449,17 @@ No se aplicaron H8 ni H11, porque cambiarían qué entradas se rechazan. Detalle
 
 Total: **115 pruebas, todas en verde**.
 
+**Logo y atribución de los datos** (6 nov 2026, pedido del grupo):
+- La barra lateral muestra el logo `app/assets/icfes_saber11.png`, pequeño (160 píxeles de ancho), y debajo: «Datos: ICFES
+  (datos.gov.co, CC BY-SA 4.0). Esta herramienta no es oficial ni está avalada por el ICFES.»
+- La ruta se arma desde la carpeta de la app (`Path(__file__).parent / "assets"`), así que funciona igual en local y en
+  Streamlit Cloud.
+- Si la imagen falta o está dañada, la app muestra solo el texto y sigue funcionando.
+- Dos pruebas nuevas lo verifican; total **117 pruebas**. También se comprobó con el entorno mínimo de `app/requirements.txt`.
+- ⚠ **Riesgo:** la licencia CC BY-SA 4.0 cubre los datos, no el logo, que es una marca del ICFES. Mostrarlo en una app
+  pública puede sugerir una relación oficial aunque el texto la niegue. Si el grupo prefiere evitarlo, basta con borrar la
+  imagen: la app queda solo con el texto de atribución.
+
 ---
 
 ## Uso de Databricks
@@ -501,17 +512,17 @@ porque incluye el correo de un integrante.
 | Decisiones del grupo con fecha y motivo | `especificacion-proyecto.md`, sección 7 |
 | Especificaciones por etapa | `especificaciones/` · `specs/001` a `specs/008` |
 | Código reutilizable | `src/proyecto/data/`, `features/`, `models/` (`train.py`, `tuning.py`, `evaluation.py`), `tracking/`, `inference/` |
-| Pruebas (115) | `tests/` (datos inventados compartidos en `tests/conftest.py`) |
+| Pruebas (117) | `tests/` (datos inventados compartidos en `tests/conftest.py`) |
 | Notebooks (solo orquestan) | `notebooks/01` a `09` |
 | Auditorías de fuga | `reports/auditoria_etapa3.md`, `auditoria_etapa4.md`, `auditoria_train.md`, `auditoria_etapa6.md`, `auditoria_etapa7.md`, `auditoria_etapa8.md`, `auditoria_etapa9.md` |
 | Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
-| App e inferencia | `app/streamlit_app.py`, `app/requirements.txt` (librerías de la app), `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
+| App e inferencia | `app/streamlit_app.py`, `app/requirements.txt` (librerías de la app), `app/assets/icfes_saber11.png` (logo), `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
 | Preparación del despliegue | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
 | Registro | `reports/08_registro.md`, `reports/08_registro.json`, `reports/prueba_huellas.json` |
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
 | Constancia de la prueba | `reports/07_decisiones_congeladas.json`, `reports/prueba_abierta.txt` |
 
-**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `115 passed`, y `streamlit run app/streamlit_app.py`
+**Cómo comprobar:** desde la raíz, `python -m pytest -q` debe terminar con `117 passed`, y `streamlit run app/streamlit_app.py`
 abre la app en local.
 
 ---
