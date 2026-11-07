@@ -65,10 +65,10 @@ opcional.
 
 ## 4. Lista de verificación antes de la exposición (guía §11)
 
-- [ ] El enlace abre en una ventana privada y muestra el formulario.
-- [ ] Un caso de prueba conocido da una predicción coherente (perfil del apartado 3 de `reports/09_despliegue.md`: 250,
-      «como referencia, entre 217 y 283»).
-- [ ] Un dato inválido muestra un mensaje claro, no un error (edad 81).
+- [x] El enlace abre en una ventana privada y muestra el formulario (7 nov 2026; detalle en `reports/09_despliegue.md`, apartado 3).
+- [x] Un caso de prueba conocido da una predicción coherente (perfil del apartado 3 de `reports/09_despliegue.md`: 250,
+      «como referencia, entre 217 y 283»). En el enlace público dio 250 (7 nov 2026).
+- [x] Un dato inválido muestra un mensaje claro, no un error (edad 81; comprobado en el enlace público el 7 nov 2026).
 - [x] No hay token, `.env` ni datos personales en el repo (comprobado el 6 nov 2026, apartado 1).
 - [ ] Abrir la app 10 minutos antes y comprobar que está despierta.
 - [ ] Plan B listo: app en local (`streamlit run app/streamlit_app.py` desde la raíz) y capturas de pantalla con fecha.

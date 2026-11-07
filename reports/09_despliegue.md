@@ -1,7 +1,7 @@
 # Despliegue de la app
 
 > Etapa 9 (6 nov 2026; enlace agregado el 7 nov 2026). **La app está publicada en Streamlit Community Cloud:**
-> https://predictorpruebasaber.streamlit.app. Falta comprobar el enlace en una ventana privada con los casos del apartado 3.
+> https://predictorpruebasaber.streamlit.app. Comprobado en una ventana privada el 7 nov 2026 (apartado 3).
 > Este informe deja escritas las decisiones, las pruebas hechas en local con sus resultados reales y el plan de
 > despliegue. Guías: `material-del-curso/guias/streamlit-despliegue.md` y
 > `material-del-curso/kit/guia-despliegue-y-presentacion.md`. Especificación: `especificaciones/09-app.md`.
@@ -14,7 +14,7 @@
 | Plataforma | Streamlit Community Cloud |
 | Repo, rama y archivo principal | `nandoossa/Proyecto_clase_grupo10`, rama `main`, `app/streamlit_app.py` |
 | Versión de Python elegida | ☒ 3.12  ☐ otra |
-| ¿Se comprobó en una **ventana privada**? | ☐ sí  ☐ no → pendiente: abrirlo sin sesión iniciada y repetir los casos del apartado 3 |
+| ¿Se comprobó en una **ventana privada**? | ☒ sí (7 nov 2026)  ☐ no |
 | ¿Se desplegó? | ☒ sí  ☐ no |
 | ¿Corre en local? | Sí: `streamlit run app/streamlit_app.py` arranca y responde (comprobado el 6 nov 2026) |
 
@@ -35,7 +35,7 @@
 | Género como entrada (decisión del grupo) | El modelo lo usa; quitarlo exigiría reentrenar y volver a evaluar con la prueba, que ya se abrió. La brecha de error por género se muestra en el aviso |
 | Aviso de uso responsable siempre visible | Con los límites de `models/ficha_modelo.md`: orienta y no excluye; calendario A, Antioquia, 2022; R² 0,363; estrato 5 (MAE 39,57); hombres 35,74 frente a mujeres 31,40 |
 
-## 3. Pruebas (en local, no en un enlace público)
+## 3. Pruebas
 
 Hechas con `streamlit.testing.v1.AppTest` sobre `app/streamlit_app.py` el 6 nov 2026, con un perfil **inventado**: colegio
 oficial urbano de Medellín, jornada mañana, 17 años, mujer, estrato 2, hogar de «3 a 4» personas y «Tres» cuartos.
@@ -51,6 +51,20 @@ Las mismas comprobaciones quedan como pruebas automáticas en `tests/test_app.py
 También se comprobó que un campo obligatorio sin elegir (jornada del colegio) da un mensaje que lo nombra y ningún
 puntaje. En regresión no hay «decisión» que cambie en el límite; por eso el caso límite usa los bordes del rango válido.
 
+### En el enlace público (https://predictorpruebasaber.streamlit.app), en una ventana privada
+
+Prueba hecha por el grupo el **7 nov 2026**, con el mismo perfil inventado. Los puntajes de las edades 13 y 80 y del caso
+con todo en «Sin respuesta» no se anotaron; por eso solo se registra si se aceptaron.
+
+| Caso | Datos usados | Resultado esperado | Resultado en el enlace público |
+|---|---|---|---|
+| Normal | El perfil inventado | Un puntaje entero y la referencia ± 33 | **250** |
+| Límite (bordes de la edad) | El mismo perfil con edad 13 y con edad 80 | Se aceptan los dos | Aceptadas las dos |
+| Inválido | Edad 81 | Mensaje de corrección y ningún puntaje | Rechazada con mensaje |
+| Con todos los campos posibles en «Sin respuesta» | Los 12 campos que lo admiten | Responde igual | Sin errores |
+
+Además se ven el aviso de uso responsable y la atribución de los datos.
+
 ## 4. Problemas encontrados y plan B
 
 - **Errores de despliegue:** pendiente de anotar por el grupo (este informe no registra cómo fue el despliegue). En
@@ -60,7 +74,7 @@ puntaje. En regresión no hay «decisión» que cambie en el límite; por eso el
      `src/proyecto/`.
   2. En Streamlit Community Cloud: repo `nandoossa/Proyecto_clase_grupo10`, rama `main`, archivo
      `app/streamlit_app.py`, Python 3.12.
-  3. Abrir el enlace en una **ventana privada** y repetir los 4 casos del apartado 3. **Pendiente.**
+  3. Abrir el enlace en una **ventana privada** y repetir los 4 casos del apartado 3. **Hecho el 7 nov 2026.**
   4. Pegar el enlace en `README.md` y en el apartado 1 de este informe. **Hecho el 7 nov 2026.**
   5. Si falla, leer el registro de abajo hacia arriba y anotar aquí el mensaje y la corrección.
 - **Plan B** (si la app falla en vivo): app en local con `streamlit run app/streamlit_app.py` desde la raíz del repo, y

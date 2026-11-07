@@ -2,7 +2,7 @@
 
 > Documentación general del proyecto, en lenguaje sencillo: de qué trata, qué se decidió y cuándo, qué resultados dio cada
 > etapa y dónde está el detalle. **Estado al 7 nov 2026: etapas 1 a 9 completas; la app está publicada en Streamlit Community
-> Cloud (https://predictorpruebasaber.streamlit.app) y falta comprobar el enlace en una ventana privada.** Las cifras se copian de los informes de `reports/` y de las salidas de los
+> Cloud (https://predictorpruebasaber.streamlit.app) y se comprobó en una ventana privada.** Las cifras se copian de los informes de `reports/` y de las salidas de los
 > notebooks; no hay cifras nuevas aquí. Este documento no reemplaza al informe técnico final (`reports/informe_tecnico.md`,
 > hito H4): sirve de mapa para escribirlo.
 
@@ -45,7 +45,7 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 7 · Validación e interpretación | Completa | `reports/07_validacion.md` |
 | 8 · Registro del modelo | Completa | `reports/08_registro.md`, `models/ficha_modelo.md` |
 | 9 · Inferencia y app | Completa; app publicada | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
-| 10 · Preparación del despliegue | Repositorio listo; hallazgos importantes corregidos; app publicada en https://predictorpruebasaber.streamlit.app (falta comprobar el enlace en una ventana privada) | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
+| 10 · Preparación del despliegue | Repositorio listo; hallazgos importantes corregidos; app publicada en https://predictorpruebasaber.streamlit.app y comprobada en una ventana privada (7 nov 2026) | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
 
 ## La variable objetivo y los datos
 
@@ -406,7 +406,9 @@ Un ejemplo con edad 12 y la jornada sin elegir se rechaza sin puntaje, con un me
 
 **Despliegue:** la app está publicada en Streamlit Community Cloud: https://predictorpruebasaber.streamlit.app (enlace agregado el 7 nov 2026 a
 `README.md`, `reports/09_despliegue.md` y la presentación). `reports/09_despliegue.md` deja el plan B (app en local) y
-los casos probados en local con sus resultados; falta repetirlos en el enlace público, desde una ventana privada.
+los casos probados en local con sus resultados. **El 7 nov 2026 el grupo los repitió en el enlace público, en una
+ventana privada:** perfil normal 250; edades 13 y 80 aceptadas; edad 81 rechazada con mensaje; todo «Sin respuesta» sin
+errores; se ven el aviso de uso responsable y la atribución.
 
 **Género:** se mantiene como entrada (decisión del grupo, 6 nov 2026); quitarlo exigiría reentrenar y volver a evaluar
 con la prueba, que ya se abrió. Anotado en la ficha del modelo.
@@ -531,12 +533,9 @@ abre la app en local.
 
 ## Pendientes
 
-1. **Antes de desplegar:** decidir si se aplican H8 y H11 de `reports/revision_app.md` (cambian qué entradas se
+1. **Revisión de la app:** decidir si se aplican H8 y H11 de `reports/revision_app.md` (cambian qué entradas se
    rechazan; con el esquema y la app actuales no ocurren).
-2. **Comprobar el despliegue (lo hace el grupo):** la app ya está publicada (https://predictorpruebasaber.streamlit.app). Falta abrir el enlace en
-   una ventana privada, repetir los casos de `reports/09_despliegue.md`, anotar los resultados y completar la lista de
-   verificación de `reports/despliegue_preparacion.md`.
-3. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
-4. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
+2. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
+3. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
-5. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
+4. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
