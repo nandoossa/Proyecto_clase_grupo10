@@ -541,6 +541,6 @@ abre la app en local.
 2. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
 3. **Informe técnico** (`reports/informe_tecnico.md`, hito H4, entrega el domingo 15 nov): ensamblado el 7 nov 2026.
-   Quedan dos casillas de su lista de comprobación:
-   - la diapositiva 3 de la presentación dice «decir siempre 242» y la línea base de la prueba es 243;
-   - falta que alguien fuera del grupo siga el anexo de reproducción desde cero.
+   Queda una casilla de su lista de comprobación: que un compañero siga el anexo de reproducción desde cero (el grupo
+   avisará cuando esté hecho). La diapositiva 3 de la presentación se corrigió el 7 nov 2026: la línea base es 243, como
+   en la prueba.

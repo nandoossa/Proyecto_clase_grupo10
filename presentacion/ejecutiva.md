@@ -41,7 +41,7 @@ NOTAS (1 min, dentro de "Resultados" o al final del caso) · Mensaje: "no hicimo
 
 # 3 · El modelo se equivoca 10 puntos menos por estudiante
 
-| | Sin el modelo (decir siempre 242) | Con el modelo |
+| | Sin el modelo (decir siempre 243) | Con el modelo |
 |---|---|---|
 | Error promedio por estudiante | **43,1 puntos** | **33,3 puntos** |
 | Cohorte de Antioquia (≈ 72.000 estudiantes al año) | Cada estudiante, ±43 puntos en promedio | Cada estudiante, ±33 puntos en promedio |

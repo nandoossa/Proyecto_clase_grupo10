@@ -288,8 +288,8 @@ puntaje (R² 0,363) y su error es mayor en estrato 5 (39,57) y en hombres (35,74
 ### Lista de comprobación antes de entregar
 
 - [x] Las **9 secciones** tienen contenido y **cada decisión lleva su motivo**.
-- [ ] Las cifras **coinciden** con `reports/07_validacion.md` y con la presentación. *Coinciden con `07_validacion.md`;
-      la diapositiva 3 de `presentacion/ejecutiva.md` dice «decir siempre 242», y la línea base de la prueba es 243.*
+- [x] Las cifras **coinciden** con `reports/07_validacion.md` y con la presentación (la diapositiva 3 se corrigió el 7 nov
+      2026: la línea base es 243, la mediana del entrenamiento).
 - [x] No hay credenciales, `.env` ni datos personales.
 - [x] El enlace de la app abre en una ventana privada (comprobado por el grupo el 7 nov 2026).
 - [ ] Un tercero puede reproducir el proyecto con el anexo. *Falta que alguien fuera del grupo lo siga desde cero.*
