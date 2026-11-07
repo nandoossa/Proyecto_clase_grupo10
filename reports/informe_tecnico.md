@@ -292,5 +292,5 @@ puntaje (R² 0,363) y su error es mayor en estrato 5 (39,57) y en hombres (35,74
       2026: la línea base es 243, la mediana del entrenamiento).
 - [x] No hay credenciales, `.env` ni datos personales.
 - [x] El enlace de la app abre en una ventana privada (comprobado por el grupo el 7 nov 2026).
-- [x] Un tercero puede reproducir el proyecto con el anexo (un compañero lo siguió desde cero en un PC limpio;
-      confirmado por el grupo el 7 nov 2026).
+- [ ] Un tercero puede reproducir el proyecto con el anexo. *Pendiente: falta que un compañero lo siga desde cero en un PC
+      limpio.*

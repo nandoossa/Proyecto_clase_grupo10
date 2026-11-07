@@ -541,6 +541,6 @@ abre la app en local.
 2. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
 3. **Informe técnico** (`reports/informe_tecnico.md`, hito H4, entrega el domingo 15 nov): ensamblado el 7 nov 2026.
-   Su lista de comprobación está completa: un compañero siguió el anexo de reproducción desde cero en un PC limpio
-   (confirmado por el grupo el 7 nov 2026). La diapositiva 3 de la presentación se corrigió el 7 nov 2026: la línea base es 243, como
+   Queda una casilla de su lista de comprobación, pendiente: que un compañero siga el anexo de reproducción desde cero
+   en un PC limpio (todavía no se ha hecho). La diapositiva 3 de la presentación se corrigió el 7 nov 2026: la línea base es 243, como
    en la prueba.
