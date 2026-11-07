@@ -1,8 +1,8 @@
 # Documentación del trabajo realizado · Predictor de resultados Saber 11 en Antioquia
 
 > Documentación general del proyecto, en lenguaje sencillo: de qué trata, qué se decidió y cuándo, qué resultados dio cada
-> etapa y dónde está el detalle. **Estado al 6 nov 2026: etapas 1 a 9 completas; la app corre en local, el repositorio
-> cumple la lista para Streamlit Community Cloud y todavía no se desplegó.** Las cifras se copian de los informes de `reports/` y de las salidas de los
+> etapa y dónde está el detalle. **Estado al 7 nov 2026: etapas 1 a 9 completas; la app está publicada en Streamlit Community
+> Cloud (https://predictorpruebasaber.streamlit.app) y falta comprobar el enlace en una ventana privada.** Las cifras se copian de los informes de `reports/` y de las salidas de los
 > notebooks; no hay cifras nuevas aquí. Este documento no reemplaza al informe técnico final (`reports/informe_tecnico.md`,
 > hito H4): sirve de mapa para escribirlo.
 
@@ -44,8 +44,8 @@ Gutiérrez, Sebastián Orozco Giraldo · **Repositorio:** https://github.com/nan
 | 6 · Optimización con seguimiento | Completa | `reports/06_optimizacion.md` |
 | 7 · Validación e interpretación | Completa | `reports/07_validacion.md` |
 | 8 · Registro del modelo | Completa | `reports/08_registro.md`, `models/ficha_modelo.md` |
-| 9 · Inferencia y app | Completa en local, sin desplegar | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
-| 10 · Preparación del despliegue | Repositorio listo; hallazgos importantes corregidos; sin desplegar | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
+| 9 · Inferencia y app | Completa; app publicada | `reports/09_despliegue.md`, `reports/auditoria_etapa9.md` |
+| 10 · Preparación del despliegue | Repositorio listo; hallazgos importantes corregidos; app publicada en https://predictorpruebasaber.streamlit.app (falta comprobar el enlace en una ventana privada) | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
 
 ## La variable objetivo y los datos
 
@@ -404,8 +404,9 @@ Un ejemplo con edad 12 y la jornada sin elegir se rechaza sin puntaje, con un me
 - el aviso de uso responsable está visible;
 - el código no menciona Databricks.
 
-**Despliegue:** no se hizo. `reports/09_despliegue.md` deja el plan de despliegue en Streamlit Community Cloud, el plan B
-(app en local) y los casos probados en local con sus resultados.
+**Despliegue:** la app está publicada en Streamlit Community Cloud: https://predictorpruebasaber.streamlit.app (enlace agregado el 7 nov 2026 a
+`README.md`, `reports/09_despliegue.md` y la presentación). `reports/09_despliegue.md` deja el plan B (app en local) y
+los casos probados en local con sus resultados; falta repetirlos en el enlace público, desde una ventana privada.
 
 **Género:** se mantiene como entrada (decisión del grupo, 6 nov 2026); quitarlo exigiría reentrenar y volver a evaluar
 con la prueba, que ya se abrió. Anotado en la ficha del modelo.
@@ -518,6 +519,7 @@ porque incluye el correo de un integrante.
 | Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
 | App e inferencia | `app/streamlit_app.py`, `app/requirements.txt` (librerías de la app), `app/assets/icfes_saber11.png` (logo), `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
 | Preparación del despliegue | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
+| Presentación ejecutiva | `presentacion/ejecutiva.md` (5 diapositivas; pie de página «Laboratorio de análisis avanzado: casos prácticos · Especialización en Analítica de Datos · UNAULA · Grupo 10»; enlace de la app en la diapositiva 4) |
 | Registro | `reports/08_registro.md`, `reports/08_registro.json`, `reports/prueba_huellas.json` |
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
 | Constancia de la prueba | `reports/07_decisiones_congeladas.json`, `reports/prueba_abierta.txt` |
@@ -531,10 +533,9 @@ abre la app en local.
 
 1. **Antes de desplegar:** decidir si se aplican H8 y H11 de `reports/revision_app.md` (cambian qué entradas se
    rechazan; con el esquema y la app actuales no ocurren).
-2. **Despliegue (lo hace el grupo):** crear la app en Streamlit Community Cloud (repo `nandoossa/Proyecto_clase_grupo10`,
-   rama `main`, `app/streamlit_app.py`, Python 3.12), probar el enlace en una ventana privada con los casos de
-   `reports/09_despliegue.md`, pegar el enlace en `README.md` y completar la lista de verificación de
-   `reports/despliegue_preparacion.md`.
+2. **Comprobar el despliegue (lo hace el grupo):** la app ya está publicada (https://predictorpruebasaber.streamlit.app). Falta abrir el enlace en
+   una ventana privada, repetir los casos de `reports/09_despliegue.md`, anotar los resultados y completar la lista de
+   verificación de `reports/despliegue_preparacion.md`.
 3. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
 4. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.

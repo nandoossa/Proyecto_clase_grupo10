@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 header: "Presentación ejecutiva · Predictor de resultados Pruebas Saber 11 en Antioquia"
-footer: "Casos Avanzados · Maestría en Ingeniería Analítica · Grupo 10"
+footer: "Laboratorio de análisis avanzado: casos prácticos · Especialización en Analítica de Datos · UNAULA · Grupo 10"
 ---
 
 # 1 · Hoy el puntaje llega cuando ya no hay tiempo de actuar
@@ -61,7 +61,7 @@ NOTAS (2 min) · Cifra protagonista: "10 puntos menos de error por estudiante".
 
 # 4 · Véanlo funcionar
 
-**Enlace:** _(pegar el enlace público de Streamlit; abrirlo 10 minutos antes)_
+**Enlace:** https://predictorpruebasaber.streamlit.app
 
 1. **Caso normal:** colegio oficial urbano de Medellín, jornada mañana, 17 años, estrato 2, hogar de 3 a 4 personas → **250 puntos** (como referencia, entre 217 y 283).
 2. **Caso límite:** el mismo perfil con edad 13 y con edad 80, los bordes del rango válido → se aceptan los dos (**271** y **210**).
@@ -71,6 +71,7 @@ NOTAS (2 min) · Cifra protagonista: "10 puntos menos de error por estudiante".
 
 <!--
 NOTAS (4 min) · Demo en vivo, sin leer la diapositiva.
+- Abrir el enlace 10 minutos antes, para despertar la app.
 - Quien maneja la app narra en voz alta qué elige y qué espera.
 - Señalar el aviso de uso responsable que la app siempre muestra.
 - Si la app tarda (puede estar "dormida"), pasar al plan B sin perder tiempo.

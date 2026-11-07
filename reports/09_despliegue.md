@@ -1,6 +1,7 @@
 # Despliegue de la app
 
-> Etapa 9 (6 nov 2026). **La app no se desplegó todavía**: corre en local y está lista para Streamlit Community Cloud.
+> Etapa 9 (6 nov 2026; enlace agregado el 7 nov 2026). **La app está publicada en Streamlit Community Cloud:**
+> https://predictorpruebasaber.streamlit.app. Falta comprobar el enlace en una ventana privada con los casos del apartado 3.
 > Este informe deja escritas las decisiones, las pruebas hechas en local con sus resultados reales y el plan de
 > despliegue. Guías: `material-del-curso/guias/streamlit-despliegue.md` y
 > `material-del-curso/kit/guia-despliegue-y-presentacion.md`. Especificación: `especificaciones/09-app.md`.
@@ -9,12 +10,12 @@
 
 | Dato | Valor |
 |---|---|
-| Enlace público de la app | Ninguno todavía (no desplegada) |
-| Plataforma | Streamlit Community Cloud (prevista) |
+| Enlace público de la app | https://predictorpruebasaber.streamlit.app |
+| Plataforma | Streamlit Community Cloud |
 | Repo, rama y archivo principal | `nandoossa/Proyecto_clase_grupo10`, rama `main`, `app/streamlit_app.py` |
 | Versión de Python elegida | ☒ 3.12  ☐ otra |
-| ¿Se comprobó en una **ventana privada**? | ☐ sí  ☒ no (no hay enlace todavía) |
-| ¿Se desplegó? | ☐ sí  ☒ no → **plan de despliegue y plan B** (apartado 4) |
+| ¿Se comprobó en una **ventana privada**? | ☐ sí  ☐ no → pendiente: abrirlo sin sesión iniciada y repetir los casos del apartado 3 |
+| ¿Se desplegó? | ☒ sí  ☐ no |
 | ¿Corre en local? | Sí: `streamlit run app/streamlit_app.py` arranca y responde (comprobado el 6 nov 2026) |
 
 ## 2. Decisiones de despliegue y su motivo
@@ -52,15 +53,15 @@ puntaje. En regresión no hay «decisión» que cambie en el límite; por eso el
 
 ## 4. Problemas encontrados y plan B
 
-- **Errores de despliegue:** ninguno todavía, porque no se desplegó. En local la app arrancó sin errores y respondió el
-  chequeo de salud de Streamlit.
+- **Errores de despliegue:** pendiente de anotar por el grupo (este informe no registra cómo fue el despliegue). En
+  local la app arrancó sin errores y respondió el chequeo de salud de Streamlit.
 - **Plan de despliegue** (pasos de `material-del-curso/guias/streamlit-despliegue.md`):
   1. Confirmar en GitHub que están `requirements.txt` (en la raíz), `models/model.joblib`, `models/input_schema.json` y
      `src/proyecto/`.
   2. En Streamlit Community Cloud: repo `nandoossa/Proyecto_clase_grupo10`, rama `main`, archivo
      `app/streamlit_app.py`, Python 3.12.
-  3. Abrir el enlace en una **ventana privada** y repetir los 4 casos del apartado 3.
-  4. Pegar el enlace en `README.md` y en el apartado 1 de este informe.
+  3. Abrir el enlace en una **ventana privada** y repetir los 4 casos del apartado 3. **Pendiente.**
+  4. Pegar el enlace en `README.md` y en el apartado 1 de este informe. **Hecho el 7 nov 2026.**
   5. Si falla, leer el registro de abajo hacia arriba y anotar aquí el mensaje y la corrección.
 - **Plan B** (si la app falla en vivo): app en local con `streamlit run app/streamlit_app.py` desde la raíz del repo, y
   captura de pantalla con fecha y repo (pendiente de tomar el día de la presentación).

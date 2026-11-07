@@ -2,7 +2,7 @@
 
 > Una frase: qué problema de negocio resuelve este proyecto y para quién.
 
-**App desplegada:** _enlace público de Streamlit (se completa en la clase 5)_
+**App desplegada:** https://predictorpruebasaber.streamlit.app
 
 ## Qué contiene
 Estructura obligatoria del curso. Cada carpeta tiene un propósito:
