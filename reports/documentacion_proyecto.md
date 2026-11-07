@@ -524,6 +524,7 @@ porque incluye el correo de un integrante.
 | Modelo para la app | `models/model.joblib` (exportado desde `champion`), `models/input_schema.json`, `models/ficha_modelo.md` |
 | App e inferencia | `app/streamlit_app.py`, `app/requirements.txt` (librerías de la app), `app/assets/icfes_saber11.png` (logo), `src/proyecto/inference/` (`predict.py`, `form.py`, `schema.py`), `reports/09_despliegue.md` |
 | Preparación del despliegue | `reports/despliegue_preparacion.md`, `reports/revision_app.md` |
+| Informe técnico | `reports/informe_tecnico.md` (ensamblado el 7 nov 2026 con los informes 00 a 09; asignatura «Laboratorio de análisis avanzado: casos prácticos», Especialización en Analítica de Datos, UNAULA; incluye la nota de que el AUC no aplica porque es regresión) |
 | Presentación ejecutiva | `presentacion/ejecutiva.md` (5 diapositivas; pie de página «Laboratorio de análisis avanzado: casos prácticos · Especialización en Analítica de Datos · UNAULA · Grupo 10»; enlace de la app en la diapositiva 4) |
 | Registro | `reports/08_registro.md`, `reports/08_registro.json`, `reports/prueba_huellas.json` |
 | Resultados en archivos | `reports/06_best_params.json`, `06_comprobacion.csv`, `07_metricas_test.json`, `07_equidad.csv`, `07_importancia.csv` |
@@ -539,4 +540,7 @@ abre la app en local.
 1. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
 2. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
-3. **Hitos H3 y H4:** presentación (máximo 5 diapositivas) e informe técnico final (domingo 15 nov).
+3. **Informe técnico** (`reports/informe_tecnico.md`, hito H4, entrega el domingo 15 nov): ensamblado el 7 nov 2026.
+   Quedan dos casillas de su lista de comprobación:
+   - la diapositiva 3 de la presentación dice «decir siempre 242» y la línea base de la prueba es 243;
+   - falta que alguien fuera del grupo siga el anexo de reproducción desde cero.
