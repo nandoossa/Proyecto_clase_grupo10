@@ -70,8 +70,9 @@ opcional.
       «como referencia, entre 217 y 283»). En el enlace público dio 250 (7 nov 2026).
 - [x] Un dato inválido muestra un mensaje claro, no un error (edad 81; comprobado en el enlace público el 7 nov 2026).
 - [x] No hay token, `.env` ni datos personales en el repo (comprobado el 6 nov 2026, apartado 1).
-- [ ] Abrir la app 10 minutos antes y comprobar que está despierta.
-- [ ] Plan B listo: app en local (`streamlit run app/streamlit_app.py` desde la raíz) y capturas de pantalla con fecha.
+- [x] Abrir la app 10 minutos antes y comprobar que está despierta (se abrió antes de la exposición del 7 nov 2026).
+- [x] Plan B listo: app en local (`streamlit run app/streamlit_app.py` desde la raíz) y capturas de pantalla con fecha
+      (listo para la exposición del 7 nov 2026).
 
 ## 5. Plan B
 

@@ -78,7 +78,7 @@ Además se ven el aviso de uso responsable y la atribución de los datos.
   4. Pegar el enlace en `README.md` y en el apartado 1 de este informe. **Hecho el 7 nov 2026.**
   5. Si falla, leer el registro de abajo hacia arriba y anotar aquí el mensaje y la corrección.
 - **Plan B** (si la app falla en vivo): app en local con `streamlit run app/streamlit_app.py` desde la raíz del repo, y
-  captura de pantalla con fecha y repo (pendiente de tomar el día de la presentación).
+  captura de pantalla con fecha y repo. **Listo para la exposición del 7 nov 2026.**
 
 ## 5. Ensayo cronometrado (clase 5)
 
@@ -96,3 +96,11 @@ Pendiente: se llena durante el ensayo, con los tiempos reales.
 - Retroalimentación recibida (lo mejor y la corrección que propusieron): _______________
 - **Corrección concreta que hicimos por ella:** _______________
 - Quién habla de qué y quién responde las preguntas técnicas: _______________
+
+## 6. Exposición en clase (7 nov 2026)
+
+- **La app se presentó en clase el 7 nov 2026** con el enlace público https://predictorpruebasaber.streamlit.app.
+- **Se abrió antes de la exposición**, para que estuviera despierta.
+- **El plan B estaba listo:** app en local y capturas de pantalla con fecha.
+- Los tiempos reales, la retroalimentación y el reparto de quién habló de qué (apartado 5) no se registraron en este
+  informe.

@@ -411,6 +411,9 @@ los casos probados en local con sus resultados. **El 7 nov 2026 el grupo los rep
 ventana privada:** perfil normal 250; edades 13 y 80 aceptadas; edad 81 rechazada con mensaje; todo «Sin respuesta» sin
 errores; se ven el aviso de uso responsable y la atribución.
 
+**Exposición:** la app se presentó en clase el 7 nov 2026; se abrió antes y el plan B (app en local y capturas)
+estaba listo.
+
 **Género:** se mantiene como entrada (decisión del grupo, 6 nov 2026); quitarlo exigiría reentrenar y volver a evaluar
 con la prueba, que ya se abrió. Anotado en la ficha del modelo.
 
@@ -537,7 +540,8 @@ abre la app en local.
 
 ## Pendientes
 
-1. **Exposición:** ensayo cronometrado, capturas de pantalla para el plan B y abrir la app 10 minutos antes.
+1. **Exposición:** hecha en clase el 7 nov 2026 (app abierta antes y plan B listo). Falta registrar en
+   `reports/09_despliegue.md` los tiempos reales del ensayo y la retroalimentación, si el grupo los anotó.
 2. **Género como entrada:** se mantiene (6 nov 2026). Cambiarlo exigiría un ciclo nuevo de entrenamiento y validación
    por sede, porque la prueba ya se usó.
 3. **Informe técnico** (`reports/informe_tecnico.md`, hito H4, entrega el domingo 15 nov): ensamblado el 7 nov 2026.
